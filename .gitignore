@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Cmake FIles
+/build
+
+# Mac development files
+.DS_store
