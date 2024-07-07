@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(MyImGuiProject)
+project(McDoner)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -30,5 +30,5 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
 # Add the executable
-add_executable(MyImGuiProject main.cpp)
-target_link_libraries(MyImGuiProject glfw ${GLEW_LIBRARY} imgui ${OPENGL_LIBRARIES})
+add_executable(McDoner main.cpp)
+target_link_libraries(McDoner glfw ${GLEW_LIBRARY} imgui ${OPENGL_LIBRARIES})
