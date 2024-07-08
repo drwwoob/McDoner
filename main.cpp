@@ -1,46 +1,65 @@
-#include <cstdio>  // Include this header for fprintf and stderr
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
+#include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include <stdio.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
-void error_callback(int error, const char* description)
+// Main code
+// This example can also compile and run with Emscripten! See 'Makefile.emscripten' for details.
+#ifdef __EMSCRIPTEN__
+#include "../libs/emscripten/emscripten_mainloop_stub.h"
+#endif
+
+// Main code
+int main(int, char**)
 {
-    fprintf(stderr, "Error: %s\n", description);
-}
-
-int main()
-{
-    // Initialize GLFW
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-        return -1;
-
-    // Set GLFW window hints for OpenGL version
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // For macOS compatibility
-
-    // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Hello ImGui", NULL, NULL);
-    if (!window)
+    // Setup SDL
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
-        glfwTerminate();
+        printf("Error: %s\n", SDL_GetError());
         return -1;
     }
 
-    // Make the window's context current
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+    // Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+    // GL ES 2.0 + GLSL 100
+    const char* glsl_version = "#version 100";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(__APPLE__)
+    // GL 3.2 Core + GLSL 150
+    const char* glsl_version = "#version 150";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+    // GL 3.0 + GLSL 130
+    const char* glsl_version = "#version 130";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 
-    // Initialize GLEW
-    if (glewInit() != GLEW_OK)
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    
+    SDL_Window* window = SDL_CreateWindow("McDoner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    if (window == nullptr)
     {
-        fprintf(stderr, "Failed to initialize GLEW\n");
+        printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
         return -1;
     }
+
+    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+    SDL_GL_MakeCurrent(window, gl_context);
+    SDL_GL_SetSwapInterval(1); // Enable vsync
 
     // Initialize ImGui
     IMGUI_CHECKVERSION();
@@ -48,48 +67,56 @@ int main()
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL3_Init("#version 150");
 
-    // Main loop
-    while (!glfwWindowShouldClose(window))
+    bool done = false;
+#ifdef __EMSCRIPTEN__
+    // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
+    // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
+    io.IniFilename = nullptr;
+    EMSCRIPTEN_MAINLOOP_BEGIN
+#else
+    while (!done)
+#endif
+    while (!done)
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        glfwPollEvents();
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            if (event.type == SDL_QUIT)
+                done = true;
+        }
 
-        // Start the ImGui frame
+        // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        // Example UI
+        // Create a simple window
         ImGui::Begin("Hello, world!");
-        ImGui::Text("This is some useful text.");
-        ImGui::SliderFloat("float", &io.DeltaTime, 0.0f, 1.0f);
-        ImGui::ColorEdit3("clear color", (float*)&io.DisplaySize);
-        if (ImGui::Button("Button"))
-            printf("Button pressed!\n");
+        ImGui::Text("This is some useful text.");             
         ImGui::End();
 
         // Rendering
         ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
+        glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window);
+        SDL_GL_SwapWindow(window);
     }
 
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    SDL_GL_DeleteContext(gl_context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     return 0;
 }

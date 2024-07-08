@@ -2,9 +2,8 @@
 欢迎使用驴肉夹馍！这是一个专门为视觉小说设计的游戏引擎！
 
 # 配置要求
-OpenGL
-    GLFW
-    GLEW
+OPENGL
+SDL
 C++20
 CMake 3.1
 

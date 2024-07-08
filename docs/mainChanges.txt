@@ -1,1 +1,5 @@
-connection with 
+openGL version 
+glfw
+c++ 17
+cmake
+
