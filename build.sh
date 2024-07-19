@@ -7,6 +7,6 @@
 mkdir build
 cd build
 cmake ..
-cmake --build .
+make
 
 ./McDoner

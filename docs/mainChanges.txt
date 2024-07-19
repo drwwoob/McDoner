@@ -1,5 +1,5 @@
 openGL version 
-glfw
+sdl2
 c++ 17
-cmake
+cmake3.1
 
