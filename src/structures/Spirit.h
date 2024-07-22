@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include "Tools.h"
+#include <Tools.h>
+#include <imgui.h>
 //#include <winnt.h>
 
 class Spirit

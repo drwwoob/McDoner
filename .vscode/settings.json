@@ -54,7 +54,8 @@
         "exception": "cpp",
         "memory": "cpp",
         "type_traits": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "codecvt": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

@@ -1,4 +1,18 @@
 #include "Tools.h"
+
+#include "imconfig.h"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imstb_rectpack.h"
+#include "imstb_textedit.h"
+#include "imstb_truetype.h"
+#include "imgui_stdlib.h"
+
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+#include <stdio.h>
+
+
 // Main code
 int main(int, char**)
 {
@@ -106,7 +120,6 @@ int main(int, char**)
         // set main window
         Tools::drawBackground(welcomeBackground);
 
-        
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
