@@ -19,19 +19,28 @@ include_directories(${OPENGL_INCLUDE_DIR})
 set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/libs/imgui)
 set(IMGUI_BACKEND_DIR ${IMGUI_DIR}/backends)
 
+# other libs
+set(OTHER_LIBS_DIR ${CMAKE_SOURCE_DIR}/libs)
+
+# Structer libs
+set(STRUCT_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/structures)
+
 # Mac RPath fix
 set(CMAKE_BUILD_RPATH /Library/Frameworks)
 
-include_directories(${IMGUI_DIR} ${IMGUI_BACKEND_DIR})
+include_directories(${IMGUI_DIR} ${IMGUI_BACKEND_DIR} ${OTHER_LIBS_DIR} ${STRUCT_LIBS_DIR})
 
-file(GLOB IMGUI_SOURCES
+file(GLOB LIB_SOURCES
     ${IMGUI_DIR}/*.cpp
     ${IMGUI_BACKEND_DIR}/imgui_impl_sdl2.cpp
     ${IMGUI_BACKEND_DIR}/imgui_impl_opengl3.cpp
+    ${OTHER_LIBS_DIR}/*.cpp
+    ${STRUCT_LIBS_DIR}/*.cpp
+
 )
 
 # Add executable
-add_executable(${PROJECT_NAME} main.cpp ${IMGUI_SOURCES})
+add_executable(${PROJECT_NAME} main.cpp ${LIB_SOURCES})
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} 

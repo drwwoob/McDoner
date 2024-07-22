@@ -3,3 +3,4 @@ sdl2
 c++ 17
 cmake3.1
 
+glew

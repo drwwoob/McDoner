@@ -1,30 +1,4 @@
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
-#include <stdio.h>
-#include <SDL.h>
-#include <SDL_opengl.h>
-#include <SDL2_image/SDL_image.h>
-
-// Function to create an OpenGL texture from an SDL_Surface
-GLuint LoadTextureFromSurface(SDL_Surface* surface)
-{
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    int mode = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, mode, surface->w, surface->h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}
-
+#include "Tools.h"
 // Main code
 int main(int, char**)
 {
@@ -59,12 +33,17 @@ int main(int, char**)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
+    // From 2.0.18: Enable native IME.
+#ifdef SDL_HINT_IME_SHOW_UI
+    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
+#endif
+
+    // Create window with graphics context
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    
-    SDL_Window* window = SDL_CreateWindow("McDoner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     if (window == nullptr)
     {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -75,14 +54,6 @@ int main(int, char**)
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
-    // Initialize SDL_image
-    int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
-    if (!(IMG_Init(imgFlags) & imgFlags))
-    {
-        printf("Error: IMG_Init(): %s\n", IMG_GetError());
-        return -1;
-    }
-
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -90,97 +61,67 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    // Our state
+    bool show_demo_window = true;
+    ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
 
-    // Load an image
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_Surface* image = IMG_Load("../src/pics/defaultBackground.jpg");
-    if (!image)
-    {
-        printf("Error: IMG_Load(): %s\n", IMG_GetError());
-        return -1;
-    }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
-    // GLuint textureID = LoadTextureFromSurface(image);
-    SDL_FreeSurface(image);
 
-    // ------------------------Main loop--------------------------------
+    // set default value
+    auto welcomeBackground = "../src/pics/defaultBackground.jpg";
+
+    // Main loop
     bool done = false;
+#ifdef __EMSCRIPTEN__
+    // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
+    // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
+    io.IniFilename = nullptr;
+    EMSCRIPTEN_MAINLOOP_BEGIN
+#else
     while (!done)
+#endif
     {
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
                 done = true;
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+                done = true;
         }
-
-        // // Render background texture
-        // SDL_RenderClear(renderer);
-        // SDL_RenderCopy(renderer, texture, NULL, NULL);
-        // SDL_RenderPresent(renderer);
-
-        SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, 9, 20, 33, 255);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
-
-        // // Render background texture
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // glEnable(GL_TEXTURE_2D);
-        // glBindTexture(GL_TEXTURE_2D, textureID);
-        // glBegin(GL_QUADS);
-        // glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
-        // glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0f, -1.0f);
-        // glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0f, 1.0f);
-        // glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, 1.0f);
-        // glEnd();
-        // glDisable(GL_TEXTURE_2D);
-
-
-        // Our state
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+        // set main window
+        Tools::drawBackground(welcomeBackground);
 
-        // Create a simple window
-        ImGui::Begin("Hello, world!");
-        ImGui::Text("This is some useful text.");
-        ImGui::End();
+        
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
 
-        // // Rendering
+        // Rendering
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
-
-        // glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        // glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-        // glClear(GL_COLOR_BUFFER_BIT);
-
-
-        // // Render ImGui on top
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // SDL_GL_SwapWindow(window);
     }
+#ifdef __EMSCRIPTEN__
+    EMSCRIPTEN_MAINLOOP_END;
+#endif
 
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -190,14 +131,6 @@ int main(int, char**)
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
-    // // SDL_DestroyTexture(texture);
-    // glDeleteTextures(1, &textureID);
-    // SDL_GL_DeleteContext(gl_context);
-    // // SDL_DestroyRenderer(renderer);
-    // // SDL_GL_DeleteContext(gl_context);
-    // SDL_DestroyWindow(window);
-    // SDL_Quit();
 
     return 0;
 }
