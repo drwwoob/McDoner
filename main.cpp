@@ -4,42 +4,54 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <SDL2_image/SDL_image.h>  // Corrected include path
+#include <SDL2_image/SDL_image.h>
 
-#ifdef __EMSCRIPTEN__
-#include "../libs/emscripten/emscripten_mainloop_stub.h"
-#endif
+// Function to create an OpenGL texture from an SDL_Surface
+GLuint LoadTextureFromSurface(SDL_Surface* surface)
+{
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
-void logSDLError(const char* msg) {
-    printf("%s error: %s\n", msg, SDL_GetError());
+    int mode = (surface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, mode, surface->w, surface->h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
 
+// Main code
 int main(int, char**)
 {
+    // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
-        logSDLError("SDL_Init");
+        printf("Error: %s\n", SDL_GetError());
         return -1;
     }
 
-    if (!(IMG_Init(IMG_INIT_JPG) & IMG_INIT_JPG)) {
-        logSDLError("IMG_Init");
-        return -1;
-    }
-
+    // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
+    // GL ES 2.0 + GLSL 100
     const char* glsl_version = "#version 100";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #elif defined(__APPLE__)
+    // GL 3.2 Core + GLSL 150
     const char* glsl_version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #else
+    // GL 3.0 + GLSL 130
     const char* glsl_version = "#version 130";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -55,58 +67,53 @@ int main(int, char**)
     SDL_Window* window = SDL_CreateWindow("McDoner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     if (window == nullptr)
     {
-        logSDLError("SDL_CreateWindow");
+        printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
         return -1;
     }
 
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
-    if (gl_context == nullptr) {
-        logSDLError("SDL_GL_CreateContext");
-        return -1;
-    }
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
+    // Initialize SDL_image
+    int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+        printf("Error: IMG_Init(): %s\n", IMG_GetError());
+        return -1;
+    }
+
+    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
 
-    if (!ImGui_ImplSDL2_InitForOpenGL(window, gl_context)) {
-        printf("ImGui_ImplSDL2_InitForOpenGL failed\n");
-        return -1;
-    }
-    if (!ImGui_ImplOpenGL3_Init(glsl_version)) {
-        printf("ImGui_ImplOpenGL3_Init failed\n");
-        return -1;
-    }
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL3_Init(glsl_version);
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) {
-        logSDLError("SDL_CreateRenderer");
-        return -1;
-    }
-    
+
+    // Load an image
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Surface* image = IMG_Load("../src/pics/defaultBackground.jpg");
-    if (image == nullptr) {
-        logSDLError("IMG_Load");
+    if (!image)
+    {
+        printf("Error: IMG_Load(): %s\n", IMG_GetError());
         return -1;
     }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
+    // GLuint textureID = LoadTextureFromSurface(image);
     SDL_FreeSurface(image);
 
-    if (texture == nullptr) {
-        logSDLError("SDL_CreateTextureFromSurface");
-        return -1;
-    }
-
+    // ------------------------Main loop--------------------------------
     bool done = false;
-#ifdef __EMSCRIPTEN__
-    io.IniFilename = nullptr;
-    EMSCRIPTEN_MAINLOOP_BEGIN
-#else
     while (!done)
-#endif
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -116,39 +123,81 @@ int main(int, char**)
                 done = true;
         }
 
+        // // Render background texture
+        // SDL_RenderClear(renderer);
+        // SDL_RenderCopy(renderer, texture, NULL, NULL);
+        // SDL_RenderPresent(renderer);
+
         SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 9, 20, 33, 255);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
 
+        // // Render background texture
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // glEnable(GL_TEXTURE_2D);
+        // glBindTexture(GL_TEXTURE_2D, textureID);
+        // glBegin(GL_QUADS);
+        // glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
+        // glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0f, -1.0f);
+        // glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0f, 1.0f);
+        // glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, 1.0f);
+        // glEnd();
+        // glDisable(GL_TEXTURE_2D);
+
+
+        // Our state
+        bool show_demo_window = true;
+        bool show_another_window = false;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+        // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+        ImGui::ShowDemoWindow();
+
+        // Create a simple window
         ImGui::Begin("Hello, world!");
         ImGui::Text("This is some useful text.");
         ImGui::End();
 
+        // // Rendering
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         SDL_GL_SwapWindow(window);
-    }
-#ifdef __EMSCRIPTEN__
-    EMSCRIPTEN_MAINLOOP_END;
-#endif
 
+        // glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+        // glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        // glClear(GL_COLOR_BUFFER_BIT);
+
+
+        // // Render ImGui on top
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // SDL_GL_SwapWindow(window);
+    }
+
+    // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
+    
+    // // SDL_DestroyTexture(texture);
+    // glDeleteTextures(1, &textureID);
+    // SDL_GL_DeleteContext(gl_context);
+    // // SDL_DestroyRenderer(renderer);
+    // // SDL_GL_DeleteContext(gl_context);
+    // SDL_DestroyWindow(window);
+    // SDL_Quit();
 
     return 0;
 }

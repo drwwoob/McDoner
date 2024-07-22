@@ -39,3 +39,8 @@ target_link_libraries(${PROJECT_NAME}
     ${SDL2_IMAGE_LIBRARIES} 
     ${OPENGL_LIBRARIES}
 )
+
+# Explicitly link SDL2_image library (for diagnostic purposes)
+find_library(SDL2_IMAGE_LIB NAMES SDL2_image)
+message(STATUS "Found SDL2_image library: ${SDL2_IMAGE_LIB}")
+target_link_libraries(${PROJECT_NAME} ${SDL2_IMAGE_LIB})
