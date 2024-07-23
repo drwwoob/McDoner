@@ -113,18 +113,18 @@ void Page::setFont(ImFont* font_given)
 	}
 }
 
+// ============= todo: change this, so that the texture only load when needed ==============
 void Page::drawPage(ImVec2 window_size, std::string project_path){
     Tools::drawBackground((project_path + background_name));
     for(auto spirit : spirits){
-        // ============= todo: change this, the renderer draw something weird ==============
-        drawSpirit(spirit, window_size, project_path);
+        spiritToTexture(spirit, window_size, project_path);
     }
     for(auto textbox : textboxs){
         drawTextbox(textbox, window_size);
     }
 }
 
-void Page::drawSpirit(Spirit spirit, ImVec2 window_size, std::string project_path) {
+void Page::spiritToTexture(Spirit spirit, ImVec2 window_size, std::string project_path) {
     int my_image_width = 0;
     int my_image_height = 0;
     GLuint my_image_texture = 0;
@@ -136,7 +136,7 @@ void Page::drawSpirit(Spirit spirit, ImVec2 window_size, std::string project_pat
         return;
     }
     ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
-        ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), ImVec2(0, 0), ImVec2(1, 1));
+        ImVec2(ImGui::GetIO().DisplaySize.x / 4, ImGui::GetIO().DisplaySize.y / 4), ImVec2(0, 0), ImVec2(1, 1));
 
 	auto imgSize = spirit.getSize(window_size.x, window_size.y);
 	auto topLeft = spirit.getPosition(window_size.x, window_size.y);

@@ -10,7 +10,6 @@
 
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-#include <stdio.h>
 
 
 // Main code
@@ -88,6 +87,7 @@ int main(int, char**)
 
     // game data
     Data game_data;
+    std::vector<GLuint> textures;
 
     // welcome window
     bool show_welcome_window = true;

@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "Spirit.h"
-#pragma comment (lib,"Gdiplus.lib")
 
 #include <codecvt>
 #include <locale>
@@ -34,7 +33,7 @@ public:
 	std::string	background_name;
 
 private:
-    void drawSpirit(Spirit spirit, ImVec2 window_size, std::string project_path);
+    void spiritToTexture(Spirit spirit, ImVec2 window_size, std::string project_path);
 	void drawTextbox(Textbox textbox, ImVec2 window_size);
 	// std::vector<std::string> textboxs settings;
 	//std::string path;
