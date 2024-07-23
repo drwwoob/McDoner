@@ -1,4 +1,5 @@
 #include "Page.h"
+#include <iostream>
 
 Page::Page() {
 	
@@ -10,7 +11,7 @@ Page::Page(std::string page_data)
 	// backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}
 
 	auto pos = page_data.find_first_of('{');
-	backgroundName = page_data.substr(0, pos);
+	background_name = page_data.substr(0, pos);
 	//auto backBrac = page_data.find_first_of('}', frontBrac);
 
 	pos++;
@@ -112,36 +113,51 @@ void Page::setFont(ImFont* font_given)
 	}
 }
 
-void Page::showSpirit(Spirit spirit, ImVec2 window_size) {
-	// //int my_image_width = 0;
-	// //int my_image_height = 0;
-	// //ID3D11ShaderResourceView* my_texture = NULL;
+void Page::drawPage(ImVec2 window_size, std::string project_path){
+    Tools::drawBackground((project_path + background_name));
+    for(auto spirit : spirits){
+        // ============= todo: change this, the renderer draw something weird ==============
+        drawSpirit(spirit, window_size, project_path);
+    }
+    for(auto textbox : textboxs){
+        drawTextbox(textbox, window_size);
+    }
+}
 
-	// auto spiritPathName = file_path + spirit.fileName();
+void Page::drawSpirit(Spirit spirit, ImVec2 window_size, std::string project_path) {
+    int my_image_width = 0;
+    int my_image_height = 0;
+    GLuint my_image_texture = 0;
+    bool ret = Tools::LoadTextureFromFile((project_path.append(spirit.fileName())).c_str(), &my_image_texture, &my_image_width, &my_image_height);
+    if (!ret)
+    {
+        printf("Failed to load texture: %s\n", spirit.spiritName.c_str());
+        printf("location: %s\n", project_path.c_str());
+        return;
+    }
+    ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
+        ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), ImVec2(0, 0), ImVec2(1, 1));
 
-	// bool ret = LoadTextureFromFile(spiritPathName.c_str(), &texture->t, &texture->w, &texture->h, g_pd3dDevice);
-	// if(!ret) {
-	// 	// error popup for not finding spirit
-	// }
-	// auto imgSize = spirit.getSize(window_size.x, window_size.y);
-	// auto topLeft = spirit.getPosition(window_size.x, window_size.y);
+	auto imgSize = spirit.getSize(window_size.x, window_size.y);
+	auto topLeft = spirit.getPosition(window_size.x, window_size.y);
 
 	// // ---------------------to change---------------------
 	// // im thinking the uv for here can change so that the whole picture does not to be added,
 	// // but only the part inside the window
-	// ImGui::GetBackgroundDrawList()->AddImage((void*)texture->t, topLeft,
-	// 	ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-	// 	ImVec2(0, 0), ImVec2(1, 1));
+	ImGui::GetBackgroundDrawList()->AddImage((void*)my_image_texture, topLeft,
+		ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+		ImVec2(0, 0), ImVec2(1, 1));
 
 }
 
-void Page::showTextbox(Textbox textbox, ImVec2 window_size)
+void Page::drawTextbox(Textbox textbox, ImVec2 window_size)
 {
-	ImGui::GetBackgroundDrawList()->AddText(textbox.font, textbox.fontSize,
-		ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
+    // std::cout << textbox.encrypt() << std::endl;
+	// ImGui::GetBackgroundDrawList()->AddText(textbox.font, textbox.fontSize,
+	// 	ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
+	// 	textbox.color, textbox.content.c_str());
+	ImGui::GetBackgroundDrawList()->AddText(ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
 		textbox.color, textbox.content.c_str());
-	//ImGui::GetBackgroundDrawList()->AddText(ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
-	//	textbox.color, textbox.content.c_str());
 }
 
 std::string Page::exportInString()
@@ -149,7 +165,7 @@ std::string Page::exportInString()
 	std::string encrypt = "[";
 
 	// add background name
-	encrypt.append(backgroundName);
+	encrypt.append(background_name);
 
 	// add spirits
 	encrypt.append("{");

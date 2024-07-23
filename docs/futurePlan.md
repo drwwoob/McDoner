@@ -1,8 +1,12 @@
 # Future plan
 
+## multi-languaging
+just some extra work i guess. json file maybe?
+
 ## web avalible
 i belive by using emscripten and wasm we couold run this c++ project on web
 in a way im kinda pro on doing this
+哈哈！橙光，启动！🍊
 
 ## bundle creation for mac
 i need to create a bundle for the mac version of this, or atleast the environment set up, or ppl might spend forever trying to set the environment

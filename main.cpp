@@ -137,10 +137,10 @@ int main(int, char**)
             Cast::showWelcomePage(game_data, show_welcome_window, page_setting);
         }
         else{
+            game_data.draw(0, ImVec2((int)io.DisplaySize.x, (int)io.DisplaySize.y));
             Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
             Cast::showAmongPages(&page_setting, page_at, game_data);
         }
-
 
         // show imgui windows
         if (show_demo_window)

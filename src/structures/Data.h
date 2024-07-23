@@ -23,6 +23,8 @@ public:
 	//void openFile(std::string path);
 	Page* getPage(int page_id);	// get the information of a page (decrypt)
 	int leaveAt = 0;	// the page that the user left at last time
+
+    void draw(int page_at, ImVec2 window_size);
 	void setFont(ImFont* font_given);
 	void save();
 	int pageSize() { return pages.size(); };
@@ -33,8 +35,8 @@ public:
 private:
 	ImFont* font;
 	std::vector<Page> pages;	// a file includes a collection of pages
-	std::string fileName;
-	std::string filePath;
+	std::string file_name;
+	std::string project_path;
 	//std::map<Page> pages;
 
 	// a hash table that stores all pages? or array?

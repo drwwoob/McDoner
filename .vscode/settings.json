@@ -55,7 +55,9 @@
         "memory": "cpp",
         "type_traits": "cpp",
         "algorithm": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "iostream": "cpp",
+        "filesystem": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

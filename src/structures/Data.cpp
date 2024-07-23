@@ -8,8 +8,12 @@ Data::Data(){
 Data::Data(std::string file_path)
 {
     // initiate demoPath
-    filePath = file_path;
-    
+    file_name = file_path;
+    project_path = file_path.substr(
+        0,
+        file_path.find_last_of("/") + 1
+    );
+
     std::ifstream file(file_path, std::ios::in);
     std::string file_data = "";
     std::string line;
@@ -39,6 +43,9 @@ void Data::setFont(ImFont* font_given)
     //}
 }
 
+void Data::draw(int page_at, ImVec2 window_size){
+    pages.at(page_at).drawPage(window_size, project_path);
+}
 
 Page* Data::getPage(int page_id) {
 	return &pages.at(page_id);
@@ -78,7 +85,7 @@ void Data::decryptFile(std::string data_str)
 void Data::save() {
     std::ofstream file;
     //for testing
-    auto path = filePath + fileName;
+    auto path = project_path + file_name;
     auto data = encryptIntoFile();
     file.open(path.c_str());
     file << encryptIntoFile().c_str();

@@ -85,13 +85,14 @@ void Cast::showCastsInPage(bool* p_open, Page *page_info) {
 
 	IMGUI_MARKER("Background");
 	if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::Text("%s", page_info->backgroundName.c_str());
+		ImGui::Text("%s", page_info->background_name.c_str());
 	}
 	ImGui::End();
 }
 
 void Cast::showWelcomePage(Data& gameData, bool& show_welcome_window, bool& page_setting) {
-	ImGui::Begin("Welcome Page");
+    ImGui::SetNextWindowSize(ImVec2(240, 300));
+    ImGui::Begin("Welcome Page", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	if (ImGui::Button("New", ImVec2(-FLT_MIN, 80))) {
 		gameData.newFile();
 		show_welcome_window = false;

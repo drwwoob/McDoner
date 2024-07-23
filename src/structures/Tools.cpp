@@ -33,6 +33,9 @@ std::string Tools::wordEncrypt(std::string word) {
 	}
 	return EncryptedWord;
 }
+
+
+
 void Tools::drawBackground(std::string background_name)
 {
     int my_image_width = 0;

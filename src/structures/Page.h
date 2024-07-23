@@ -24,18 +24,18 @@ public:
 	Spirit* getRealSpirits(int id);
 	Textbox* getRealTextbox(int id);
 	void setFont(ImFont* font_given);
-    static void showSpirit(Spirit spirit, ImVec2 window_size);
-	static void showTextbox(Textbox textbox, ImVec2 window_size);
-	
+    void drawPage(ImVec2 window_size, std::string project_path);
 	//void freeTexture();
 	/* in the format of
 	[backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}][backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}]
 	*/
 	std::vector<Spirit> spirits;
 	std::vector<Textbox> textboxs;
-	std::string	backgroundName;
+	std::string	background_name;
 
 private:
+    void drawSpirit(Spirit spirit, ImVec2 window_size, std::string project_path);
+	void drawTextbox(Textbox textbox, ImVec2 window_size);
 	// std::vector<std::string> textboxs settings;
 	//std::string path;
 	//static std::string wordEncrypt(std::string word);
