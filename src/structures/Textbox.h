@@ -1,3 +1,5 @@
+// This class only have inline header file, 
+// and it stores the information of a single text box.
 #pragma once
 #include <string>
 #include "Tools.h"
@@ -6,20 +8,26 @@
 class Textbox
 {
 public:
-	std::string name;
-	std::string content;
+	std::string name;		// name for this textbox
+	std::string content;	// content for this textbox
+	/**
+	 * the ratio of the position the textbox's left-top corner is at
+	 * in the format [position.x / winSize.x, position.y / winSize.y]
+	*/
 	ImVec2 positionRatio;
-	ImFont* font;
-	std::string fontPath;
-	ImColor color;
-	float fontSize;
+	ImFont* font;			// the font the textbox uses
+	std::string fontPath;	// the path to the data of this font
+	ImColor color;			// the color of the text in this textbox
+	float fontSize;			// the size of the text
 
     /**
+	 * creating a blank textbox
      * @overload Constructor()
      */
 	Textbox();
 
     /**
+	 * creating a textbox with giving settings
      * @overload Constructor(std::string data_str[10])
      * @param data_str  [name, content, positionRatio.x, positionRatio.y, fontPath, color.r, color.g, color.b, color.a, fontSize]
      */
@@ -51,9 +59,6 @@ public:
 
 
 	} 
-    
-    // load data as textbox
-	//void showTextbox();
 	
     /**
      * get &content of this textbox

@@ -1,15 +1,15 @@
+// This class only have inline header file, 
+// and it stores the information of a single spirit.
+
 #pragma once
 #include <string>
-#include <Tools.h>
+#include "Tools.h"
 #include <imgui.h>
-//#include <winnt.h>
 
 class Spirit
 {
 private:
-	std::string spiritFileName;
-	//PWSTR imageAddress;
-	//ImVec2 size;
+	std::string spiritFileName; 	// storing the address of the file of this spirit
 	
 public:
 	std::string spiritName;
@@ -26,7 +26,7 @@ public:
 		positionRatio[0] = 0.25; // default position in the 1/4 of the window
 		positionRatio[1] = 0.25; // same as above
 	}
-	// constructor for read in data
+	// constructor for read in Data
 	Spirit(const std::string& name, const std::string& file_name, const float& sr_x,const float& sr_y, const float& pr_x, const float& pr_y) {
 		spiritName = name;
 		spiritFileName = file_name;

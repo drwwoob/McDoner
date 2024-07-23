@@ -1,4 +1,4 @@
-#include "Tools.h"
+#include <Cast.h>
 
 #include "imconfig.h"
 #include "imgui.h"
@@ -84,8 +84,20 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
 
 
-    // set default value
+    // ================= set default value ====================
+
+    // game data
+    Data game_data;
+
+    // welcome window
+    bool show_welcome_window = true;
     auto welcomeBackground = "../src/pics/defaultBackground.jpg";
+
+    // setting windows
+    bool show_cast_window = true;
+    bool page_setting = true;
+    bool casts_list = true;
+    int page_at = 0;
 
     // Main loop
     bool done = false;
@@ -117,10 +129,20 @@ int main(int, char**)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        // set main window
-        Tools::drawBackground(welcomeBackground);
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        // show welcome window (can't close, auto close while file opened)
+        if(show_welcome_window){
+            // set main window
+            Tools::drawBackground(welcomeBackground);
+            Cast::showWelcomePage(game_data, show_welcome_window, page_setting);
+        }
+        else{
+            Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
+            Cast::showAmongPages(&page_setting, page_at, game_data);
+        }
+
+
+        // show imgui windows
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
