@@ -5,7 +5,7 @@
 Data::Data(){
 }
 
-Data::Data(std::string file_path)
+Data::Data(const std::string &file_path)
 {
     // initiate demoPath
     file_name = file_path;

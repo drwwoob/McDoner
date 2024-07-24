@@ -36,7 +36,7 @@ std::string Tools::wordEncrypt(std::string word) {
 
 
 
-void Tools::drawBackground(std::string background_name)
+void Tools::drawBackground(const std::string &background_name)
 {
     int my_image_width = 0;
     int my_image_height = 0;

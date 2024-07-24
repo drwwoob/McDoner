@@ -10,6 +10,10 @@ public:
 	/**
 	 * 
 	 */
+	static void showMenuBar();
+	/**
+	 * 
+	 */
 	static void showCastsInPage(bool* p_open, Page *pageInfo);
 	//void showWelcomePage(bool& showing);
 	/**

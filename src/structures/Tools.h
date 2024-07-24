@@ -16,7 +16,7 @@ public:
 	 * setting background picture with the given address of the background picture.
 	 * @param background_name the string of the address pointing to the background picture
 	 */
-	static void drawBackground(std::string background_name);
+	static void drawBackground(const std::string &background_name);
 	/**
 	 * emcrypt word into one string with certain laws
 	 * @param word the string needed to be encrypted

@@ -87,7 +87,7 @@ void Page::setFont(ImFont* font_given)
 }
 
 // ============= only load when needed ==============
-std::vector<GLuint> Page::loadPage(std::string &project_path){
+std::vector<GLuint> Page::loadPage(const std::string &project_path){
     std::vector<GLuint> textures;
     
     auto file_path = project_path + background_name;
@@ -99,7 +99,7 @@ std::vector<GLuint> Page::loadPage(std::string &project_path){
     return textures;
 }
 
-void Page::decrypt(std::string &data_block, int size, std::function<void(std::vector<std::string>&)> func)
+void Page::decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func)
 {
     std::vector<std::string> seperate_data { "" };
 	for (int i = 0; i < data_block.size(); i++) {
@@ -136,19 +136,6 @@ void Page::loadImageTexture(std::string &name, std::vector<GLuint> &textures)
         return;
     }
     textures.emplace_back(my_image_texture);
-
-    // ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
-    //     ImVec2(ImGui::GetIO().DisplaySize.x / 4, ImGui::GetIO().DisplaySize.y / 4), ImVec2(0, 0), ImVec2(1, 1));
-
-	// auto imgSize = spirit.getSize(window_size.x, window_size.y);
-	// auto topLeft = spirit.getPosition(window_size.x, window_size.y);
-
-	// // // ---------------------to change---------------------
-	// // // im thinking the uv for here can change so that the whole picture does not to be added,
-	// // // but only the part inside the window
-	// ImGui::GetBackgroundDrawList()->AddImage((void*)my_image_texture, topLeft,
-	// 	ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-	// 	ImVec2(0, 0), ImVec2(1, 1));
 }
 
 void Page::drawPage(std::vector<GLuint> &textures){

@@ -29,14 +29,14 @@ public:
 	Spirit* getRealSpirits(int id);
 	Textbox* getRealTextbox(int id);
 	void setFont(ImFont* font_given);
-    std::vector<GLuint> loadPage(std::string &project_path);
+    std::vector<GLuint> loadPage(const std::string &project_path);
     void drawPage(std::vector<GLuint> &textures);
 	std::vector<Spirit> spirits;
 	std::vector<Textbox> textboxs;
 	std::string	background_name;
 
 private:
-    void decrypt(std::string &data_block, int size, std::function<void(std::vector<std::string>&)> func);
+    void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
     void loadImageTexture(std::string &name, std::vector<GLuint> &textures);
 	
     /**

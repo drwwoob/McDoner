@@ -78,19 +78,20 @@ int main(int, char**)
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // Our state
+    // ================ testing =======================
     bool show_demo_window = true;
-    ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
 
 
     // ================= set default value ====================
 
+    // default background color
+    ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
     // game data
     Data game_data;
 
     // welcome window
     bool show_welcome_window = true;
-    auto welcomeBackground = "../src/pics/defaultBackground.jpg";
+    const auto welcomeBackground = "../src/pics/defaultBackground.jpg";
 
     // setting windows
     bool show_cast_window = true;
@@ -148,7 +149,7 @@ int main(int, char**)
         // Rendering
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-        // glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);

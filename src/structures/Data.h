@@ -17,7 +17,7 @@ public:
      * @overload constructor, reading from given file
      * @param file_path string of the given file path
      */
-	Data(std::string file_path);
+	Data(const std::string &file_path);
 	void newFile();
 	void openFile();	// reading a file
 	//void openFile(std::string path);

@@ -6,6 +6,12 @@ Welcome to McDoner! This is a game engine designed for visual novels! If you are
 - LIGHT
 - VISUALIZABLE
 
+# reqirement
+openGL version 
+sdl2
+c++ 17
+cmake3.1
+
 # Contact
 Do you meet any questions? Have recommandation? Please tell us, and make this project better together!
 

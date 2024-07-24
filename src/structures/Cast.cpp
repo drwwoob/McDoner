@@ -9,19 +9,18 @@ ImGuiMarkerCallback             GImGuiMarkerCallback = NULL;
 void* GImGuiMarkerCallbackUserData = NULL;
 #define IMGUI_MARKER(section)  do { if (GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); } while (0)
 
+void Cast::showMenuBar(){
+	if(ImGui::BeginMainMenuBar()){
+		
+	}
+}
 
 void Cast::showCastsInPage(bool* p_open, Page *page_info) {
 	ImGuiWindowFlags window_flags = 0;
-	//Page page_info = gameData.getPage(pageID);
-
-	//if(!ImGui::Begin("Cast", p_open, window_flags)) {
-	//	ImGui::End();
-	//	return;
-	//}
 
 	ImGui::Begin("Cast", p_open, window_flags);
 
-	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+	// const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 	//ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 100, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(200, 20), ImGuiCond_FirstUseEver);
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
