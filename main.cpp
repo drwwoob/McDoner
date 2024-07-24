@@ -56,7 +56,7 @@ int main(int, char**)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    SDL_Window* window = SDL_CreateWindow("McDoner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     if (window == nullptr)
     {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -87,7 +87,6 @@ int main(int, char**)
 
     // game data
     Data game_data;
-    std::vector<GLuint> textures;
 
     // welcome window
     bool show_welcome_window = true;
@@ -134,10 +133,10 @@ int main(int, char**)
         if(show_welcome_window){
             // set main window
             Tools::drawBackground(welcomeBackground);
-            Cast::showWelcomePage(game_data, show_welcome_window, page_setting);
+            Cast::showWelcomePage(game_data, show_welcome_window, page_setting, page_at);
         }
         else{
-            game_data.draw(0, ImVec2((int)io.DisplaySize.x, (int)io.DisplaySize.y));
+            game_data.draw(page_at);
             Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
             Cast::showAmongPages(&page_setting, page_at, game_data);
         }

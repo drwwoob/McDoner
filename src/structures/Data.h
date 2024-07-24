@@ -24,7 +24,8 @@ public:
 	Page* getPage(int page_id);	// get the information of a page (decrypt)
 	int leaveAt = 0;	// the page that the user left at last time
 
-    void draw(int page_at, ImVec2 window_size);
+    void loadTexture(int page_at);
+    void draw(int page_at);
 	void setFont(ImFont* font_given);
 	void save();
 	int pageSize() { return pages.size(); };
@@ -37,6 +38,7 @@ private:
 	std::vector<Page> pages;	// a file includes a collection of pages
 	std::string file_name;
 	std::string project_path;
+    std::vector<GLuint> textures{};
 	//std::map<Page> pages;
 
 	// a hash table that stores all pages? or array?

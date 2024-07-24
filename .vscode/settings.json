@@ -57,7 +57,8 @@
         "algorithm": "cpp",
         "codecvt": "cpp",
         "iostream": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "deque": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

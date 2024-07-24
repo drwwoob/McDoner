@@ -8,6 +8,7 @@
 #include <locale>
 
 #include "Textbox.h"
+#include <functional>
 
 class Page {
 public:
@@ -16,25 +17,36 @@ public:
 	//Page(int page_id, std::vector<std::string> spirits_vec, std::vector<std::string> textboxs_vec);
     /**
      *  putting all the information in this page into a string
-     * @return pageID[backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}]
+     * @return 
+     *  [backgroundName
+     *      {spirit1##spirit2##spirit3##}
+     *      {textbox1##textbox2##}
+     *      {order1first#order1second##order2first#order2second##}
+     *  ]
      */
 	std::string exportInString();
 
 	Spirit* getRealSpirits(int id);
 	Textbox* getRealTextbox(int id);
 	void setFont(ImFont* font_given);
-    void drawPage(ImVec2 window_size, std::string project_path);
-	//void freeTexture();
-	/* in the format of
-	[backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}][backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}]
-	*/
+    std::vector<GLuint> loadPage(std::string &project_path);
+    void drawPage(std::vector<GLuint> &textures);
 	std::vector<Spirit> spirits;
 	std::vector<Textbox> textboxs;
 	std::string	background_name;
 
 private:
-    void spiritToTexture(Spirit spirit, ImVec2 window_size, std::string project_path);
-	void drawTextbox(Textbox textbox, ImVec2 window_size);
+    void decrypt(std::string &data_block, int size, std::function<void(std::vector<std::string>&)> func);
+    void loadImageTexture(std::string &name, std::vector<GLuint> &textures);
+	
+    /**
+     * containing the order of the element rendering (on top of another)
+     * naming rule: 
+     *      < 0, "background" > = background
+     *      < 1, "filename" > = spirit with the given file name
+     *      < 2, "nickname" > = textbox with the give nickname
+     */
+    std::vector<std::pair<int, std::string>> draw_order;
 	// std::vector<std::string> textboxs settings;
 	//std::string path;
 	//static std::string wordEncrypt(std::string word);

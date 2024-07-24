@@ -90,38 +90,43 @@ void Cast::showCastsInPage(bool* p_open, Page *page_info) {
 	ImGui::End();
 }
 
-void Cast::showWelcomePage(Data& gameData, bool& show_welcome_window, bool& page_setting) {
+void Cast::showWelcomePage(Data& game_data, bool& show_welcome_window, bool& page_setting, int &page_at) {
     ImGui::SetNextWindowSize(ImVec2(240, 300));
     ImGui::Begin("Welcome Page", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	if (ImGui::Button("New", ImVec2(-FLT_MIN, 80))) {
-		gameData.newFile();
+		game_data.newFile();
 		show_welcome_window = false;
 		page_setting = true;
 	}
 	if(ImGui::Button("Open", ImVec2(-FLT_MIN, 80))) {
-		gameData.openFile();
+		game_data.openFile();
 		show_welcome_window = false;
 		page_setting = true;
+		game_data.loadTexture(page_at);
 	}
 	if(ImGui::Button("Demo", ImVec2(-FLT_MIN, 80))) {
-		gameData = Data("../saves/demo/demo.txt");
+		game_data = Data("../saves/demo/demo.txt");
 		show_welcome_window = false;
 		page_setting = true;
+		// =========== todo: here is for saved page_at thingy ===============
+		// page_at = 0;
+		game_data.loadTexture(page_at);
 	}
 	ImGui::End();
 }
 
-void Cast::showAmongPages(bool* p_open, int& pageID, Data& game_data) {
+void Cast::showAmongPages(bool* p_open, int& page_at, Data& game_data) {
 	ImGui::Begin("Page Setting");
 
 	bool disabled = false;
 
-	if (pageID == 0) {
+	if (page_at == 0) {
 		disabled = true;
 		ImGui::BeginDisabled();
 	}
 	if(ImGui::Button("Last Page", ImVec2(100, 100))){
-		pageID = pageID - 1;
+		page_at = page_at - 1;
+		game_data.loadTexture(page_at);
 	}
 	if(disabled) {
 		ImGui::EndDisabled();
@@ -130,12 +135,13 @@ void Cast::showAmongPages(bool* p_open, int& pageID, Data& game_data) {
 
 	ImGui::SameLine();
 
-	if(pageID >= game_data.pageSize() - 1) {
+	if(page_at >= game_data.pageSize() - 1) {
 		disabled = true;
 		ImGui::BeginDisabled();
 	}
 	if(ImGui::Button("Next Page", ImVec2(100, 100))) {
-		pageID = pageID + 1;
+		page_at = page_at + 1;
+		game_data.loadTexture(page_at);
 	}
 	if (disabled) {
 		ImGui::EndDisabled();
@@ -143,15 +149,17 @@ void Cast::showAmongPages(bool* p_open, int& pageID, Data& game_data) {
 	}
 
 	if(ImGui::Button("add Page", ImVec2(100, 100))) {
-		pageID = pageID + 1;
-		game_data.addPage(pageID);
+		page_at = page_at + 1;
+		game_data.addPage(page_at);
+		game_data.loadTexture(page_at);
 	}
 
 	ImGui::SameLine();
 
 	if(ImGui::Button("copy Page", ImVec2(100, 100))) {
-		game_data.CopyPage(pageID + 1, *(game_data.getPage(pageID)));
-		pageID = pageID + 1;
+		game_data.CopyPage(page_at + 1, *(game_data.getPage(page_at)));
+		page_at = page_at + 1;
+		game_data.loadTexture(page_at);
 	}
 
 	ImGui::SameLine();
@@ -161,9 +169,10 @@ void Cast::showAmongPages(bool* p_open, int& pageID, Data& game_data) {
 		ImGui::BeginDisabled();
 	}
 	if (ImGui::Button("delete Page", ImVec2(100, 100))) {
-		game_data.deletePage(pageID);
-		if(pageID != 0) {
-			pageID = pageID - 1;
+		game_data.deletePage(page_at);
+		if(page_at != 0) {
+			page_at = page_at - 1;
+			game_data.loadTexture(page_at);
 		}
 	}
 	if (disabled) {
@@ -173,17 +182,3 @@ void Cast::showAmongPages(bool* p_open, int& pageID, Data& game_data) {
 	
 	ImGui::End();
 };
-
-
-// helper function from imgui_demo
-//int cast::MyResizeCallback(ImGuiInputTextCallbackData* data)
-//{
-//	if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
-//	{
-//		ImVector<char>* my_str = (ImVector<char>*)data->UserData;
-//		IM_ASSERT(my_str->begin() == data->Buf);
-//		my_str->resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
-//		data->Buf = my_str->begin();
-//	}
-//	return 0;
-//}

@@ -8,7 +8,7 @@ Page::Page() {
 Page::Page(std::string page_data)
 {
 	// page_data should look like
-	// backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}
+	// backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}{order1first#order1second##order2first#order2second##}
 
 	auto pos = page_data.find_first_of('{');
 	background_name = page_data.substr(0, pos);
@@ -33,67 +33,40 @@ Page::Page(std::string page_data)
 		//str = page_data.substr(start, pos);
 	}
 
-	auto spiritsData = page_data.substr(start, end - start);
-	auto s_start = 0;
-	auto s_end = spiritsData.find("##") + 2;
+	auto data_block = page_data.substr(start, end - start);
 
-	int para = 0;
-	std::string seperateData[6]; // strings for each parameter
+    auto spiritCreate = [this](std::vector<std::string> &seperate_data){
+        spirits.emplace_back(
+            seperate_data[0],
+            seperate_data[1],
+            std::stof(seperate_data[2]),
+            std::stof(seperate_data[3]),
+            std::stof(seperate_data[4]),
+            std::stof(seperate_data[5])
+        );
+    };
+    decrypt(data_block, 6, spiritCreate);
 
-
-	for (int i = 0; i < spiritsData.size(); i++) {
-		switch (spiritsData.at(i)) {
-		case ('/'):
-			i++;
-			seperateData[para] += spiritsData.at(i);
-			break;
-		case('#'):
-			para++;
-			break;
-		default:
-			seperateData[para] += spiritsData.at(i);
-			break;
-		}
-		if (para == 7) {
-			spirits.emplace_back(seperateData[0], seperateData[1],
-				std::stof(seperateData[2]), std::stof(seperateData[3]),
-				std::stof(seperateData[4]), std::stof(seperateData[5]));
-			for (int s_i = 0; s_i < 6; s_i++) {
-				seperateData[s_i].clear();
-			}
-			para = 0;
-		}
-	}
-
-
+    // textbox
 	//inGroup = true;
-	auto textData = page_data.substr(end + 2, page_data.size() - 4 - end);
-	s_start = end + 2;
-	para = 0;
-	std::string seperateTextData[10];
-	for (int i = 0; i < textData.size(); i++) {
-		switch (textData.at(i)) {
-		case ('/'):
-			i++;
-			seperateTextData[para] += textData.at(i);
-			break;
-		case('#'):
-			para++;
-			break;
-		default:
-			seperateTextData[para] += textData.at(i);
-			break;
-		}
-		if (para == 10) {
-			textboxs.emplace_back(seperateTextData);
-			for(int t_i = 0; t_i < 10; t_i++) {
-				seperateTextData[t_i].clear();
-			}
-			para = 0;
-		}
-	}
-	//	}
-	//}
+	start = end + 2;
+    do{
+        end = page_data.find("}", end + 1);
+    }while(page_data.at(end - 1) == '/');
+	data_block = page_data.substr(start, end - start - 1);
+    auto textCreate = [this](std::vector<std::string> &seperate_data){
+        textboxs.emplace_back(seperate_data);
+    };
+    decrypt(data_block, 9, textCreate);
+
+    // order
+    start = end + 2;
+    end = page_data.size() - 1;
+	data_block = page_data.substr(start, end - start - 1);
+    auto orderCreate = [this](std::vector<std::string> &seperate_data){
+        draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
+    };
+    decrypt(data_block, 2, orderCreate);
 }
 
 Spirit* Page::getRealSpirits(int id)
@@ -113,51 +86,117 @@ void Page::setFont(ImFont* font_given)
 	}
 }
 
-// ============= todo: change this, so that the texture only load when needed ==============
-void Page::drawPage(ImVec2 window_size, std::string project_path){
-    Tools::drawBackground((project_path + background_name));
+// ============= only load when needed ==============
+std::vector<GLuint> Page::loadPage(std::string &project_path){
+    std::vector<GLuint> textures;
+    
+    auto file_path = project_path + background_name;
+    loadImageTexture(file_path, textures);
     for(auto spirit : spirits){
-        spiritToTexture(spirit, window_size, project_path);
+        file_path = project_path + spirit.fileName();
+        loadImageTexture(file_path, textures);
     }
-    for(auto textbox : textboxs){
-        drawTextbox(textbox, window_size);
-    }
+    return textures;
 }
 
-void Page::spiritToTexture(Spirit spirit, ImVec2 window_size, std::string project_path) {
+void Page::decrypt(std::string &data_block, int size, std::function<void(std::vector<std::string>&)> func)
+{
+    std::vector<std::string> seperate_data { "" };
+	for (int i = 0; i < data_block.size(); i++) {
+		switch (data_block.at(i)) {
+		case ('/'):
+			i++;
+			seperate_data.back() += data_block.at(i);
+			break;
+		case('#'):
+            seperate_data.push_back("");
+			break;
+		default:
+			seperate_data.back() += data_block.at(i);
+			break;
+		}
+		if (seperate_data.size() == size + 2) {
+			func(seperate_data);
+            seperate_data = { "" };
+			// seperate_data.clear();
+            // seperate_data.push_back("");
+		}
+	}
+}
+
+void Page::loadImageTexture(std::string &name, std::vector<GLuint> &textures)
+{
     int my_image_width = 0;
     int my_image_height = 0;
     GLuint my_image_texture = 0;
-    bool ret = Tools::LoadTextureFromFile((project_path.append(spirit.fileName())).c_str(), &my_image_texture, &my_image_width, &my_image_height);
+    bool ret = Tools::LoadTextureFromFile(name.c_str(), &my_image_texture, &my_image_width, &my_image_height);
     if (!ret)
     {
-        printf("Failed to load texture: %s\n", spirit.spiritName.c_str());
-        printf("location: %s\n", project_path.c_str());
+        printf("Failed to load texture: %s\n", name.c_str());
         return;
     }
-    ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
-        ImVec2(ImGui::GetIO().DisplaySize.x / 4, ImGui::GetIO().DisplaySize.y / 4), ImVec2(0, 0), ImVec2(1, 1));
+    textures.emplace_back(my_image_texture);
 
-	auto imgSize = spirit.getSize(window_size.x, window_size.y);
-	auto topLeft = spirit.getPosition(window_size.x, window_size.y);
+    // ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
+    //     ImVec2(ImGui::GetIO().DisplaySize.x / 4, ImGui::GetIO().DisplaySize.y / 4), ImVec2(0, 0), ImVec2(1, 1));
 
-	// // ---------------------to change---------------------
-	// // im thinking the uv for here can change so that the whole picture does not to be added,
-	// // but only the part inside the window
-	ImGui::GetBackgroundDrawList()->AddImage((void*)my_image_texture, topLeft,
-		ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-		ImVec2(0, 0), ImVec2(1, 1));
+	// auto imgSize = spirit.getSize(window_size.x, window_size.y);
+	// auto topLeft = spirit.getPosition(window_size.x, window_size.y);
 
+	// // // ---------------------to change---------------------
+	// // // im thinking the uv for here can change so that the whole picture does not to be added,
+	// // // but only the part inside the window
+	// ImGui::GetBackgroundDrawList()->AddImage((void*)my_image_texture, topLeft,
+	// 	ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+	// 	ImVec2(0, 0), ImVec2(1, 1));
 }
 
-void Page::drawTextbox(Textbox textbox, ImVec2 window_size)
-{
-    // std::cout << textbox.encrypt() << std::endl;
-	// ImGui::GetBackgroundDrawList()->AddText(textbox.font, textbox.fontSize,
-	// 	ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
-	// 	textbox.color, textbox.content.c_str());
-	ImGui::GetBackgroundDrawList()->AddText(ImVec2(textbox.positionRatio.x * window_size.x, textbox.positionRatio.y * window_size.y),
-		textbox.color, textbox.content.c_str());
+void Page::drawPage(std::vector<GLuint> &textures){
+    int i = 1;
+for (auto draw_obj : draw_order) {
+    switch (draw_obj.first) {
+        case 0:
+            ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[0], 
+                ImVec2(0, 0), 
+                ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y),
+                ImVec2(0, 0), 
+                ImVec2(1, 1));
+            break;
+        case 1:
+            i = 1; // Initialize i here to reset its value for each draw_obj
+            for (auto &spirit : spirits) {
+                if (spirit.fileName() == draw_obj.second) {
+                    auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i], 
+                        topLeft, 
+                        ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y), 
+                        ImVec2(0, 0), 
+                        ImVec2(1, 1));
+                    break;
+                }
+                i++;
+            }
+            break;
+        case 2:
+            for (auto &textbox : textboxs) {
+                if (textbox.name == draw_obj.second){
+                    ImGui::GetBackgroundDrawList()->AddText(
+                        ImVec2(
+                            textbox.positionRatio.x * ImGui::GetIO().DisplaySize.x, 
+                            textbox.positionRatio.y * ImGui::GetIO().DisplaySize.y
+                        ),
+                        textbox.color, textbox.content.c_str());
+                }
+                break;
+            }
+            break;
+        default:
+            std::cout << "wrong name: " << draw_obj.second << std::endl;
+            break;
+    }
+}
+
 }
 
 std::string Page::exportInString()
@@ -174,14 +213,23 @@ std::string Page::exportInString()
 	}
 	encrypt.append("}");
 
-	// add textboxs;
+	// add textboxs
 	encrypt.append("{");
 	for (auto textbox : textboxs) {
 		encrypt.append(textbox.encrypt());
 		//encrypt.append(textbox);
 	}
 	encrypt.append("}");
-	
+
+    // add order
+	encrypt.append("{");
+    for (auto order_obj : draw_order){
+        encrypt.append(std::to_string(order_obj.first));
+        encrypt.append("#");
+        encrypt.append(order_obj.second);
+        encrypt.append("##");
+    }
+	encrypt.append("}");
 
 	// ending this page
 	encrypt.append("]");

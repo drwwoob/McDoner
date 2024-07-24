@@ -31,7 +31,7 @@ public:
      * @overload Constructor(std::string data_str[10])
      * @param data_str  [name, content, positionRatio.x, positionRatio.y, fontPath, color.r, color.g, color.b, color.a, fontSize]
      */
-	Textbox(std::string data_str[10]) { // , ImGuiIO& io
+	Textbox(std::vector<std::string> data_str) { // , ImGuiIO& io
 		name = data_str[0];
 		content = data_str[1];
 		positionRatio[0] = std::stof(data_str[2]);

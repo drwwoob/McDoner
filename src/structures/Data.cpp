@@ -43,8 +43,14 @@ void Data::setFont(ImFont* font_given)
     //}
 }
 
-void Data::draw(int page_at, ImVec2 window_size){
-    pages.at(page_at).drawPage(window_size, project_path);
+void Data::loadTexture(int page_at)
+{
+    textures = pages.at(page_at).loadPage(project_path);
+}
+
+void Data::draw(int page_at)
+{
+    pages.at(page_at).drawPage(textures);
 }
 
 Page* Data::getPage(int page_id) {

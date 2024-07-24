@@ -34,4 +34,6 @@ public:
 	 * load image into OpenGL texture with common settings (originated from ImGui)
 	 */
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
+
+	static void drawImage();
 };
