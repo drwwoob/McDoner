@@ -9,9 +9,11 @@ ImGuiMarkerCallback             GImGuiMarkerCallback = NULL;
 void* GImGuiMarkerCallbackUserData = NULL;
 #define IMGUI_MARKER(section)  do { if (GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); } while (0)
 
+
+
 void Cast::showMenuBar(){
 	if(ImGui::BeginMainMenuBar()){
-		
+
 	}
 }
 

@@ -3,8 +3,8 @@
 
 ## 0.0.2
 - adding menu bar on top for engine
-- loading textures onto buttons
-- adding feature to choose file with a window
+- loading textures onto ingame buttons
+- adding feature to choose file with a window (Windows not yet tested)
 - adding texture for imgui window's buttons
 
 ## 0.0.1
@@ -12,4 +12,4 @@
 - rendering window and imgui window in SDL and OpenGL
 - adding building path including bash and bat file
 - adding rendering order feature, preparing the ground for making it editable
-- optimizing texture loading logic, solving *that* old bug (at least it didn't crash for over 5 mins)
+- optimizing texture loading logic, solving *that* old bug (at least it didn't crash for running over 5 mins)

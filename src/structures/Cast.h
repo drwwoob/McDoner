@@ -39,6 +39,11 @@ public:
 	 */
 	static void showLibararySpirit();
 
+	static void loadIcon(){
+		
+	}
+
 private:
+	static std::vector<GLuint> _icon_textures{};
 };
 
