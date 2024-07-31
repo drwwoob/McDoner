@@ -85,26 +85,26 @@ bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* 
     return true;
 }
 
-#if defined(__APPLE__)
+// #if defined(__APPLE__)
 
-#include <Cocoa/Cocoa.h>
+// #include <Cocoa/Cocoa.h>
 
-std::string Tools::openFileDialog() {
-	@autoreleasepool {
-		NSOpenPanel* openDlg = [NSOpenPanel openPanel];
-		[openDlg setCanChooseFiles:YES];
-		[openDlg setAllowsMultipleSelection:NO];
-		[openDlg setCanChooseDirectories:NO];
+// std::string Tools::openFileDialog() {
+// 	@autoreleasepool {
+// 		NSOpenPanel* openDlg = [NSOpenPanel openPanel];
+// 		[openDlg setCanChooseFiles:YES];
+// 		[openDlg setAllowsMultipleSelection:NO];
+// 		[openDlg setCanChooseDirectories:NO];
 
-		if ([openDlg runModal] == NSModalResponseOK) {
-			NSURL* fileURL = [openDlg URLs][0];
-			return std::string([[fileURL path] UTF8String]);
-		}
-	}
-	return "";
-}
+// 		if ([openDlg runModal] == NSModalResponseOK) {
+// 			NSURL* fileURL = [openDlg URLs][0];
+// 			return std::string([[fileURL path] UTF8String]);
+// 		}
+// 	}
+// 	return "";
+// }
 
-#endif
+// #endif
 
 #if defined(_WIN32)
 

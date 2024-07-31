@@ -1,18 +1,21 @@
 # Future plan
 
+
 ## ***UNDO***
-this is too important of a thing to be missed, bro u know what i mean? not having a **undo** button in an editor is like no Jerusalem in the western world, purely unacceptable
+this is too important of a thing to be missed, bro u know what i mean? not having a **undo** button in an editor is like no Jerusalem in the western culture, purely unacceptable
 
 ## multi-languaging
 just some extra work i guess. json file maybe?
 
 ## web avalible
 i belive by using emscripten and wasm we couold run this c++ project on web
+
 in a way im kinda pro on doing this
+
 哈哈！橙光，启动！🍊
 
 ## bundle creation for mac
-i need to create a bundle for the mac version of this, or atleast the environment set up, or ppl might spend forever trying to set the environment
+i need to create a bundle for the mac version of this, or at least the environment set up, or ppl might spend forever trying to set the environment
 
 ## multiple windows
 can open multiple project in the same time? (i wonder who would do that though, nobody would, right?)
@@ -39,6 +42,8 @@ currently the window can be dragged any size and could resize in whatever, but c
 ## animation
 man Codename Bakery's animation is too good, i need good animations in this game egine too. At least some simple motion and video player right? right??
 
+(btw Codename Bakery's hidden ending is so stupid, Imma call a duel on 羽中，等死吧你！)
+
 ## voicing
 honestly can't really imagine ppl using this application to makes games that contains voicing, but one need to have dream, so i'm gonna add this feature.
 
@@ -55,4 +60,19 @@ like you know, all other engines like unity or sai2, where you have a window sho
 this is cool, i like it
 
 ## buttons
-if i want to do setting then i need buttons, if i have buttons there should be icons, if there are clickable icons, ~~then why don't i just make a point-and-click game engine then~~ should i limits its feature or just make them able to do anthing
+if i want to do setting then i need buttons, if i have buttons there should be icons, if there are clickable icons, ~~then why don't i just make a point-and-click game engine then~~ should i limit its feature or just make them able to do anthing
+
+## better shortcut keys logic
+just incase there are people who is using this editor without even having a mouse/touchpad/drawpad... who???
+
+## shortcut keys for Mac
+This is one of the many reasons why i don't like mac, like literally, why *command*?
+
+## game package creation
+My UI designing skill is so bad that I couldn't think of a good place to let the user set the icon/name/blablabla for their game. Time to grab my art major ~~slave~~ friend for ~~free labor~~ help.
+
+## stacking ImGui windows
+Like if i click on it it will be moved to the top. I hope this is a built-in feature, please
+
+## Individual ImGui window with color and transparency
+like there would be a slide bar on top or bottom of the ImGui window, so that you can change it's color and transparency all the time, kewl

@@ -88,6 +88,7 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
     // game data
     Data game_data;
+    Page cache_page;
 
     // welcome window
     bool show_welcome_window = true;
@@ -140,6 +141,7 @@ int main(int, char**)
             game_data.draw(page_at);
             Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
             Cast::showAmongPages(&page_setting, page_at, game_data);
+            Cast::showMenuBar(game_data, page_at);
         }
 
         // show imgui windows
