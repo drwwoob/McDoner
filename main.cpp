@@ -10,7 +10,6 @@
 
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-#include <stack>
 
 
 // Main code
@@ -90,10 +89,11 @@ int main(int, char**)
     // game data
     Data game_data;
     Page clipboard_page;
+    Backup backup_game_data;
 
     // time for our favorite Ctrl+Z part
     // if I store Data here i think the file will gets too big very soon
-    std::stack<std::string> backup_data;
+
 
     // welcome window
     bool show_welcome_window = true;
@@ -146,7 +146,7 @@ int main(int, char**)
             game_data.draw(page_at);
             Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
             Cast::showAmongPages(&page_setting, page_at, game_data);
-            Cast::showMenuBar(game_data, page_at, clipboard_page);
+            Cast::showMenuBar(game_data, page_at, clipboard_page, backup_game_data);
         }
 
         // show imgui windows

@@ -5,13 +5,14 @@
 #pragma once
 #include <Data.h>
 #include <stack>
+#include "Backup.h"
 class Cast {
    public:
     /**
 	 * the main menu bar for the host window
 	 * @param game_data the game data currently presenting in main
 	 */
-    static void showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, std::stack<std::string> &backup_data);
+    static void showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, Backup &backup_data);
     /**
 	 *
 	 */

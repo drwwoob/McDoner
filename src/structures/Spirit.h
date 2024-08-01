@@ -56,7 +56,7 @@ class Spirit {
     }
 
     // encryption follows the format
-    // SpiritName#sizeRatio[0]#sizeRatio[1]#positionRatio[0]#positionRatio[1]##
+    // SpiritName#spiritFileName#sizeRatio[0]#sizeRatio[1]#positionRatio[0]#positionRatio[1]##
     std::string toString() {
         std::string dataEncr;
 

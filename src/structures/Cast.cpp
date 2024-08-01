@@ -12,7 +12,7 @@ void* GImGuiMarkerCallbackUserData = NULL;
         if(GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); \
     } while(0)
 
-void Cast::showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, std::stack<std::string> &backup_data) {
+void Cast::showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, Backup &backup_data) {
     if(ImGui::BeginMainMenuBar()) {
         if(ImGui::BeginMenu("File")) {
             if(ImGui::MenuItem("New", "Ctrl+N")) {
@@ -23,6 +23,7 @@ void Cast::showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, std:
             }
             if(ImGui::MenuItem("Save", "Ctrl+S")) {
                 // Handle "Save" action
+				game_data.save(page_at);
             }
             if(ImGui::MenuItem("Import", "Ctrl+Shift+O")) {
             }
@@ -36,7 +37,7 @@ void Cast::showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, std:
         ImGui::SameLine();
         if(ImGui::BeginMenu("Edit")) {
 			if(ImGui::MenuItem("Undo", "Crtl+Z")){
-				undo(page_at, game_data, backup_data);
+				// undo(page_at, game_data, backup_data);
 			}
             ImGui::EndMenu();
         }
@@ -197,7 +198,7 @@ void Cast::showCastsInPage(bool* p_open, Page* page_info) {
 
     IMGUI_MARKER("Background");
     if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
-        ImGui::Text("%s", page_info->background_name.c_str());
+		// choose the color for background here
     }
     ImGui::End();
 }

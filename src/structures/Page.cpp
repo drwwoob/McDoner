@@ -6,10 +6,9 @@ Page::Page() {
 
 Page::Page(std::string page_data) {
     // page_data should look like
-    // backgroundName{spirit1##spirit2##spirit3##}{textbox1##textbox2##}{order1first#order1second##order2first#order2second##}
+    // {spirit1##spirit2##spirit3##}{textbox1##textbox2##}{order1first#order1second##order2first#order2second##}
 
     auto pos = page_data.find_first_of('{');
-    background_name = page_data.substr(0, pos);
     //auto backBrac = page_data.find_first_of('}', frontBrac);
 
     pos++;
@@ -58,7 +57,7 @@ Page::Page(std::string page_data) {
 
     // order
     start = end + 2;
-    end = page_data.size() - 1;
+    end = page_data.size();
     data_block = page_data.substr(start, end - start - 1);
     auto orderCreate = [this](std::vector<std::string>& seperate_data) {
         draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
@@ -84,10 +83,9 @@ void Page::setFont(ImFont* font_given) {
 std::vector<GLuint> Page::loadPage(const std::string& project_path) {
     std::vector<GLuint> textures;
 
-    auto file_path = project_path + background_name;
-    loadImageTexture(file_path, textures);
+    // std::string file_path;
     for(auto spirit : spirits) {
-        file_path = project_path + spirit.fileName();
+        auto file_path = project_path + spirit.fileName();
         loadImageTexture(file_path, textures);
     }
     return textures;
@@ -130,18 +128,19 @@ void Page::loadImageTexture(std::string& name, std::vector<GLuint>& textures) {
 }
 
 void Page::drawPage(std::vector<GLuint>& textures) {
-    int i = 1;
+    int i = 0;
     for(auto draw_obj : draw_order) {
+        // std::cout << draw_obj.first << ", " << draw_obj.second << std::endl;
         switch(draw_obj.first) {
-        case 0:
-            ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[0],
-                                                     ImVec2(0, 0),
-                                                     ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y),
-                                                     ImVec2(0, 0),
-                                                     ImVec2(1, 1));
-            break;
+        // case 0:
+        //     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[0],
+        //                                              ImVec2(0, 0),
+        //                                              ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y),
+        //                                              ImVec2(0, 0),
+        //                                              ImVec2(1, 1));
+        //     break;
         case 1:
-            i = 1; // Initialize i here to reset its value for each draw_obj
+            i = 0; // Initialize i here to reset its value for each draw_obj
             for(auto& spirit : spirits) {
                 if(spirit.fileName() == draw_obj.second) {
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -178,10 +177,6 @@ void Page::drawPage(std::vector<GLuint>& textures) {
 
 std::string Page::exportInString() {
     std::string encrypt = "[";
-
-    // add background name
-    encrypt.append(background_name);
-
     // add spirits
     encrypt.append("{");
     for(auto spirit : spirits) {

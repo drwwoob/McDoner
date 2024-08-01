@@ -1,7 +1,7 @@
 # Future plan
 
 ## Overview
-- [.] UNDO (in progress)
+- [ ] UNDO (in progress)
 - [ ] multi-languaging
 - [ ] web avalible
 - [ ] bundle creation for mac
@@ -103,3 +103,6 @@ like there would be a slide bar on top or bottom of the ImGui window, so that yo
 
 ## dragging pages
 wow, very kewl, and very hard(. I do have the idea on how to make the data move, but how do i make the animation T_T
+
+## refactor
+man, it's really a mess, i have to admit

@@ -1,6 +1,7 @@
 #include "Data.h"
 
 #include <fstream>
+#include <iostream>
 
 Data::Data() {
 }
@@ -18,9 +19,7 @@ Data::Data(const std::string& file_path, int& page_at) {
     while(std::getline(file, line)) {
         file_data += line;
     }
-    decryptFile(file_data);
-
-    page_at = leave_at;
+    decryptFile(file_data, page_at);
 }
 
 void Data::newFile() {
@@ -52,9 +51,9 @@ Page* Data::getPage(int page_id) {
     return &pages.at(page_id);
 }
 
-std::string Data::encryptIntoFile() {
+std::string Data::encryptIntoFile(int& page_at) {
     std::string pagesInfo;
-    pagesInfo.append(std::to_string(leave_at) + ",");
+    pagesInfo.append(std::to_string(page_at) + ",");
     for(auto page : pages) {
         pagesInfo.append(page.exportInString());
     }
@@ -62,11 +61,16 @@ std::string Data::encryptIntoFile() {
     return pagesInfo;
 }
 
-void Data::decryptFile(std::string data_str) {
+void Data::decryptFile(std::string data_str, int& page_at) {
+    // clear all old data
+    // have to default font here
+    pages.clear();
+
+    // get new data
     int pos = 0;
     int start = 0;
     pos = data_str.find(",");
-    leave_at = std::stoi(data_str.substr(0, pos));
+    page_at = std::stoi(data_str.substr(0, pos));
     while(pos < data_str.size()) {
         if(data_str.at(pos++) == '[') { // whether pos is '[', go to the next letter
             start = pos;
@@ -76,20 +80,20 @@ void Data::decryptFile(std::string data_str) {
                 }
                 pos++;
             }
-            pages.emplace_back(data_str.substr(start, pos));
+            pages.emplace_back(data_str.substr(start, pos - start));
             pages.back().setFont(font);
             pos++;
         }
     }
 }
 
-void Data::save() {
+void Data::save(int& page_at) {
     std::ofstream file;
     //for testing
-    auto path = project_path + file_name;
-    auto data = encryptIntoFile();
-    file.open(path.c_str());
-    file << encryptIntoFile().c_str();
+    auto path = file_name;
+    auto data = encryptIntoFile(page_at);
+    file.open(path);
+    file << encryptIntoFile(page_at).c_str();
     file.close();
 }
 

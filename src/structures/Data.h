@@ -21,16 +21,17 @@ class Data {
     void openFile(); // reading a file
     //void openFile(std::string path);
     Page* getPage(int page_id); // get the information of a page (decrypt)
-    int leave_at = 0;            // the page that the user left at last time
 
     void loadTexture(int page_at);
     void draw(int page_at);
     void setFont(ImFont* font_given);
-    void save();
+    void save(int& page_at);
     int pageSize() { return pages.size(); };
     void addPage(int page_id);
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
+    std::string encryptIntoFile(int &page_at); // encrypt the current pages into text
+    void decryptFile(std::string data_str, int& page_at);
 
    private:
     ImFont* font;
@@ -43,8 +44,6 @@ class Data {
     // a hash table that stores all pages? or array?
 
     //void readData(std::string name);
-    std::string encryptIntoFile(); // encrypt the current pages into text
-    void decryptFile(std::string data_str);
     //from microsoft example code
     // HRESULT basicFileOpen(bool findFile); // The tool to open common window
 };

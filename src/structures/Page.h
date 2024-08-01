@@ -18,7 +18,7 @@ public:
     /**
      *  putting all the information in this page into a string
      * @return 
-     *  [backgroundName
+     *  [
      *      {spirit1##spirit2##spirit3##}
      *      {textbox1##textbox2##}
      *      {order1first#order1second##order2first#order2second##}
@@ -33,7 +33,6 @@ public:
     void drawPage(std::vector<GLuint> &textures);
 	std::vector<Spirit> spirits;
 	std::vector<Textbox> textboxs;
-	std::string	background_name;
 
 private:
     void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
