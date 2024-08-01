@@ -36,3 +36,7 @@
 
 # Mac development files
 .DS_store
+
+# vscode
+./vscode
+.clang-format
