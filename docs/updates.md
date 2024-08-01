@@ -1,9 +1,9 @@
-## next version overlook
+## next next version overlook
 - adding up demo version on how the game would be exported
 - adding feature to choose file with a window
 - adding texture for imgui window's buttons
 
-## 0.0.2
+## upcoming version 0.0.2
 - adding menu bar on top for engine
 - undo and un-undo
 - memory of which page lefted
