@@ -58,7 +58,8 @@
         "codecvt": "cpp",
         "iostream": "cpp",
         "filesystem": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "stack": "cpp"
     },
     // "C_Cpp.errorSquiggles": "disabled",
     // "editor.formatOnSave": true,

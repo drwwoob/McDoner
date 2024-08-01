@@ -1,7 +1,7 @@
 # Future plan
 
 ## Overview
-- [ ] UNDO (in progress)
+- [X] UNDO (barely tested)
 - [ ] multi-languaging
 - [ ] web avalible
 - [ ] bundle creation for mac

@@ -1,11 +1,13 @@
 ## next version overlook
 - adding up demo version on how the game would be exported
+- adding feature to choose file with a window
+- adding texture for imgui window's buttons
 
 ## 0.0.2
 - adding menu bar on top for engine
-- loading textures onto ingame buttons
-- adding feature to choose file with a window (Windows not yet tested)
-- adding texture for imgui window's buttons
+- undo and un-undo
+- memory of which page lefted
+- more functions on imgui windows
 
 ## 0.0.1
 - restoring all features, including organizing old source files, cleaning up structure and logic
