@@ -12,7 +12,7 @@ class Cast {
 	 * the main menu bar for the host window
 	 * @param game_data the game data currently presenting in main
 	 */
-    static void showMenuBar(Data& game_data, int& page_at, Page &clipboard_page, Backup &backup_data);
+    static void showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_data);
     /**
 	 *
 	 */
@@ -27,14 +27,14 @@ class Cast {
 	 * @note I think that if i am implementing the function to "open at last close", then I need to pass page_at in here and change it here and load the texture here.
 	 * 	Currently i did implemented, just that since page_at is not tested so this feature is an unknow
 	 */
-    static void showWelcomePage(Data& game_data, bool& show_welcome_window, bool& page_setting, int& page_at);
+    static void showWelcomePage(Data& game_data, bool& show_welcome_window, bool& page_setting);
     /**
 	 * showing a ImGui window that allows the user to change the page they are on,
 	 * and links to Data::addPage, Data::CopyPage, Data::DeletePage,
 	 * with the two functions adding jumping to the newly added page,
 	 * and deletePage to the previous page (if exist).
 	 */
-    static void showAmongPages(bool* p_open, int& page_at, Data& game_data);
+    static void showAmongPages(bool* p_open, Data& game_data);
 
     /**
 	 * I hope this window could show the spirit libary including all the spirits that have been used so far
@@ -50,10 +50,10 @@ class Cast {
     /**
 	 *
 	 */
-    static void lastPage(int& page_at, Data& game_data);
-    static void nextPage(int& page_at, Data& game_data);
-    static void addPage(int& page_at, Data& game_data);
-    static void duplicatePage(int& page_at, Data& game_data);
-    static void deletePage(int& page_at, Data& game_data);
-    static void copyPage(int& page_at, Data& game_data, Page& clipboard_page);
+    static void lastPage(Data& game_data);
+    static void nextPage(Data& game_data);
+    static void addPage(Data& game_data);
+    static void duplicatePage(Data& game_data);
+    static void deletePage(Data& game_data);
+    static void copyPage(Data& game_data, Page& clipboard_page);
 };

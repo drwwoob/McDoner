@@ -103,7 +103,6 @@ int main(int, char**)
     bool show_cast_window = true;
     bool page_setting = true;
     bool casts_list = true;
-    int page_at = 0;
 
     // Main loop
     bool done = false;
@@ -140,13 +139,13 @@ int main(int, char**)
         if(show_welcome_window){
             // set main window
             Tools::drawBackground(welcomeBackground);
-            Cast::showWelcomePage(game_data, show_welcome_window, page_setting, page_at);
+            Cast::showWelcomePage(game_data, show_welcome_window, page_setting);
         }
         else{
-            game_data.draw(page_at);
-            Cast::showCastsInPage(&casts_list, game_data.getPage(page_at));
-            Cast::showAmongPages(&page_setting, page_at, game_data);
-            Cast::showMenuBar(game_data, page_at, clipboard_page, backup_game_data);
+            game_data.draw();
+            Cast::showCastsInPage(&casts_list, game_data.getPage(game_data.page_at));
+            Cast::showAmongPages(&page_setting, game_data);
+            Cast::showMenuBar(game_data, clipboard_page, backup_game_data);
         }
 
         // show imgui windows

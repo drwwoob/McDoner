@@ -6,7 +6,7 @@
 Data::Data() {
 }
 
-Data::Data(const std::string& file_path, int& page_at) {
+Data::Data(const std::string& file_path) {
     // initiate demoPath
     file_name = file_path;
     project_path = file_path.substr(
@@ -19,11 +19,12 @@ Data::Data(const std::string& file_path, int& page_at) {
     while(std::getline(file, line)) {
         file_data += line;
     }
-    decryptFile(file_data, page_at);
+    decryptFile(file_data);
 }
 
 void Data::newFile() {
     pages = {Page()};
+    page_at = 0;
 }
 
 void Data::openFile() {
@@ -39,11 +40,11 @@ void Data::setFont(ImFont* font_given) {
     //}
 }
 
-void Data::loadTexture(int page_at) {
+void Data::loadTexture() {
     textures = pages.at(page_at).loadPage(project_path);
 }
 
-void Data::draw(int page_at) {
+void Data::draw() {
     pages.at(page_at).drawPage(textures);
 }
 
@@ -51,7 +52,7 @@ Page* Data::getPage(int page_id) {
     return &pages.at(page_id);
 }
 
-std::string Data::encryptIntoFile(int& page_at) {
+std::string Data::encryptIntoFile() {
     std::string pagesInfo;
     pagesInfo.append(std::to_string(page_at) + ",");
     for(auto page : pages) {
@@ -61,7 +62,7 @@ std::string Data::encryptIntoFile(int& page_at) {
     return pagesInfo;
 }
 
-void Data::decryptFile(std::string data_str, int& page_at) {
+void Data::decryptFile(std::string data_str) {
     // clear all old data
     // have to default font here
     pages.clear();
@@ -87,13 +88,13 @@ void Data::decryptFile(std::string data_str, int& page_at) {
     }
 }
 
-void Data::save(int& page_at) {
+void Data::save() {
     std::ofstream file;
     //for testing
     auto path = file_name;
-    auto data = encryptIntoFile(page_at);
+    auto data = encryptIntoFile();
     file.open(path);
-    file << encryptIntoFile(page_at).c_str();
+    file << encryptIntoFile().c_str();
     file.close();
 }
 

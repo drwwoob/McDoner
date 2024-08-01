@@ -16,22 +16,23 @@ class Data {
      * @overload constructor, reading from given file
      * @param file_path string of the given file path
      */
-    Data(const std::string& file_path, int& page_at);
+    Data(const std::string& file_path);
     void newFile();
     void openFile(); // reading a file
     //void openFile(std::string path);
     Page* getPage(int page_id); // get the information of a page (decrypt)
 
-    void loadTexture(int page_at);
-    void draw(int page_at);
+	int page_at;
+    void loadTexture();
+    void draw();
     void setFont(ImFont* font_given);
-    void save(int& page_at);
+    void save();
     int pageSize() { return pages.size(); };
     void addPage(int page_id);
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
-    std::string encryptIntoFile(int &page_at); // encrypt the current pages into text
-    void decryptFile(std::string data_str, int& page_at);
+    std::string encryptIntoFile(); // encrypt the current pages into text
+    void decryptFile(std::string data_str);
 
    private:
     ImFont* font;

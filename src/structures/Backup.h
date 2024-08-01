@@ -10,21 +10,21 @@ public:
     stack<string> backup_data;
     stack<string> forward_data;
 
-    void undo(Data &game_data, int& page_at){
+    void undo(Data &game_data){
         forward_data.emplace(backup_data.top());
         backup_data.pop();
-        game_data.decryptFile(backup_data.top(), page_at);
+        game_data.decryptFile(backup_data.top());
     };
     bool undoAbailible(){
         return backup_data.empty();
     };
     void addMove(Data &game_data, int& page_at){
-        backup_data.emplace(game_data.encryptIntoFile(page_at));
+        backup_data.emplace(game_data.encryptIntoFile());
         forward_data = {};
     };
     void cancelUndo(Data &game_data, int& page_at){
         backup_data.emplace(forward_data.top());
-        game_data.decryptFile(forward_data.top(), page_at);
+        game_data.decryptFile(forward_data.top());
         forward_data.pop();
     };
     bool cancelAvailible(){
