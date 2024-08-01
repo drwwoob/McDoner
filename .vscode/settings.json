@@ -60,9 +60,9 @@
         "filesystem": "cpp",
         "deque": "cpp"
     },
-    "C_Cpp.errorSquiggles": "disabled",
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-vscode.cpptools",
-    "C_Cpp.clang_format_fallbackStyle": "none",
-    "clang-format.style": "file"
+    // "C_Cpp.errorSquiggles": "disabled",
+    // "editor.formatOnSave": true,
+    // "editor.defaultFormatter": "ms-vscode.cpptools",
+    // "C_Cpp.clang_format_fallbackStyle": "none",
+    // "clang-format.style": "file"
 }

@@ -8,16 +8,15 @@
 #include <string>
 
 //image loading helperxw
-class Tools
-{
-public:
-	void pageBar();
-	/**
+class Tools {
+   public:
+    void pageBar();
+    /**
 	 * setting background picture with the given address of the background picture.
 	 * @param background_name the string of the address pointing to the background picture
 	 */
-	static void drawBackground(const std::string &background_name);
-	/**
+    static void drawBackground(const std::string& background_name);
+    /**
 	 * emcrypt word into one string with certain laws
 	 * @param word the string needed to be encrypted
 	 * @return the encrypted string
@@ -29,13 +28,13 @@ public:
 	 *		[ -> /[
 	 *		] -> /]
 	 */
-	static std::string wordEncrypt(std::string word);
-	/**
+    static std::string wordEncrypt(std::string word);
+    /**
 	 * load image into OpenGL texture with common settings (originated from ImGui)
 	 */
-	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
+    static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 
-	static void drawImage();
+    static void drawImage();
 
-	static std::string openFileDialog();
+    static std::string openFileDialog();
 };

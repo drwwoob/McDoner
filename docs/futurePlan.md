@@ -1,5 +1,29 @@
 # Future plan
 
+## Overview
+- [.] UNDO (in progress)
+- [ ] multi-languaging
+- [ ] web avalible
+- [ ] bundle creation for mac
+- [ ] multiple project in same time
+- [ ] spirit libary
+- [ ] stored spirits
+- [ ] stored textbox
+- [ ] import / replacing / deleting images
+- [ ] resolution
+- [ ] animation
+- [ ] voicing
+- [X] exit page memory
+- [ ] drag
+- [ ] edit windows?
+- [ ] *or*, dragging imgui window outside host window
+- [ ] textured buttons
+- [ ] better shortcut keys logic
+- [ ] shortcut keys for Mac
+- [ ] game package creation
+- [ ] stacking ImGui windows
+- [ ] Individual ImGui window with color and transparency
+- [ ] dragging pages
 
 ## ***UNDO***
 this is too important of a thing to be missed, bro u know what i mean? not having a **undo** button in an editor is like no Jerusalem in the western culture, purely unacceptable
@@ -17,7 +41,7 @@ in a way im kinda pro on doing this
 ## bundle creation for mac
 i need to create a bundle for the mac version of this, or at least the environment set up, or ppl might spend forever trying to set the environment
 
-## multiple windows
+## multiple project in same time
 can open multiple project in the same time? (i wonder who would do that though, nobody would, right?)
 
 ## spirit libary
@@ -47,7 +71,7 @@ man Codename Bakery's animation is too good, i need good animations in this game
 ## voicing
 honestly can't really imagine ppl using this application to makes games that contains voicing, but one need to have dream, so i'm gonna add this feature.
 
-## memory
+## exit page memory
 i think opening the project and the project opens at the last modification is a cool thing. though is this really necessary?(
 
 ## drag
@@ -59,7 +83,7 @@ like you know, all other engines like unity or sai2, where you have a window sho
 ## *or*, dragging imgui window outside host window
 this is cool, i like it
 
-## buttons
+## textured buttons
 if i want to do setting then i need buttons, if i have buttons there should be icons, if there are clickable icons, ~~then why don't i just make a point-and-click game engine then~~ should i limit its feature or just make them able to do anthing
 
 ## better shortcut keys logic
@@ -76,3 +100,6 @@ Like if i click on it it will be moved to the top. I hope this is a built-in fea
 
 ## Individual ImGui window with color and transparency
 like there would be a slide bar on top or bottom of the ImGui window, so that you can change it's color and transparency all the time, kewl
+
+## dragging pages
+wow, very kewl, and very hard(. I do have the idea on how to make the data move, but how do i make the animation T_T

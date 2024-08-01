@@ -4,62 +4,53 @@
 #include <iostream>
 #include <string>
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void Tools::pageBar(){}
+void Tools::pageBar() {}
 
 std::string Tools::wordEncrypt(std::string word) {
-	std::string EncryptedWord;
-	for (const auto letter : word) {
-		switch (letter) {
-		case '#':
-			EncryptedWord.append("/#");
-			break;
-		case '/':
-			EncryptedWord.append("//");
-			break;
-		case '{':
-			EncryptedWord.append("/{");
-			break;
-		case '}':
-			EncryptedWord.append("/}");
-			break;
-		default:
-			EncryptedWord.push_back(letter);
-		}
-
-	}
-	return EncryptedWord;
+    std::string EncryptedWord;
+    for(const auto letter : word) {
+        switch(letter) {
+        case '#':
+            EncryptedWord.append("/#");
+            break;
+        case '/':
+            EncryptedWord.append("//");
+            break;
+        case '{':
+            EncryptedWord.append("/{");
+            break;
+        case '}':
+            EncryptedWord.append("/}");
+            break;
+        default:
+            EncryptedWord.push_back(letter);
+        }
+    }
+    return EncryptedWord;
 }
 
-
-
-void Tools::drawBackground(const std::string &background_name)
-{
+void Tools::drawBackground(const std::string& background_name) {
     int my_image_width = 0;
     int my_image_height = 0;
     GLuint my_image_texture = 0;
     bool ret = LoadTextureFromFile(background_name.c_str(), &my_image_texture, &my_image_width, &my_image_height);
-    if (!ret)
-    {
+    if(!ret) {
         printf("Failed to load texture: %s\n", background_name.c_str());
         return;
     }
-    ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0),
-        ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), ImVec2(0, 0), ImVec2(1, 1));
+    ImGui::GetBackgroundDrawList()->AddImage((void*)(intptr_t)my_image_texture, ImVec2(0, 0), ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), ImVec2(0, 0), ImVec2(1, 1));
 }
 
-
 // Simple helper function to load an image into a OpenGL texture with common settings
-bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
-{
+bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height) {
     // Load from file
     int image_width = 0;
     int image_height = 0;
     unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-    if (image_data == NULL)
+    if(image_data == NULL)
         return false;
 
     // Create a OpenGL texture identifier
@@ -112,21 +103,21 @@ bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* 
 #include <commdlg.h>
 
 std::string Tools::openFileDialog() {
-char filename[MAX_PATH] = "";
-OPENFILENAME ofn;
-ZeroMemory(&ofn, sizeof(ofn));
-ofn.lStructSize = sizeof(ofn);
-ofn.hwndOwner = NULL;
-ofn.lpstrFilter = "All Files\0*.*\0";
-ofn.lpstrFile = filename;
-ofn.nMaxFile = MAX_PATH;
-ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-ofn.lpstrDefExt = "";
+    char filename[MAX_PATH] = "";
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFilter = "All Files\0*.*\0";
+    ofn.lpstrFile = filename;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = "";
 
-if (GetOpenFileName(&ofn)) {
-	return std::string(filename);
-}
-return "";
+    if(GetOpenFileName(&ofn)) {
+        return std::string(filename);
+    }
+    return "";
 }
 
 #endif
