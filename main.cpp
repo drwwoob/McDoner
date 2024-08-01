@@ -143,7 +143,7 @@ int main(int, char**)
         }
         else{
             game_data.draw();
-            Cast::showCastsInPage(&casts_list, game_data.getPage(game_data.page_at));
+            Cast::showCastsInPage(&casts_list, game_data);
             Cast::showAmongPages(&page_setting, game_data);
             Cast::showMenuBar(game_data, clipboard_page, backup_game_data);
         }

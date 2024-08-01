@@ -15,19 +15,19 @@ public:
         backup_data.pop();
         game_data.decryptFile(backup_data.top());
     };
-    bool undoAbailible(){
-        return backup_data.empty();
+    bool undoAvailible(){
+        return backup_data.size() > 1;
     };
-    void addMove(Data &game_data, int& page_at){
+    void addMove(Data &game_data){
         backup_data.emplace(game_data.encryptIntoFile());
         forward_data = {};
     };
-    void cancelUndo(Data &game_data, int& page_at){
+    void redo(Data &game_data){
         backup_data.emplace(forward_data.top());
         game_data.decryptFile(forward_data.top());
         forward_data.pop();
     };
-    bool cancelAvailible(){
-        return forward_data.empty();
+    bool redoAvailible(){
+        return !(forward_data.empty());
     };
 };

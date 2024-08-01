@@ -16,7 +16,7 @@ class Cast {
     /**
 	 *
 	 */
-    static void showCastsInPage(bool* p_open, Page* pageInfo);
+    static void showCastsInPage(bool* p_open, Data& game_data);
     // void showWelcomePage(bool& showing);
     /**
 	 * showing a ImGui window with buttons that each links to Data::NewFile, Data::OpenFile, Data::OpenDemo.

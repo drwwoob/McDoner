@@ -36,9 +36,30 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
 
         ImGui::SameLine();
         if(ImGui::BeginMenu("Edit")) {
-			if(ImGui::MenuItem("Undo", "Crtl+Z")){
-				// undo(game_data.page_at, game_data, backup_data);
+            bool disabled = false;
+			if(!backup_data.undoAvailible()) {
+                disabled = true;
+                ImGui::BeginDisabled();
+            }
+			if(ImGui::MenuItem("Undo", "Ctrl+Z")){
+				backup_data.undo(game_data);
 			}
+            if(disabled) {
+                ImGui::EndDisabled();
+                disabled = false;
+            }
+
+			if(!backup_data.redoAvailible()) {
+                disabled = true;
+                ImGui::BeginDisabled();
+            }
+			if(ImGui::MenuItem("Redo", "Ctrl+Shift+Z")){
+				backup_data.redo(game_data);
+			}
+            if(disabled) {
+                ImGui::EndDisabled();
+                disabled = false;
+            }
             ImGui::EndMenu();
         }
 
@@ -131,8 +152,9 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
     }
 }
 
-void Cast::showCastsInPage(bool* p_open, Page* page_info) {
+void Cast::showCastsInPage(bool* p_open, Data& game_data) {
     ImGuiWindowFlags window_flags = 0;
+	auto page_info = game_data.getPage(game_data.page_at);
 
     ImGui::Begin("Cast", p_open, window_flags);
 
