@@ -3,7 +3,6 @@
 #include <string>
 #include "Data.h"
 
-using namespace std;    // yes i got lazy
 // template <typename T>
 
 // struct changedLog{
@@ -16,9 +15,11 @@ class Backup {
 public:
     Backup(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : game_data_ptr(game_data_ptr){};
     ~Backup(){};
+
     void undo(){
         forward_data.emplace(backup_data.top());
         backup_data.pop();
+        std::cout << (*game_data_ptr)->pageSize();
         (*game_data_ptr)->decryptFile(backup_data.top());
     };
 
@@ -63,8 +64,8 @@ public:
     };
 private:
     std::shared_ptr<std::shared_ptr<Data>> game_data_ptr;
-    stack<string> backup_data;
-    stack<string> forward_data;
+    std::stack<std::string> backup_data;
+    std::stack<std::string> forward_data;
     // stack<tuple<int, int, T>> backup_data;
     // stack<tuple<int, int, T>> forward_data;
     // stack<changedLog> backup_data;

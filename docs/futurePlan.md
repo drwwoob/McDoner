@@ -2,11 +2,11 @@
 
 ## Overview
 
-- [X] UNDO (barely tested)
+- [X] UNDO
 - [ ] multi-languaging
 - [ ] web avalible
 - [ ] bundle creation for mac
-- [ ] multiple project in same time
+- [ ] multiple project in same time (working on its data managing)
 - [ ] spirit libary
 - [ ] stored spirits setting
 - [ ] stored textbox setting
@@ -20,11 +20,11 @@
 - [ ] *or*, dragging imgui window outside host window
 - [ ] textured buttons
 - [ ] better shortcut keys logic
-- [ ] shortcut keys for Mac
+- [X] shortcut keys for Mac
 - [ ] game package creation
 - [ ] stacking ImGui windows
 - [ ] Individual ImGui window with color and transparency
-- [ ] dragging pages
+- [ ] dragging pages in library
 - [ ] better undo logic
 
 ## ***UNDO***
@@ -125,7 +125,7 @@ Like if i click on it it will be moved to the top. I hope this is a built-in fea
 
 like there would be a slide bar on top or bottom of the ImGui window, so that you can change it's color and transparency all the time, kewl
 
-## dragging pages
+## dragging pages in library
 
 wow, very kewl, and very hard(. I do have the idea on how to make the data move, but how do i make the animation T_T
 

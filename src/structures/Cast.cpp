@@ -1,5 +1,6 @@
 #include <Cast.h>
 #include "imgui_stdlib.h"
+#include <unordered_map>
 #include "Tools.h"
 //#include "data.h"
 typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -12,26 +13,29 @@ void* GImGuiMarkerCallbackUserData = NULL;
         if(GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); \
     } while(0)
 
-Cast::Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : game_data_ptr(game_data_ptr){}
+Cast::Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr, 
+        std::unique_ptr<Backup> backup_data) : game_data_ptr(game_data_ptr), backup_data(std::move(backup_data)){
+	shortkey_outlay = Tools::loadShortkeys("../src/settings/keyLoad.json");
+}
 Cast::~Cast() {}
 
-void Cast::showMenuBar(Page &clipboard_page, Backup &backup_data) {
+void Cast::showMenuBar(Page &clipboard_page) {
     if(ImGui::BeginMainMenuBar()) {
         if(ImGui::BeginMenu("File")) {
-            if(ImGui::MenuItem("New", "Ctrl+N")) {
+            if(ImGui::MenuItem("New", shortkey_outlay.at("New").c_str())) {
             }
             // Add items to the "File" menu
-            if(ImGui::MenuItem("Open", "Ctrl+O")) {
+            if(ImGui::MenuItem("Open", shortkey_outlay.at("Open").c_str())) {
                 // Handle "Open" action
             }
-            if(ImGui::MenuItem("Save", "Ctrl+S")) {
+            if(ImGui::MenuItem("Save", shortkey_outlay.at("Save").c_str())) {
                 // Handle "Save" action
 				(*game_data_ptr)->save();
             }
-            if(ImGui::MenuItem("Import", "Ctrl+Shift+O")) {
+            if(ImGui::MenuItem("Import", shortkey_outlay.at("Import").c_str())) {
             }
 
-            if(ImGui::MenuItem("Exit", "Alt+F4")) {
+            if(ImGui::MenuItem("Exit", shortkey_outlay.at("Exit").c_str())) {
                 // Handle "Exit" action
             }
             ImGui::EndMenu();
@@ -40,24 +44,24 @@ void Cast::showMenuBar(Page &clipboard_page, Backup &backup_data) {
         ImGui::SameLine();
         if(ImGui::BeginMenu("Edit")) {
             bool disabled = false;
-			if(!backup_data.undoAvailible()) {
+			if(!backup_data->undoAvailible()) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
 			if(ImGui::MenuItem("Undo", "Ctrl+Z")){
-				backup_data.undo();
+				backup_data->undo();
 			}
             if(disabled) {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-			if(!backup_data.redoAvailible()) {
+			if(!backup_data->redoAvailible()) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
 			if(ImGui::MenuItem("Redo", "Ctrl+Shift+Z")){
-				backup_data.redo();
+				backup_data->redo();
 			}
             if(disabled) {
                 ImGui::EndDisabled();
@@ -249,6 +253,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
         // =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
         // (*game_data_ptr)->page_at = 0;
         (*game_data_ptr)->loadTexture();
+        backup_data->addMove();
     }
     ImGui::End();
 }
@@ -312,24 +317,29 @@ void Cast::showAmongPages(bool* p_open) {
 }
 
 void Cast::lastPage() {
+    backup_data->addMove();
     (*game_data_ptr)->page_at = (*game_data_ptr)->page_at - 1;
     (*game_data_ptr)->loadTexture();
 }
 void Cast::nextPage() {
+    backup_data->addMove();
     (*game_data_ptr)->page_at = (*game_data_ptr)->page_at + 1;
     (*game_data_ptr)->loadTexture();
 }
 void Cast::addPage() {
+    backup_data->addMove();
     (*game_data_ptr)->page_at = (*game_data_ptr)->page_at + 1;
     (*game_data_ptr)->addPage((*game_data_ptr)->page_at);
     (*game_data_ptr)->loadTexture();
 }
 void Cast::duplicatePage() {
+    backup_data->addMove();
     (*game_data_ptr)->CopyPage((*game_data_ptr)->page_at + 1, *((*game_data_ptr)->getPage((*game_data_ptr)->page_at)));
     (*game_data_ptr)->page_at++;
     (*game_data_ptr)->loadTexture();
 }
 void Cast::deletePage() {
+    backup_data->addMove();
     (*game_data_ptr)->deletePage((*game_data_ptr)->page_at);
     if((*game_data_ptr)->page_at != 0) {
         (*game_data_ptr)->page_at--;
@@ -337,5 +347,6 @@ void Cast::deletePage() {
     }
 }
 void Cast::copyPage(Page& clipboard_page) {
+    backup_data->addMove();
     clipboard_page = *(*game_data_ptr)->getPage((*game_data_ptr)->page_at);
 };

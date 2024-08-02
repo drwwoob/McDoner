@@ -2,6 +2,8 @@
 #include "imgui.h"
 #include <iostream>
 #include <string>
+#include <unordered_map>
+#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -121,7 +123,7 @@ std::string Tools::openFileDialog() {
 
 #endif
 
-nlohmann::json Tools::jsonloadKeyBindings(const std::string& filename){
+std::unordered_map<std::string, std::string> Tools::loadShortkeys(const std::string& filename){
     if (!std::filesystem::exists(filename)) {
         throw std::runtime_error("Unable to open keybindings file: " + filename);
     }
@@ -133,13 +135,28 @@ nlohmann::json Tools::jsonloadKeyBindings(const std::string& filename){
     
     nlohmann::json keyBindings;
     file >> keyBindings;
-    return keyBindings;
-}
 
-std::string Tools::getPlatformKey(const nlohmann::json& keyBindings, const std::string& action) {
-#ifdef __APPLE__
-    return keyBindings.at(action).at("Mac").get<std::string>();
-#else
-    return keyBindings.at(action).at("Windows").get<std::string>();
-#endif
+    std::vector<std::string> keys {
+        "New", 
+        "Open",
+        "Save",
+        "Import",
+        "Exit",
+        // "Edit",
+        "Undo",
+        "Redo",
+        // "Scene",
+        // "Last Page",
+        // "Next Page",
+        };
+
+    std::unordered_map<std::string, std::string> shortkey_map {};
+    for(auto &key : keys){
+        #ifdef __APPLE__
+            shortkey_map.emplace(key, keyBindings.at(key).at("Mac").get<std::string>());
+        #else
+            shortkey_map.emplace(key, keyBindings.at(key).at("Windows").get<std::string>());
+        #endif
+    }
+    return shortkey_map;
 }

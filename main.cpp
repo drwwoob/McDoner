@@ -83,13 +83,12 @@ int main(int, char**)
 
 
     // ================= set default value ====================
-
     // default background color
     ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
     // game data
     auto game_data_ptr = std::make_shared<std::shared_ptr<Data>>();
-    Cast cast(game_data_ptr);
     Backup backup_game_data(game_data_ptr);
+    Cast cast(game_data_ptr, std::make_unique<Backup>(backup_game_data));
     Page clipboard_page;
 
     // time for our favorite Ctrl+Z part
@@ -146,7 +145,7 @@ int main(int, char**)
             (*game_data_ptr)->draw();
             cast.showCastsInPage(&casts_list);
             cast.showAmongPages(&page_setting);
-            cast.showMenuBar(clipboard_page, backup_game_data);
+            cast.showMenuBar(clipboard_page);
         }
 
         // show imgui windows

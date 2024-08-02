@@ -5,16 +5,17 @@
 #pragma once
 #include <Data.h>
 #include <stack>
+#include <unordered_map>
 #include "Backup.h"
 class Cast {
 public:
-	Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr);
+	Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr, std::unique_ptr<Backup> backup_data);
     ~Cast();
     /**
 	 * the main menu bar for the host window
 	 * @param game_data the game data currently presenting in main
 	 */
-    void showMenuBar(Page &clipboard_page, Backup &backup_data);
+    void showMenuBar(Page &clipboard_page);
     /**
 	 *
 	 */
@@ -48,6 +49,8 @@ public:
 
 private:
 	std::shared_ptr<std::shared_ptr<Data>> game_data_ptr;
+	std::unique_ptr<Backup> backup_data;
+	std::unordered_map<std::string, std::string> shortkey_outlay;
     // functions for different cast members, all written here so the the functions (and bugs) sync
     /**
 	 *

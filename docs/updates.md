@@ -6,13 +6,15 @@
 - adding feature to choose file with a window
 - adding texture for imgui window's buttons
 
-## upcoming version 0.0.2
+## version 0.0.2
 
 - adding menu bar on top for engine
-- undo and un-undo
+- undo and ~~un-undo~~ redo
 - memory of which page lefted
 - more functions on imgui windows
-- changing more logics and improving cost
+- changing more logics and lessen cost (not including my brain)
+- created some space for multiple project
+- multi-plateform shortkey seperations (though they are unusable yet)
 
 ## 0.0.1
 

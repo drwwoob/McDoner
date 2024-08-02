@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <filesystem>
+#include <unordered_map>
 #include <nlohmann/json.hpp>
 
 //image loading helperxw
@@ -42,8 +42,6 @@ class Tools {
 
     static std::string openFileDialog();
 
-	static std::string getPlatformKey(const nlohmann::json& keyBindings, const std::string& action);
-
+	static std::unordered_map<std::string, std::string> loadShortkeys(const std::string& filename);
 private:
-	static nlohmann::json jsonloadKeyBindings(const std::string& filename);
 };
