@@ -1,5 +1,4 @@
 #include "Tools.h"
-
 #include "imgui.h"
 #include <iostream>
 #include <string>
@@ -121,3 +120,26 @@ std::string Tools::openFileDialog() {
 }
 
 #endif
+
+nlohmann::json Tools::jsonloadKeyBindings(const std::string& filename){
+    if (!std::filesystem::exists(filename)) {
+        throw std::runtime_error("Unable to open keybindings file: " + filename);
+    }
+    
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open keybindings file: " + filename);
+    }
+    
+    nlohmann::json keyBindings;
+    file >> keyBindings;
+    return keyBindings;
+}
+
+std::string Tools::getPlatformKey(const nlohmann::json& keyBindings, const std::string& action) {
+#ifdef __APPLE__
+    return keyBindings.at(action).at("Mac").get<std::string>();
+#else
+    return keyBindings.at(action).at("Windows").get<std::string>();
+#endif
+}

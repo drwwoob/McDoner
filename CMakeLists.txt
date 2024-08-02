@@ -15,6 +15,8 @@ include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 
+find_package(nlohmann_json 3.2.0 REQUIRED)
+
 # ImGui
 set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/libs/imgui)
 set(IMGUI_BACKEND_DIR ${IMGUI_DIR}/backends)
@@ -41,10 +43,10 @@ file(GLOB LIB_SOURCES
 
 # Add executable
 add_executable(${PROJECT_NAME} main.cpp ${LIB_SOURCES})
-
 # Link libraries
 target_link_libraries(${PROJECT_NAME} 
     ${SDL2_LIBRARIES} 
     ${SDL2_IMAGE_LIBRARIES} 
     ${OPENGL_LIBRARIES}
+    nlohmann_json::nlohmann_json
 )

@@ -1,0 +1,30 @@
+{
+    "New": {
+        "Windows": "Ctrl+N",
+        "Mac": "Cmd+N"
+    },
+    "Open": {
+        "Windows": "Ctrl+O",
+        "Mac": "Cmd+O"
+    },
+    "Save": {
+        "Windows": "Ctrl+S",
+        "Mac": "Cmd+S"
+    },
+    "Import": {
+        "Windows": "Ctrl+Shift+O",
+        "Mac": "Cmd+Shift+O"
+    },
+    "Exit": {
+        "Windows": "Alt+F4",
+        "Mac": "Shift+Cmd+Q"
+    },
+    "Undo": {
+        "Windows": "Ctrl+Z",
+        "Mac": "Cmd+Z"
+    },
+    "Redo": {
+        "Windows": "Shift+Ctrl+Z",
+        "Mac": "Shift+Cmd+Z"
+    }
+}

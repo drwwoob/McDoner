@@ -87,9 +87,10 @@ int main(int, char**)
     // default background color
     ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
     // game data
-    Data game_data;
+    auto game_data_ptr = std::make_shared<std::shared_ptr<Data>>();
+    Cast cast(game_data_ptr);
+    Backup backup_game_data(game_data_ptr);
     Page clipboard_page;
-    Backup backup_game_data;
 
     // time for our favorite Ctrl+Z part
     // if I store Data here i think the file will gets too big very soon
@@ -139,13 +140,13 @@ int main(int, char**)
         if(show_welcome_window){
             // set main window
             Tools::drawBackground(welcomeBackground);
-            Cast::showWelcomePage(game_data, show_welcome_window, page_setting);
+            cast.showWelcomePage(show_welcome_window, page_setting);
         }
         else{
-            game_data.draw();
-            Cast::showCastsInPage(&casts_list, game_data);
-            Cast::showAmongPages(&page_setting, game_data);
-            Cast::showMenuBar(game_data, clipboard_page, backup_game_data);
+            (*game_data_ptr)->draw();
+            cast.showCastsInPage(&casts_list);
+            cast.showAmongPages(&page_setting);
+            cast.showMenuBar(clipboard_page, backup_game_data);
         }
 
         // show imgui windows
@@ -165,6 +166,8 @@ int main(int, char**)
 #endif
 
     // Cleanup
+    // delete game_data;
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();

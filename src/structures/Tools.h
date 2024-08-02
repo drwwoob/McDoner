@@ -6,6 +6,10 @@
 #include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL.h>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <nlohmann/json.hpp>
 
 //image loading helperxw
 class Tools {
@@ -37,4 +41,9 @@ class Tools {
     static void drawImage();
 
     static std::string openFileDialog();
+
+	static std::string getPlatformKey(const nlohmann::json& keyBindings, const std::string& action);
+
+private:
+	static nlohmann::json jsonloadKeyBindings(const std::string& filename);
 };

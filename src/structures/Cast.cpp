@@ -1,6 +1,6 @@
 #include <Cast.h>
 #include "imgui_stdlib.h"
-//#include "Tools.h"
+#include "Tools.h"
 //#include "data.h"
 typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
 extern ImGuiMarkerCallback GImGuiMarkerCallback;
@@ -12,7 +12,10 @@ void* GImGuiMarkerCallbackUserData = NULL;
         if(GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); \
     } while(0)
 
-void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_data) {
+Cast::Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : game_data_ptr(game_data_ptr){}
+Cast::~Cast() {}
+
+void Cast::showMenuBar(Page &clipboard_page, Backup &backup_data) {
     if(ImGui::BeginMainMenuBar()) {
         if(ImGui::BeginMenu("File")) {
             if(ImGui::MenuItem("New", "Ctrl+N")) {
@@ -23,7 +26,7 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
             }
             if(ImGui::MenuItem("Save", "Ctrl+S")) {
                 // Handle "Save" action
-				game_data.save();
+				(*game_data_ptr)->save();
             }
             if(ImGui::MenuItem("Import", "Ctrl+Shift+O")) {
             }
@@ -42,7 +45,7 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
                 ImGui::BeginDisabled();
             }
 			if(ImGui::MenuItem("Undo", "Ctrl+Z")){
-				backup_data.undo(game_data);
+				backup_data.undo();
 			}
             if(disabled) {
                 ImGui::EndDisabled();
@@ -54,7 +57,7 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
                 ImGui::BeginDisabled();
             }
 			if(ImGui::MenuItem("Redo", "Ctrl+Shift+Z")){
-				backup_data.redo(game_data);
+				backup_data.redo();
 			}
             if(disabled) {
                 ImGui::EndDisabled();
@@ -67,36 +70,36 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
         if(ImGui::BeginMenu("Scene")) {
             bool disabled = false;
 
-            if(game_data.page_at == 0) {
+            if((*game_data_ptr)->page_at == 0) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
             if(ImGui::MenuItem("last page", "Ctrl+K")) {
-                lastPage(game_data);
+                lastPage();
             }
             if(disabled) {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-            if(game_data.page_at >= game_data.pageSize() - 1) {
+            if((*game_data_ptr)->page_at >= (*game_data_ptr)->pageSize() - 1) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
             if(ImGui::MenuItem("next page", "Ctrl+L")) {
-                nextPage(game_data);
+                nextPage();
             }
             if(disabled) {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-            if(game_data.pageSize() == 1) {
+            if((*game_data_ptr)->pageSize() == 1) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
             if(ImGui::MenuItem("delete current page")) {
-                deletePage(game_data);
+                deletePage();
             }
             if(disabled) {
                 ImGui::EndDisabled();
@@ -104,13 +107,13 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
             }
 
             if(ImGui::MenuItem("add blank page")) {
-                addPage(game_data);
+                addPage();
             }
             if(ImGui::MenuItem("duplicate page")) {
-                duplicatePage(game_data);
+                duplicatePage();
             }
             if(ImGui::MenuItem("copy page")) {
-				copyPage(game_data, clipboard_page);
+				copyPage(clipboard_page);
             }
             if(ImGui::MenuItem("cut page")) {
             }
@@ -152,9 +155,9 @@ void Cast::showMenuBar(Data& game_data, Page &clipboard_page, Backup &backup_dat
     }
 }
 
-void Cast::showCastsInPage(bool* p_open, Data& game_data) {
+void Cast::showCastsInPage(bool* p_open) {
     ImGuiWindowFlags window_flags = 0;
-	auto page_info = game_data.getPage(game_data.page_at);
+	auto page_info = (*game_data_ptr)->getPage((*game_data_ptr)->page_at);
 
     ImGui::Begin("Cast", p_open, window_flags);
 
@@ -225,42 +228,42 @@ void Cast::showCastsInPage(bool* p_open, Data& game_data) {
     ImGui::End();
 }
 
-void Cast::showWelcomePage(Data& game_data, bool& show_welcome_window, bool& page_setting) {
+void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
     ImGui::SetNextWindowSize(ImVec2(240, 300));
     ImGui::Begin("Welcome Page", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     if(ImGui::Button("New", ImVec2(-FLT_MIN, 80))) {
-        game_data.newFile();
+        (*game_data_ptr)->newFile();
         show_welcome_window = false;
         page_setting = true;
     }
     if(ImGui::Button("Open", ImVec2(-FLT_MIN, 80))) {
-        game_data.openFile();
+        (*game_data_ptr)->openFile();
         show_welcome_window = false;
         page_setting = true;
-        game_data.loadTexture();
+        (*game_data_ptr)->loadTexture();
     }
     if(ImGui::Button("Demo", ImVec2(-FLT_MIN, 80))) {
-        game_data = Data("../saves/demo/demo.txt");
+        *game_data_ptr = std::make_shared<Data>("../saves/demo/demo.txt");
         show_welcome_window = false;
         page_setting = true;
-        // =========== todo: here is for saved game_data.page_at thingy ===============
-        // game_data.page_at = 0;
-        game_data.loadTexture();
+        // =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
+        // (*game_data_ptr)->page_at = 0;
+        (*game_data_ptr)->loadTexture();
     }
     ImGui::End();
 }
 
-void Cast::showAmongPages(bool* p_open, Data& game_data) {
+void Cast::showAmongPages(bool* p_open) {
     ImGui::Begin("Page Setting");
 
     bool disabled = false;
 
-    if(game_data.page_at == 0) {
+    if((*game_data_ptr)->page_at == 0) {
         disabled = true;
         ImGui::BeginDisabled();
     }
     if(ImGui::Button("Last Page", ImVec2(100, 100))) {
-        lastPage(game_data);
+        lastPage();
     }
     if(disabled) {
         ImGui::EndDisabled();
@@ -269,12 +272,12 @@ void Cast::showAmongPages(bool* p_open, Data& game_data) {
 
     ImGui::SameLine();
 
-    if(game_data.page_at >= game_data.pageSize() - 1) {
+    if((*game_data_ptr)->page_at >= (*game_data_ptr)->pageSize() - 1) {
         disabled = true;
         ImGui::BeginDisabled();
     }
     if(ImGui::Button("Next Page", ImVec2(100, 100))) {
-        nextPage(game_data);
+        nextPage();
     }
     if(disabled) {
         ImGui::EndDisabled();
@@ -282,23 +285,23 @@ void Cast::showAmongPages(bool* p_open, Data& game_data) {
     }
 
     if(ImGui::Button("add Page", ImVec2(100, 100))) {
-        addPage(game_data);
+        addPage();
     }
 
     ImGui::SameLine();
 
     if(ImGui::Button("duplicate Page", ImVec2(100, 100))) {
-        duplicatePage(game_data);
+        duplicatePage();
     }
 
     ImGui::SameLine();
 
-    if(game_data.pageSize() == 1) {
+    if((*game_data_ptr)->pageSize() == 1) {
         disabled = true;
         ImGui::BeginDisabled();
     }
     if(ImGui::Button("delete Page", ImVec2(100, 100))) {
-        deletePage(game_data);
+        deletePage();
     }
     if(disabled) {
         ImGui::EndDisabled();
@@ -308,31 +311,31 @@ void Cast::showAmongPages(bool* p_open, Data& game_data) {
     ImGui::End();
 }
 
-void Cast::lastPage(Data& game_data) {
-    game_data.page_at = game_data.page_at - 1;
-    game_data.loadTexture();
+void Cast::lastPage() {
+    (*game_data_ptr)->page_at = (*game_data_ptr)->page_at - 1;
+    (*game_data_ptr)->loadTexture();
 }
-void Cast::nextPage(Data& game_data) {
-    game_data.page_at = game_data.page_at + 1;
-    game_data.loadTexture();
+void Cast::nextPage() {
+    (*game_data_ptr)->page_at = (*game_data_ptr)->page_at + 1;
+    (*game_data_ptr)->loadTexture();
 }
-void Cast::addPage(Data& game_data) {
-    game_data.page_at = game_data.page_at + 1;
-    game_data.addPage(game_data.page_at);
-    game_data.loadTexture();
+void Cast::addPage() {
+    (*game_data_ptr)->page_at = (*game_data_ptr)->page_at + 1;
+    (*game_data_ptr)->addPage((*game_data_ptr)->page_at);
+    (*game_data_ptr)->loadTexture();
 }
-void Cast::duplicatePage(Data& game_data) {
-    game_data.CopyPage(game_data.page_at + 1, *(game_data.getPage(game_data.page_at)));
-    game_data.page_at++;
-    game_data.loadTexture();
+void Cast::duplicatePage() {
+    (*game_data_ptr)->CopyPage((*game_data_ptr)->page_at + 1, *((*game_data_ptr)->getPage((*game_data_ptr)->page_at)));
+    (*game_data_ptr)->page_at++;
+    (*game_data_ptr)->loadTexture();
 }
-void Cast::deletePage(Data& game_data) {
-    game_data.deletePage(game_data.page_at);
-    if(game_data.page_at != 0) {
-        game_data.page_at--;
-        game_data.loadTexture();
+void Cast::deletePage() {
+    (*game_data_ptr)->deletePage((*game_data_ptr)->page_at);
+    if((*game_data_ptr)->page_at != 0) {
+        (*game_data_ptr)->page_at--;
+        (*game_data_ptr)->loadTexture();
     }
 }
-void Cast::copyPage(Data& game_data, Page& clipboard_page) {
-    clipboard_page = *game_data.getPage(game_data.page_at);
+void Cast::copyPage(Page& clipboard_page) {
+    clipboard_page = *(*game_data_ptr)->getPage((*game_data_ptr)->page_at);
 };
