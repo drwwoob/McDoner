@@ -17,17 +17,17 @@ class Data {
      * @param file_path string of the given file path
      */
     Data(const std::string& file_path);
-    void newFile();
+    Data(const std::string &project_path, const char * project_name);
     void openFile(); // reading a file
     //void openFile(std::string path);
     Page* getPage(int page_id); // get the information of a page (decrypt)
 
-	int page_at;
+	int _page_at;
     void loadTexture();
     void draw();
     void setFont(ImFont* font_given);
     void save();
-    int pageSize() { return pages.size(); };
+    int pageSize() { return _pages.size(); };
     void addPage(int page_id);
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
@@ -35,11 +35,11 @@ class Data {
     void decryptFile(std::string data_str);
 
    private:
-    ImFont* font;
-    std::vector<Page> pages; // a file includes a collection of pages
-    std::string file_name;
-    std::string project_path;
-    std::vector<GLuint> textures{};
+    ImFont* _font;
+    std::vector<Page> _pages; // a file includes a collection of pages
+    std::string _file_name;
+    std::string _project_path;
+    std::vector<GLuint> _textures{};
     //std::map<Page> pages;
 
     // a hash table that stores all pages? or array?

@@ -85,11 +85,6 @@ int main(int, char**)
     // ================= set default value ====================
     // default background color
     ImVec4 clear_color = ImVec4(0.1f, 0.55f, 0.60f, 1.00f);
-    // game data
-    auto game_data_ptr = std::make_shared<std::shared_ptr<Data>>();
-    Backup backup_game_data(game_data_ptr);
-    Cast cast(game_data_ptr, std::make_unique<Backup>(backup_game_data));
-    Page clipboard_page;
 
     // time for our favorite Ctrl+Z part
     // if I store Data here i think the file will gets too big very soon
@@ -103,6 +98,13 @@ int main(int, char**)
     bool show_cast_window = true;
     bool page_setting = true;
     bool casts_list = true;
+
+
+    // game data
+    auto game_data_ptr = std::make_shared<std::shared_ptr<Data>>();
+    Backup backup_game_data(game_data_ptr);
+    Cast cast(game_data_ptr, std::make_unique<Backup>(backup_game_data));
+    Page clipboard_page;
 
     // Main loop
     bool done = false;

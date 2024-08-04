@@ -33,7 +33,7 @@ Page::Page(std::string page_data) {
     auto data_block = page_data.substr(start, end - start);
 
     auto spiritCreate = [this](std::vector<std::string>& seperate_data) {
-        spirits.emplace_back(
+        _spirits.emplace_back(
             seperate_data[0],
             seperate_data[1],
             std::stof(seperate_data[2]),
@@ -51,7 +51,7 @@ Page::Page(std::string page_data) {
     } while(page_data.at(end - 1) == '/');
     data_block = page_data.substr(start, end - start - 1);
     auto textCreate = [this](std::vector<std::string>& seperate_data) {
-        textboxs.emplace_back(seperate_data);
+        _textboxs.emplace_back(seperate_data);
     };
     decrypt(data_block, 9, textCreate);
 
@@ -60,22 +60,22 @@ Page::Page(std::string page_data) {
     end = page_data.size();
     data_block = page_data.substr(start, end - start - 1);
     auto orderCreate = [this](std::vector<std::string>& seperate_data) {
-        draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
+        _draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
     };
     decrypt(data_block, 2, orderCreate);
 }
 
 Spirit* Page::getRealSpirits(int id) {
-    return &spirits.at(id);
+    return &_spirits.at(id);
 }
 
 Textbox* Page::getRealTextbox(int id) {
-    return &textboxs.at(id);
+    return &_textboxs.at(id);
 }
 
 void Page::setFont(ImFont* font_given) {
-    for(int i = 0; i < textboxs.size(); i++) {
-        textboxs.at(i).changeFont(font_given);
+    for(int i = 0; i < _textboxs.size(); i++) {
+        _textboxs.at(i).changeFont(font_given);
     }
 }
 
@@ -84,7 +84,7 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
     std::vector<GLuint> textures;
 
     // std::string file_path;
-    for(auto spirit : spirits) {
+    for(auto spirit : _spirits) {
         auto file_path = project_path + spirit.fileName();
         loadImageTexture(file_path, textures);
     }
@@ -129,7 +129,7 @@ void Page::loadImageTexture(std::string& name, std::vector<GLuint>& textures) {
 
 void Page::drawPage(std::vector<GLuint>& textures) {
     int i = 0;
-    for(auto draw_obj : draw_order) {
+    for(auto draw_obj : _draw_order) {
         // std::cout << draw_obj.first << ", " << draw_obj.second << std::endl;
         switch(draw_obj.first) {
         // case 0:
@@ -141,7 +141,7 @@ void Page::drawPage(std::vector<GLuint>& textures) {
         //     break;
         case 1:
             i = 0; // Initialize i here to reset its value for each draw_obj
-            for(auto& spirit : spirits) {
+            for(auto& spirit : _spirits) {
                 if(spirit.fileName() == draw_obj.second) {
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -156,14 +156,14 @@ void Page::drawPage(std::vector<GLuint>& textures) {
             }
             break;
         case 2:
-            for(auto& textbox : textboxs) {
-                if(textbox.name == draw_obj.second) {
+            for(auto& textbox : _textboxs) {
+                if(textbox._name == draw_obj.second) {
                     ImGui::GetBackgroundDrawList()->AddText(
                         ImVec2(
-                            textbox.positionRatio.x * ImGui::GetIO().DisplaySize.x,
-                            textbox.positionRatio.y * ImGui::GetIO().DisplaySize.y),
-                        textbox.color,
-                        textbox.content.c_str());
+                            textbox._position_ratio.x * ImGui::GetIO().DisplaySize.x,
+                            textbox._position_ratio.y * ImGui::GetIO().DisplaySize.y),
+                        textbox._color,
+                        textbox._content.c_str());
                 }
                 break;
             }
@@ -179,14 +179,14 @@ std::string Page::exportInString() {
     std::string encrypt = "[";
     // add spirits
     encrypt.append("{");
-    for(auto spirit : spirits) {
+    for(auto spirit : _spirits) {
         encrypt.append(spirit.toString());
     }
     encrypt.append("}");
 
     // add textboxs
     encrypt.append("{");
-    for(auto textbox : textboxs) {
+    for(auto textbox : _textboxs) {
         encrypt.append(textbox.encrypt());
         //encrypt.append(textbox);
     }
@@ -194,7 +194,7 @@ std::string Page::exportInString() {
 
     // add order
     encrypt.append("{");
-    for(auto order_obj : draw_order) {
+    for(auto order_obj : _draw_order) {
         encrypt.append(std::to_string(order_obj.first));
         encrypt.append("#");
         encrypt.append(order_obj.second);

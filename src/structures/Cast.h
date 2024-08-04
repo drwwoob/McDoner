@@ -48,9 +48,9 @@ public:
     }
 
 private:
-	std::shared_ptr<std::shared_ptr<Data>> game_data_ptr;
-	std::unique_ptr<Backup> backup_data;
-	std::unordered_map<std::string, std::string> shortkey_outlay;
+	std::shared_ptr<std::shared_ptr<Data>> _game_data_ptr;
+	std::unique_ptr<Backup> _backup_data;
+	std::unordered_map<std::string, std::string> _shortkey_outlay;
     // functions for different cast members, all written here so the the functions (and bugs) sync
     /**
 	 *
@@ -61,4 +61,7 @@ private:
     void duplicatePage();
     void deletePage();
     void copyPage(Page& clipboard_page);
+	bool newProject();
+	bool openProject();
+	void askForSave();
 };

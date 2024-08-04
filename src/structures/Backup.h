@@ -13,14 +13,14 @@
 
 class Backup {
 public:
-    Backup(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : game_data_ptr(game_data_ptr){};
+    Backup(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : _game_data_ptr(game_data_ptr){};
     ~Backup(){};
 
     void undo(){
-        forward_data.emplace(backup_data.top());
-        backup_data.pop();
-        std::cout << (*game_data_ptr)->pageSize();
-        (*game_data_ptr)->decryptFile(backup_data.top());
+        _forward_data.emplace(_backup_data.top());
+        _backup_data.pop();
+        std::cout << (*_game_data_ptr)->pageSize();
+        (*_game_data_ptr)->decryptFile(_backup_data.top());
     };
 
     /**
@@ -44,28 +44,28 @@ public:
     //     }
     // };
     bool undoAvailible(){
-        return backup_data.size() > 1;
+        return _backup_data.size() > 1;
     };
     void addMove(){
-        backup_data.emplace((*game_data_ptr)->encryptIntoFile());
-        forward_data = {};
+        _backup_data.emplace((*_game_data_ptr)->encryptIntoFile());
+        _forward_data = {};
     };
     // void addMove(const int& changed_type, const int& page_at, const std::string& changed_data){
     //     backup_data.emplace(changed_type, page_at, changed_data);
     //     forward_data = {};
     // };
     void redo(){
-        backup_data.emplace(forward_data.top());
-        (*game_data_ptr)->decryptFile(forward_data.top());
-        forward_data.pop();
+        _backup_data.emplace(_forward_data.top());
+        (*_game_data_ptr)->decryptFile(_forward_data.top());
+        _forward_data.pop();
     };
     bool redoAvailible(){
-        return !(forward_data.empty());
+        return !(_forward_data.empty());
     };
 private:
-    std::shared_ptr<std::shared_ptr<Data>> game_data_ptr;
-    std::stack<std::string> backup_data;
-    std::stack<std::string> forward_data;
+    std::shared_ptr<std::shared_ptr<Data>> _game_data_ptr;
+    std::stack<std::string> _backup_data;
+    std::stack<std::string> _forward_data;
     // stack<tuple<int, int, T>> backup_data;
     // stack<tuple<int, int, T>> forward_data;
     // stack<changedLog> backup_data;

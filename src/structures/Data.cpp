@@ -8,11 +8,10 @@ Data::Data() {
 
 Data::Data(const std::string& file_path) {
     // initiate demoPath
-    file_name = file_path;
-    project_path = file_path.substr(
+    _file_name = file_path;
+    _project_path = file_path.substr(
         0,
         file_path.find_last_of("/") + 1);
-
     std::ifstream file(file_path, std::ios::in);
     std::string file_data = "";
     std::string line;
@@ -22,9 +21,12 @@ Data::Data(const std::string& file_path) {
     decryptFile(file_data);
 }
 
-void Data::newFile() {
-    pages = {Page()};
-    page_at = 0;
+Data::Data(const std::string& project_path, const char * project_name) {
+    _project_path = project_path;
+    std::filesystem::create_directory(project_path);
+    _file_name = project_path + "/" + project_name + ".txt";
+    _pages = {Page()};
+    _page_at = 0;
 }
 
 void Data::openFile() {
@@ -34,28 +36,28 @@ void Data::openFile() {
 }
 
 void Data::setFont(ImFont* font_given) {
-    font = font_given;
+    _font = font_given;
     //for (int i = 0; i < pages.size(); i++) {
     //    pages.at(i).setFont(font_given);
     //}
 }
 
 void Data::loadTexture() {
-    textures = pages.at(page_at).loadPage(project_path);
+    _textures = _pages.at(_page_at).loadPage(_project_path);
 }
 
 void Data::draw() {
-    pages.at(page_at).drawPage(textures);
+    _pages.at(_page_at).drawPage(_textures);
 }
 
 Page* Data::getPage(int page_id) {
-    return &pages.at(page_id);
+    return &_pages.at(page_id);
 }
 
 std::string Data::encryptIntoFile() {
     std::string pagesInfo;
-    pagesInfo.append(std::to_string(page_at) + ",");
-    for(auto page : pages) {
+    pagesInfo.append(std::to_string(_page_at) + ",");
+    for(auto page : _pages) {
         pagesInfo.append(page.exportInString());
     }
 
@@ -65,13 +67,13 @@ std::string Data::encryptIntoFile() {
 void Data::decryptFile(std::string data_str) {
     // clear all old data
     // have to default font here
-    pages.clear();
+    _pages.clear();
 
     // get new data
     int pos = 0;
     int start = 0;
     pos = data_str.find(",");
-    page_at = std::stoi(data_str.substr(0, pos));
+    _page_at = std::stoi(data_str.substr(0, pos));
     while(pos < data_str.size()) {
         if(data_str.at(pos++) == '[') { // whether pos is '[', go to the next letter
             start = pos;
@@ -81,8 +83,8 @@ void Data::decryptFile(std::string data_str) {
                 }
                 pos++;
             }
-            pages.emplace_back(data_str.substr(start, pos - start));
-            pages.back().setFont(font);
+            _pages.emplace_back(data_str.substr(start, pos - start));
+            _pages.back().setFont(_font);
             pos++;
         }
     }
@@ -91,7 +93,7 @@ void Data::decryptFile(std::string data_str) {
 void Data::save() {
     std::ofstream file;
     //for testing
-    auto path = file_name;
+    auto path = _file_name;
     auto data = encryptIntoFile();
     file.open(path);
     file << encryptIntoFile().c_str();
@@ -99,16 +101,16 @@ void Data::save() {
 }
 
 void Data::addPage(int page_id) {
-    pages.emplace(pages.begin() + page_id);
+    _pages.emplace(_pages.begin() + page_id);
 }
 
 void Data::CopyPage(int page_id, Page page) {
-    for(int i = 0; i < page.textboxs.size(); i++) {
-        page.textboxs.at(i).content = "Enter new text";
+    for(int i = 0; i < page._textboxs.size(); i++) {
+        page._textboxs.at(i)._content = "Enter new text";
     }
-    pages.insert(pages.begin() + page_id, page);
+    _pages.insert(_pages.begin() + page_id, page);
 }
 
 void Data::deletePage(int page_id) {
-    pages.erase(pages.begin() + page_id);
+    _pages.erase(_pages.begin() + page_id);
 }

@@ -32,7 +32,7 @@ class Tools {
 	 *		[ -> /[
 	 *		] -> /]
 	 */
-    static std::string wordEncrypt(std::string word);
+    static std::string wordEncrypt(const std::string& word);
     /**
 	 * load image into OpenGL texture with common settings (originated from ImGui)
 	 */
@@ -40,8 +40,7 @@ class Tools {
 
     static void drawImage();
 
-    static std::string openFileDialog();
-
 	static std::unordered_map<std::string, std::string> loadShortkeys(const std::string& filename);
+
 private:
 };

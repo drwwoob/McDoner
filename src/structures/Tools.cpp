@@ -10,7 +10,7 @@
 
 void Tools::pageBar() {}
 
-std::string Tools::wordEncrypt(std::string word) {
+std::string Tools::wordEncrypt(const std::string& word) {
     std::string EncryptedWord;
     for(const auto letter : word) {
         switch(letter) {
@@ -79,49 +79,32 @@ bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* 
 
 // #if defined(__APPLE__)
 
-// #include <Cocoa/Cocoa.h>
+// #endif
+
+// #if defined(_WIN32)
+
+// #include <windows.h>
+// #include <commdlg.h>
 
 // std::string Tools::openFileDialog() {
-// 	@autoreleasepool {
-// 		NSOpenPanel* openDlg = [NSOpenPanel openPanel];
-// 		[openDlg setCanChooseFiles:YES];
-// 		[openDlg setAllowsMultipleSelection:NO];
-// 		[openDlg setCanChooseDirectories:NO];
+//     char filename[MAX_PATH] = "";
+//     OPENFILENAME ofn;
+//     ZeroMemory(&ofn, sizeof(ofn));
+//     ofn.lStructSize = sizeof(ofn);
+//     ofn.hwndOwner = NULL;
+//     ofn.lpstrFilter = "All Files\0*.*\0";
+//     ofn.lpstrFile = filename;
+//     ofn.nMaxFile = MAX_PATH;
+//     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+//     ofn.lpstrDefExt = "";
 
-// 		if ([openDlg runModal] == NSModalResponseOK) {
-// 			NSURL* fileURL = [openDlg URLs][0];
-// 			return std::string([[fileURL path] UTF8String]);
-// 		}
-// 	}
-// 	return "";
+//     if(GetOpenFileName(&ofn)) {
+//         return std::string(filename);
+//     }
+//     return "";
 // }
 
 // #endif
-
-#if defined(_WIN32)
-
-#include <windows.h>
-#include <commdlg.h>
-
-std::string Tools::openFileDialog() {
-    char filename[MAX_PATH] = "";
-    OPENFILENAME ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = "All Files\0*.*\0";
-    ofn.lpstrFile = filename;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-    ofn.lpstrDefExt = "";
-
-    if(GetOpenFileName(&ofn)) {
-        return std::string(filename);
-    }
-    return "";
-}
-
-#endif
 
 std::unordered_map<std::string, std::string> Tools::loadShortkeys(const std::string& filename){
     if (!std::filesystem::exists(filename)) {

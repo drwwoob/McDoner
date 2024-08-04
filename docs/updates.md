@@ -3,10 +3,17 @@
 ## next next version overlook
 
 - adding up demo version on how the game would be exported
-- adding feature to choose file with a window
 - adding texture for imgui window's buttons
+- 优化，我需要更多优化，更多！！！
 
-## version 0.0.2
+## upcoming version 0.0.3
+
+- adding create project with dialog feature
+- adding open project with dialog feature
+- adding feature that asked to save before opening a new project
+- formatting namings
+
+## 0.0.2
 
 - adding menu bar on top for engine
 - undo and ~~un-undo~~ redo
