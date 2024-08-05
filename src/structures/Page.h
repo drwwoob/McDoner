@@ -13,7 +13,7 @@
 class Page {
 public:
 	Page();
-	Page(std::string page_data);
+	Page(const std::string& page_data);
 	//Page(int page_id, std::vector<std::string> spirits_vec, std::vector<std::string> textboxs_vec);
     /**
      *  putting all the information in this page into a string
@@ -26,17 +26,17 @@ public:
      */
 	std::string exportInString();
 
-	Spirit* getRealSpirits(int id);
-	Textbox* getRealTextbox(int id);
+	Spirit* getRealSpirits(const int id);
+	Textbox* getRealTextbox(const int id);
 	void setFont(ImFont* font_given);
     std::vector<GLuint> loadPage(const std::string &project_path);
-    void drawPage(std::vector<GLuint> &textures);
+    void drawPage(const std::vector<GLuint> &textures);
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
 
 private:
     void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
-    void loadImageTexture(std::string &name, std::vector<GLuint> &textures);
+    void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);
 	
     /**
      * containing the order of the element rendering (on top of another)

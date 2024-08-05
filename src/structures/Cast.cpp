@@ -20,8 +20,7 @@ Cast::Cast(std::shared_ptr<
         std::unique_ptr<Backup> backup_data)
         : 
         _game_data_ptr(game_data_ptr), 
-        _backup_data(std::move(backup_data))
-        {
+        _backup_data(std::move(backup_data)){
 	_shortkey_outlay = Tools::loadShortkeys("../src/settings/keyLoad.json");
 }
 Cast::~Cast() {}
@@ -141,7 +140,7 @@ void Cast::showMenuBar(Page &clipboard_page) {
         }
         ImGui::SameLine();
         if(ImGui::BeginMenu("Cast")) {
-            if(ImGui::MenuItem("list")) {
+            if(ImGui::MenuItem("List")) {
             }
             if(ImGui::BeginMenu("Spirit")) {
                 if(ImGui::MenuItem("Import")) {
@@ -160,6 +159,16 @@ void Cast::showMenuBar(Page &clipboard_page) {
                 if(ImGui::MenuItem("Delete")) {
                 }
                 ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::SameLine();
+        if(ImGui::BeginMenu("Run")){
+            if(ImGui::MenuItem("Run New Game")){
+
+            }
+            if(ImGui::MenuItem("Run From Here")){
+
             }
             ImGui::EndMenu();
         }

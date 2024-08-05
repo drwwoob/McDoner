@@ -4,7 +4,7 @@
 Page::Page() {
 }
 
-Page::Page(std::string page_data) {
+Page::Page(const std::string& page_data) {
     // page_data should look like
     // {spirit1##spirit2##spirit3##}{textbox1##textbox2##}{order1first#order1second##order2first#order2second##}
 
@@ -115,7 +115,7 @@ void Page::decrypt(const std::string& data_block, int size, const std::function<
     }
 }
 
-void Page::loadImageTexture(std::string& name, std::vector<GLuint>& textures) {
+void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textures) {
     int my_image_width = 0;
     int my_image_height = 0;
     GLuint my_image_texture = 0;
@@ -127,7 +127,7 @@ void Page::loadImageTexture(std::string& name, std::vector<GLuint>& textures) {
     textures.emplace_back(my_image_texture);
 }
 
-void Page::drawPage(std::vector<GLuint>& textures) {
+void Page::drawPage(const std::vector<GLuint>& textures) {
     int i = 0;
     for(auto draw_obj : _draw_order) {
         // std::cout << draw_obj.first << ", " << draw_obj.second << std::endl;

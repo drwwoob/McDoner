@@ -2,30 +2,36 @@
 
 ## Overview
 
-- [X] UNDO
-- [ ] multi-languaging
-- [ ] web avalible
-- [ ] bundle creation for mac
-- [ ] multiple project in same time (working on its data managing)
-- [ ] spirit libary
-- [ ] stored spirits setting
-- [ ] stored textbox setting
-- [ ] import / replacing / deleting images
-- [ ] resolution
-- [ ] animation
-- [ ] voicing
-- [X] exit page memory
-- [ ] drag
-- [ ] edit windows?
-- [ ] *or*, dragging imgui window outside host window
-- [ ] textured buttons
-- [ ] better shortcut keys logic
-- [X] shortcut keys for Mac
-- [ ] game package creation
-- [ ] stacking ImGui windows
-- [ ] Individual ImGui window with color and transparency
-- [ ] dragging pages in library
-- [ ] better undo logic
+- [X] [UNDO](#undo)
+- [ ] [multi-languaging](#multi-languaging)
+- [ ] [web avalible](#web-avalible)
+- [ ] [bundle creation for mac](#bundle-creation-for-mac)
+- [ ] [multiple project in same time](#multiple-project-in-same-time) (working on its data managing)
+- [ ] [spirit libary](#spirit-libary)
+- [ ] [stored spirits setting](#stored-spirits-setting)
+- [ ] [stored textbox setting](#stored-textbox-setting)
+- [ ] [import / replacing / deleting images](#import--replacing--deleting-images)
+- [ ] [import / replacing / deleting images](#import--replacing--deleting-images)
+- [ ] [resolution](#resolution)
+- [ ] [animation](#animation)
+- [ ] [voicing](#voicing)
+- [X] [exit page memory](#exit-page-memory)
+- [ ] [drag](#drag)
+- [ ] [edit windows?](#edit-windows)
+- [ ] *or*, [dragging imgui window outside host window](#or-dragging-imgui-window-outside-host-window)
+- [ ] [textured buttons](#textured-buttons)
+- [ ] [better shortcut keys logic](#textured-buttons)
+- [X] [shortcut keys for Mac](#shortcut-keys-for-mac)
+- [ ] [game package creation](#game-package-creation)
+- [ ] [stacking ImGui windows](#stacking-imgui-windows)
+- [ ] [Individual ImGui window with color and transparency](#individual-imgui-window-with-color-and-transparency)
+- [ ] [dragging pages in library](#dragging-pages-in-library)
+- [ ] [refactor](#refactor)
+- [ ] [better undo logic](#better-undo-logic)
+- [ ] [point and click plug-in](#point-and-click-plug-in)
+- [ ] [setted background position/size/ratio](#setted-background-positionsizeratio)
+- [ ] [changable menu background picture](#changable-menu-background-picture)
+- [ ] [stored value and trigger](#stored-value-and-trigger)
 
 ## ***UNDO***
 
@@ -136,3 +142,22 @@ man, it's really a mess, i have to admit
 ## better undo logic
 
 saving and reading the whole file is a bit uh, so i'm thinking of saving and reading replacing parts, implementing a logic for undo similar to the logic for texturing. what i'm thinking is like seperating `importing spirit`, `page content`, `game setting` and such with idex numbers, so that undo will contain something like a `pair<int, string>` so that the code know after reading where to go and change. Oh, ***《`pair<int, T>`》***, mind explode
+
+## point and click plug-in
+
+reference to [textured buttons](#textured-buttons), i'm having more thoughts on it rn
+
+## setted background position/size/ratio
+
+I canceled this feature in V0.0.2, but now thinking of it isn't it kewl if your screen suddenly jumped away and changed it's size, kinda cute infact
+
+## changable menu background picture
+
+very astonishing feature in some games, don't think it's gonna be hard to achieve
+
+## stored value and trigger
+
+haha, totally forgot abt this, how could one not have this though
+
+> : do u think u r a visual novel engine
+> : yes, i think i am
