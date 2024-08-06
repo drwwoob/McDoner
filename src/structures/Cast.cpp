@@ -163,6 +163,16 @@ void Cast::showMenuBar(Page &clipboard_page) {
             ImGui::EndMenu();
         }
         ImGui::SameLine();
+        if(ImGui::BeginMenu("View")){
+            if(ImGui::MenuItem("Starting Page")){
+
+            }
+            if(ImGui::MenuItem("Page Gallary")){
+
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::SameLine();
         if(ImGui::BeginMenu("Run")){
             if(ImGui::MenuItem("Run New Game")){
 

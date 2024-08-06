@@ -46,8 +46,8 @@ void Data::loadTexture() {
     _textures = _pages.at(_page_at).loadPage(_project_path);
 }
 
-void Data::draw() {
-    _pages.at(_page_at).drawPage(_textures);
+void Data::draw(const bool show_buttons) {
+    _pages.at(_page_at).drawPage(_textures, show_buttons);
 }
 
 Page* Data::getPage(int page_id) {
@@ -90,6 +90,14 @@ void Data::decryptFile(std::string data_str) {
     }
 }
 
+void Data::ImportButtonInterface()
+{
+}
+
+void Data::changeProjectName()
+{
+}
+
 void Data::save() {
     std::ofstream file;
     //for testing
@@ -113,4 +121,29 @@ void Data::CopyPage(int page_id, Page page) {
 
 void Data::deletePage(int page_id) {
     _pages.erase(_pages.begin() + page_id);
+}
+
+void Data::loadSettings(){
+    loadButtonInterfaces();
+}
+
+void Data::loadButtonInterfaces(){
+    // load default interfaces
+    std::ifstream file("../src/settings/buttonInterface.txt", std::ios::in);
+    std::string settings = "";
+    std::string line;
+    while(std::getline(file, line)) {
+        settings += line;
+    }
+
+    // load specified interfaces
+    if(std::filesystem::exists(_project_path + "buttonInterface.txt")){
+        file.open(_project_path + "buttonInterface.txt", std::ios::in);
+        while(std::getline(file, line)) {
+            settings += line;
+        }
+    }
+
+    // decrypt settings string
+
 }

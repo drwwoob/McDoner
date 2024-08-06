@@ -24,7 +24,7 @@ class Data {
 
 	int _page_at;
     void loadTexture();
-    void draw();
+    void draw(const bool show_buttons);
     void setFont(ImFont* font_given);
     void save();
     int pageSize() { return _pages.size(); };
@@ -33,13 +33,18 @@ class Data {
     void deletePage(int page_id);
     std::string encryptIntoFile(); // encrypt the current pages into text
     void decryptFile(std::string data_str);
+    void ImportButtonInterface();
+    void changeProjectName();
 
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
+    std::vector<ButtonInterface> _button_interfaces;
     std::string _file_name;
     std::string _project_path;
     std::vector<GLuint> _textures{};
+    void loadSettings();
+    void loadButtonInterfaces();
     //std::map<Page> pages;
 
     // a hash table that stores all pages? or array?

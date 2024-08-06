@@ -30,8 +30,11 @@
 - [ ] [better undo logic](#better-undo-logic)
 - [ ] [point and click plug-in](#point-and-click-plug-in)
 - [ ] [setted background position/size/ratio](#setted-background-positionsizeratio)
+- [ ] [setted multiple windows](#setted-multiple-windows)
 - [ ] [changable menu background picture](#changable-menu-background-picture)
 - [ ] [stored value and trigger](#stored-value-and-trigger)
+- [ ] [change project name](#change-project-name)
+- [ ] [editable seperate text speed](#editable-seperate-text-speed)
 
 ## ***UNDO***
 
@@ -153,11 +156,26 @@ I canceled this feature in V0.0.2, but now thinking of it isn't it kewl if your 
 
 ## changable menu background picture
 
-very astonishing feature in some games, don't think it's gonna be hard to achieve
+by which i mean during the progress of the story the menu picture will change, very astonishing feature in some games, don't think it's gonna be hard to achieve
 
 ## stored value and trigger
 
 haha, totally forgot abt this, how could one not have this though
 
 > : do u think u r a visual novel engine
+>
 > : yes, i think i am
+
+## setted multiple windows
+
+just a thought, but if the game could have multiple windows, setted in rigid positions on the screen, that would be so kewl. I can think of ways to do it, but enabling it with engine would be hard
+
+## change project name
+
+Or all my project names will be something like 新川崎(阪), but I would prefer トゲナシトゲアリ
+
+## editable seperate text speed
+
+like when a person say something empasizing or REALLY, REALLY, SLOW, i think making the speed of text slow down (or speed up) is fun
+
+> 现在年轻女孩一点矜持都没有在那边胡说八道讲得天花乱坠大婶我年轻时代根本不会有这种事每个人都相亲相爱彼此着想可是看看现在有事没事在背后说人坏话搞得大家人心惶惶的说起来现在年轻人都禁不起念讲个两三句就回你个十几句都不懂得尊重老人不知道是怎么教的大婶我真难过……呜喔喔喔喔喔喔喔喔喔喔喔喔！

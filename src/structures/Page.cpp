@@ -127,7 +127,7 @@ void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textur
     textures.emplace_back(my_image_texture);
 }
 
-void Page::drawPage(const std::vector<GLuint>& textures) {
+void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_buttons) {
     int i = 0;
     for(auto draw_obj : _draw_order) {
         // std::cout << draw_obj.first << ", " << draw_obj.second << std::endl;
@@ -172,6 +172,10 @@ void Page::drawPage(const std::vector<GLuint>& textures) {
             std::cout << "wrong name: " << draw_obj.second << std::endl;
             break;
         }
+    }
+    // reder the buttonInterface
+    if(show_buttons){
+
     }
 }
 

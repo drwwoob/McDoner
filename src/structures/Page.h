@@ -9,6 +9,7 @@
 
 #include "Textbox.h"
 #include <functional>
+#include "ButtonInterface.h"
 
 class Page {
 public:
@@ -30,9 +31,10 @@ public:
 	Textbox* getRealTextbox(const int id);
 	void setFont(ImFont* font_given);
     std::vector<GLuint> loadPage(const std::string &project_path);
-    void drawPage(const std::vector<GLuint> &textures);
+    void drawPage(const std::vector<GLuint> &textures, const bool& show_buttons);
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
+    std::shared_ptr<ButtonInterface> _button_interface_id;
 
 private:
     void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
