@@ -1,10 +1,12 @@
 # McDoner or [驴肉夹馍](https://github.com/drwwoob/McDoner/blob/main/README_CHINESE.md)
+
+## ----------- 🚧 Under Construction 🚧 --------------
+
 Welcome to McDoner! This is a game engine designed for visual novels! If you are the ones having a great story that you want to share with the world ---- don't hesitate to use McDoner! You can easily make your own game with no knowledge on programming (well if you do that's even better), while having a wide range of freedom modifing your game!
 
 # See Our Features
 - EASY
 - LIGHT
-- VISUALIZABLE
 
 # reqirement
 openGL version 

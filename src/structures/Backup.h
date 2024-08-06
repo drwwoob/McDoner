@@ -25,9 +25,11 @@ public:
 
     /**
      * @details changed_type:
-     *              0: setting
-     *              1: page(change its content)
-     *              2: structural (add/delete page)
+     *              0: Setting
+     *              1: Page(change its content)
+     *              2: Structural (add/delete page)
+     *              3: Button Interface
+     *              4: Spirit Library
      */
     // void undo(Data& (*game_data_ptr)){
         // forward_data.emplace(backup_data.top());

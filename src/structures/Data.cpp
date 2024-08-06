@@ -145,5 +145,5 @@ void Data::loadButtonInterfaces(){
     }
 
     // decrypt settings string
-
+    
 }

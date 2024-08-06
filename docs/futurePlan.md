@@ -11,7 +11,6 @@
 - [ ] [stored spirits setting](#stored-spirits-setting)
 - [ ] [stored textbox setting](#stored-textbox-setting)
 - [ ] [import / replacing / deleting images](#import--replacing--deleting-images)
-- [ ] [import / replacing / deleting images](#import--replacing--deleting-images)
 - [ ] [resolution](#resolution)
 - [ ] [animation](#animation)
 - [ ] [voicing](#voicing)
@@ -35,6 +34,7 @@
 - [ ] [stored value and trigger](#stored-value-and-trigger)
 - [ ] [change project name](#change-project-name)
 - [ ] [editable seperate text speed](#editable-seperate-text-speed)
+- [ ] [possible better spirit logic](#possible-better-spirit-logic)
 
 ## ***UNDO***
 
@@ -145,6 +145,7 @@ man, it's really a mess, i have to admit
 ## better undo logic
 
 saving and reading the whole file is a bit uh, so i'm thinking of saving and reading replacing parts, implementing a logic for undo similar to the logic for texturing. what i'm thinking is like seperating `importing spirit`, `page content`, `game setting` and such with idex numbers, so that undo will contain something like a `pair<int, string>` so that the code know after reading where to go and change. Oh, ***《`pair<int, T>`》***, mind explode
+> man this is getting **urgent** as i am stuffing way too many things (some uneccessary) in a project's Data
 
 ## point and click plug-in
 
@@ -179,3 +180,7 @@ Or all my project names will be something like 新川崎(阪), but I would prefe
 like when a person say something empasizing or REALLY, REALLY, SLOW, i think making the speed of text slow down (or speed up) is fun
 
 > 现在年轻女孩一点矜持都没有在那边胡说八道讲得天花乱坠大婶我年轻时代根本不会有这种事每个人都相亲相爱彼此着想可是看看现在有事没事在背后说人坏话搞得大家人心惶惶的说起来现在年轻人都禁不起念讲个两三句就回你个十几句都不懂得尊重老人不知道是怎么教的大婶我真难过……呜喔喔喔喔喔喔喔喔喔喔喔喔！
+
+## possible better spirit logic
+
+better logic for spirit... somewhat same as the always metioned thing, I don't think saving same spirit for so many times is a good thing... Maybe with the spirit list i could save a pointer in the spirit that points to the object inside the spirit map/list/vector/whatever. But what would be the difference here(

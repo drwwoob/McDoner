@@ -182,31 +182,31 @@ void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_button
 std::string Page::exportInString() {
     std::string encrypt = "[";
     // add spirits
-    encrypt.append("{");
+    encrypt += '{';
     for(auto spirit : _spirits) {
         encrypt.append(spirit.toString());
     }
-    encrypt.append("}");
+    encrypt += '}';
 
     // add textboxs
-    encrypt.append("{");
+    encrypt += '{';
     for(auto textbox : _textboxs) {
         encrypt.append(textbox.encrypt());
         //encrypt.append(textbox);
     }
-    encrypt.append("}");
+    encrypt += '}';
 
     // add order
-    encrypt.append("{");
+    encrypt += '{';
     for(auto order_obj : _draw_order) {
         encrypt.append(std::to_string(order_obj.first));
-        encrypt.append("#");
+        encrypt += '#';
         encrypt.append(order_obj.second);
-        encrypt.append("##");
+        encrypt.append(2, '#');
     }
-    encrypt.append("}");
+    encrypt += '}';
 
     // ending this page
-    encrypt.append("]");
+    encrypt += ']';
     return encrypt;
 }

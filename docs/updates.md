@@ -9,6 +9,8 @@
 ## upcoming version 0.0.4
 
 - able to edit home page and setting page
+- adding button interface
+- better logic for undo
 
 ## 0.0.3
 

@@ -38,5 +38,5 @@
 .DS_store
 
 # vscode
-./vscode
+.vscode/
 .clang-format

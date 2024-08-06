@@ -41,7 +41,6 @@ void Cast::showMenuBar(Page &clipboard_page) {
             }
             if(ImGui::MenuItem("Import", _shortkey_outlay.at("Import").c_str())) {
             }
-
             if(ImGui::MenuItem("Exit", _shortkey_outlay.at("Exit").c_str())) {
                 // Handle "Exit" action
             }
@@ -395,7 +394,7 @@ bool Cast::newProject(){
     }
 
     std::string path = lTheSelectFolderName;
-    path.append(lTheProjectName);
+    path += lTheProjectName;
     if(std::filesystem::exists(path) && std::filesystem::is_directory(path)){
         tinyfd_messageBox(
 			"Error",
@@ -426,8 +425,8 @@ bool Cast::openProject()
         path.substr(0, path.size() - 1).find_last_of("/") + 1
     );
     project_name = project_name.substr(0, project_name.size() - 1);
-    path.append(project_name);
-    path.append(".txt");
+    path += project_name;
+    path += ".txt";
     if(!std::filesystem::exists(path) || !std::filesystem::is_regular_file(path)){
         tinyfd_messageBox(
 			"Error",

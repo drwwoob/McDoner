@@ -41,6 +41,7 @@ class OtherPage{
     //         "New Game",
     //         "Load Game", 
     //         "Setting",
+    //         "Credit",
     //         "Exit"
     //     };
 

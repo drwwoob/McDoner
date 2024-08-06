@@ -45,6 +45,13 @@ class Data {
     std::vector<GLuint> _textures{};
     void loadSettings();
     void loadButtonInterfaces();
+    using ParameterVarient = std::variant<
+        int,
+        double,
+        bool,
+        std::string
+    >;
+    std::map<std::string, ParameterVarient> _values; // name, initial value
     //std::map<Page> pages;
 
     // a hash table that stores all pages? or array?
