@@ -9,7 +9,11 @@
 #include "Backup.h"
 class Cast {
 public:
-	Cast(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr, std::unique_ptr<Backup> backup_data);
+	Cast(
+		std::shared_ptr<std::shared_ptr<Data>> game_data_ptr,
+		std::unique_ptr<Backup> backup_data,
+		std::unique_ptr<Page> clipboard_page_ptr
+	);
     ~Cast();
     /**
 	 * the main menu bar for the host window
@@ -50,7 +54,9 @@ public:
 private:
 	std::shared_ptr<std::shared_ptr<Data>> _game_data_ptr;
 	std::unique_ptr<Backup> _backup_data;
+	std::unique_ptr<Page> _clipboard_page_ptr;
 	std::unordered_map<std::string, std::string> _shortkey_outlay;
+	std::unordered_map<std::string, std::string> _menu_language;
     // functions for different cast members, all written here so the the functions (and bugs) sync
     /**
 	 *
@@ -60,8 +66,15 @@ private:
     void addPage();
     void duplicatePage();
     void deletePage();
-    void copyPage(Page& clipboard_page);
+    void copyPage();
 	bool newProject();
 	bool openProject();
 	void askForSave();
+	/**
+	 * @param map_id
+	 * 	0: _shortkey_outlay
+	 *  1: _menu_language
+	 */
+	const char* getMapItem(int map_id, const std::string& key);
+	void loadLanguageMap(const std::string& lang_id);
 };

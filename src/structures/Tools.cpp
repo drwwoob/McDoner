@@ -106,9 +106,10 @@ bool Tools::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* 
 
 // #endif
 
-std::unordered_map<std::string, std::string> Tools::loadShortkeys(const std::string& filename){
+// template<std::size_t Size>
+std::unordered_map<std::string, std::string> Tools::loadJson(const std::string& filename, std::function<void(std::unordered_map<std::string, std::string>&, nlohmann::json&)> func){
     if (!std::filesystem::exists(filename)) {
-        throw std::runtime_error("Unable to open keybindings file: " + filename);
+        throw std::runtime_error("Keybindings file not exist: " + filename);
     }
     
     std::ifstream file(filename);
@@ -116,30 +117,10 @@ std::unordered_map<std::string, std::string> Tools::loadShortkeys(const std::str
         throw std::runtime_error("Unable to open keybindings file: " + filename);
     }
     
-    nlohmann::json keyBindings;
-    file >> keyBindings;
-
-    std::vector<std::string> keys {
-        "New", 
-        "Open",
-        "Save",
-        "Import",
-        "Exit",
-        // "Edit",
-        "Undo",
-        "Redo",
-        // "Scene",
-        // "Last Page",
-        // "Next Page",
-        };
+    nlohmann::json key_bindings;
+    file >> key_bindings;
 
     std::unordered_map<std::string, std::string> shortkey_map {};
-    for(auto &key : keys){
-        #ifdef __APPLE__
-            shortkey_map.emplace(key, keyBindings.at(key).at("Mac").get<std::string>());
-        #else
-            shortkey_map.emplace(key, keyBindings.at(key).at("Windows").get<std::string>());
-        #endif
-    }
+    func(shortkey_map, key_bindings);
     return shortkey_map;
 }

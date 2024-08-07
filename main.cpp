@@ -103,9 +103,9 @@ int main(int, char**)
 
     // game data
     auto game_data_ptr = std::make_shared<std::shared_ptr<Data>>();
-    Backup backup_game_data(game_data_ptr);
-    Cast cast(game_data_ptr, std::make_unique<Backup>(backup_game_data));
     Page clipboard_page;
+    Backup backup_game_data(game_data_ptr);
+    Cast cast(game_data_ptr, std::make_unique<Backup>(backup_game_data), std::make_unique<Page>(clipboard_page));
 
     // Main loop
     bool done = false;

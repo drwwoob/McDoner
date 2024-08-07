@@ -34,5 +34,6 @@ std::string ButtonInterface::encrpyt(){
         _buttons.at(draw_id).save(save_string);
         save_string += '#';
     }
-    save_string += '#';
+    save_string += '}';
+    return save_string;
 }

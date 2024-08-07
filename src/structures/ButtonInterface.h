@@ -16,11 +16,14 @@ public:
     ButtonInterface();
     ButtonInterface(const std::string& interface_data);
     // what about i just write this directly as a c++ file
-    // std::string encrpyt();
-
+    // haha, since i haven't make the game-generated-and-run file yet i don't even know what the c++ files would look like
     void addButton();
     void deleteButton();
     void draw();
+    /**
+     * in the format
+     *  [{button1}{button2}{button3}]
+     */
     std::string encrpyt();
     // void saveInLibrary();
 };

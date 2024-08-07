@@ -17,10 +17,14 @@ class Data {
      * @param file_path string of the given file path
      */
     Data(const std::string& file_path);
+    /**
+     * creating new project
+     * @overload constructor, creating a project
+     * @param project_path the path to store the project
+     * @param project_name the name for the porject
+     */
     Data(const std::string &project_path, const char * project_name);
-    void openFile(); // reading a file
-    //void openFile(std::string path);
-    Page* getPage(int page_id); // get the information of a page (decrypt)
+    std::unique_ptr<Page> getPage(int page_id); // get the information of a page (decrypt)
 
 	int _page_at;
     void loadTexture();
@@ -32,14 +36,14 @@ class Data {
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
     std::string encryptIntoFile(); // encrypt the current pages into text
-    void decryptFile(std::string data_str);
-    void ImportButtonInterface();
+    void decryptFile(const std::string& data_str);
+    void ImportButtonInterface(const std::string& path);
     void changeProjectName();
 
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
-    std::vector<ButtonInterface> _button_interfaces;
+    std::vector<Page> _formated_pages;
     std::string _file_name;
     std::string _project_path;
     std::vector<GLuint> _textures{};

@@ -17,31 +17,65 @@ void* GImGuiMarkerCallbackUserData = NULL;
 
 Cast::Cast(std::shared_ptr<
         std::shared_ptr<Data>> game_data_ptr, 
-        std::unique_ptr<Backup> backup_data)
+        std::unique_ptr<Backup> backup_data,
+        std::unique_ptr<Page> clipboard_page_ptr
+        )
         : 
         _game_data_ptr(game_data_ptr), 
-        _backup_data(std::move(backup_data)){
-	_shortkey_outlay = Tools::loadShortkeys("../src/settings/keyLoad.json");
+        _backup_data(std::move(backup_data)),
+        _clipboard_page_ptr(std::move(clipboard_page_ptr))
+        {
+    // listing out the menu shortkey items
+    auto getShortKeys = [](std::unordered_map<std::string, std::string> &shortkey_map, nlohmann::json &keyBindings){
+        std::array<std::string, 7> keys {
+            "New", 
+            "Open",
+            "Save",
+            "Import",
+            "Exit",
+            // "Edit",
+            "Undo",
+            "Redo",
+            // "Scene",
+            // "Last Page",
+            // "Next Page",
+        };
+        for(auto &key : keys){
+        #ifdef __APPLE__
+            shortkey_map.emplace(key, keyBindings.at(key).at("Mac").get<std::string>());
+        #else
+            shortkey_map.emplace(key, keyBindings.at(key).at("Windows").get<std::string>());
+        #endif
+        }  
+    };
+
+	_shortkey_outlay = Tools::loadJson("../src/settings/keyLoad.json", getShortKeys);
+
+    // listing out the language options
+    std::array<std::string, 2> language_keys{
+        "EN",
+        "CH"
+    };
 }
 Cast::~Cast() {}
 
 void Cast::showMenuBar(Page &clipboard_page) {
     if(ImGui::BeginMainMenuBar()) {
         if(ImGui::BeginMenu("File")) {
-            if(ImGui::MenuItem("New", _shortkey_outlay.at("New").c_str())) {
+            if(ImGui::MenuItem("New", getMapItem(0, "New"))) {
                 newProject();
             }
             // Add items to the "File" menu
-            if(ImGui::MenuItem("Open", _shortkey_outlay.at("Open").c_str())) {
+            if(ImGui::MenuItem("Open", getMapItem(0, "Open"))) {
                 openProject();
             }
-            if(ImGui::MenuItem("Save", _shortkey_outlay.at("Save").c_str())) {
+            if(ImGui::MenuItem("Save", getMapItem(0, "Save"))) {
                 // Handle "Save" action
 				(*_game_data_ptr)->save();
             }
-            if(ImGui::MenuItem("Import", _shortkey_outlay.at("Import").c_str())) {
+            if(ImGui::MenuItem("Import", getMapItem(0, "Import"))) {
             }
-            if(ImGui::MenuItem("Exit", _shortkey_outlay.at("Exit").c_str())) {
+            if(ImGui::MenuItem("Exit", getMapItem(0, "Exit"))) {
                 // Handle "Exit" action
             }
             ImGui::EndMenu();
@@ -54,7 +88,7 @@ void Cast::showMenuBar(Page &clipboard_page) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-			if(ImGui::MenuItem("Undo", "Ctrl+Z")){
+			if(ImGui::MenuItem("Undo", getMapItem(0, "Undo"))){
 				_backup_data->undo();
 			}
             if(disabled) {
@@ -66,7 +100,7 @@ void Cast::showMenuBar(Page &clipboard_page) {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-			if(ImGui::MenuItem("Redo", "Ctrl+Shift+Z")){
+			if(ImGui::MenuItem("Redo", getMapItem(0, "Redo"))){
 				_backup_data->redo();
 			}
             if(disabled) {
@@ -123,7 +157,7 @@ void Cast::showMenuBar(Page &clipboard_page) {
                 duplicatePage();
             }
             if(ImGui::MenuItem("copy page")) {
-				copyPage(clipboard_page);
+				copyPage();
             }
             if(ImGui::MenuItem("cut page")) {
             }
@@ -316,13 +350,13 @@ void Cast::showAmongPages(bool* p_open) {
         disabled = false;
     }
 
-    if(ImGui::Button("add Page", ImVec2(100, 100))) {
+    if(ImGui::Button("add Page", ImVec2(50, 50))) {
         addPage();
     }
 
     ImGui::SameLine();
 
-    if(ImGui::Button("duplicate Page", ImVec2(100, 100))) {
+    if(ImGui::Button("duplicate Page", ImVec2(50, 50))) {
         duplicatePage();
     }
 
@@ -332,13 +366,29 @@ void Cast::showAmongPages(bool* p_open) {
         disabled = true;
         ImGui::BeginDisabled();
     }
-    if(ImGui::Button("delete Page", ImVec2(100, 100))) {
+    if(ImGui::Button("delete Page", ImVec2(50, 50))) {
         deletePage();
     }
     if(disabled) {
         ImGui::EndDisabled();
         disabled = false;
     }
+
+    if(ImGui::Button("Cut Page", ImVec2(50, 50))) {
+    }
+
+    ImGui::SameLine();
+
+    if(ImGui::Button("Copy Page", ImVec2(50, 50))) {
+        copyPage();
+    }
+
+    ImGui::SameLine();
+
+    if(ImGui::Button("Paste Page", ImVec2(50, 50))) {
+    }
+
+    ImGui::SameLine();
 
     ImGui::End();
 }
@@ -373,9 +423,9 @@ void Cast::deletePage() {
         (*_game_data_ptr)->loadTexture();
     }
 }
-void Cast::copyPage(Page& clipboard_page) {
+void Cast::copyPage() {
     _backup_data->addMove();
-    clipboard_page = *(*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
+    *_clipboard_page_ptr = *(*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
 };
 
 bool Cast::newProject(){
@@ -453,5 +503,19 @@ void Cast::askForSave(){
 		if(save_stat){
             (*_game_data_ptr)->save();
         }
+    }
+}
+
+const char* Cast::getMapItem(int map_Id, const std::string &key){
+    switch (map_Id)
+    {
+    case 0:
+        return _shortkey_outlay.at(key).c_str();
+        break;
+    case 1:
+        return _menu_language.at(key).c_str();
+        break;
+    default:
+        return "";
     }
 }

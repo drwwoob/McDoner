@@ -40,7 +40,7 @@ class Tools {
 
     static void drawImage();
 
-	static std::unordered_map<std::string, std::string> loadShortkeys(const std::string& filename);
-
-private:
+    // template <std::size_t Size>
+	// static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::array<std::string, Size>& keys);
+    static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::function<void(std::unordered_map<std::string, std::string>&, nlohmann::json&)> func);
 };

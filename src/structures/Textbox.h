@@ -81,23 +81,23 @@ class Textbox {
     std::string encrypt() {
         std::string WordEncry = Tools::wordEncrypt(_name);
 
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += Tools::wordEncrypt(_content);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_position_ratio[0]);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_position_ratio[1]);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += Tools::wordEncrypt(_font_path);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_color.Value.x);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_color.Value.y);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_color.Value.z);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_color.Value.w);
-        WordEncry += "#";
+        WordEncry += '#';
         WordEncry += std::to_string(_font_size);
         WordEncry += "##";
 

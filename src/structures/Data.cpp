@@ -29,12 +29,6 @@ Data::Data(const std::string& project_path, const char * project_name) {
     _page_at = 0;
 }
 
-void Data::openFile() {
-    // get the file_path here first
-
-    // decryptFile();
-}
-
 void Data::setFont(ImFont* font_given) {
     _font = font_given;
     //for (int i = 0; i < pages.size(); i++) {
@@ -50,21 +44,21 @@ void Data::draw(const bool show_buttons) {
     _pages.at(_page_at).drawPage(_textures, show_buttons);
 }
 
-Page* Data::getPage(int page_id) {
-    return &_pages.at(page_id);
+std::unique_ptr<Page> Data::getPage(int page_id) {
+    return std::make_unique<Page>(_pages.at(page_id));
 }
 
 std::string Data::encryptIntoFile() {
     std::string pagesInfo;
     pagesInfo.append(std::to_string(_page_at) + ",");
     for(auto page : _pages) {
-        pagesInfo.append(page.exportInString());
+        pagesInfo.append(page.encrpyt());
     }
 
     return pagesInfo;
 }
 
-void Data::decryptFile(std::string data_str) {
+void Data::decryptFile(const std::string& data_str) {
     // clear all old data
     // have to default font here
     _pages.clear();
@@ -90,12 +84,10 @@ void Data::decryptFile(std::string data_str) {
     }
 }
 
-void Data::ImportButtonInterface()
-{
+void Data::ImportButtonInterface(const std::string& path){
 }
 
-void Data::changeProjectName()
-{
+void Data::changeProjectName(){
 }
 
 void Data::save() {

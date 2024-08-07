@@ -35,6 +35,9 @@
 - [ ] [change project name](#change-project-name)
 - [ ] [editable seperate text speed](#editable-seperate-text-speed)
 - [ ] [possible better spirit logic](#possible-better-spirit-logic)
+- [ ] [better data loading logic](#better-data-loading-logic)
+- [ ] [stored page setting](#stored-page-setting)
+- [ ] [more naming formatting](#more-naming-formatting)
 
 ## ***UNDO***
 
@@ -153,7 +156,7 @@ reference to [textured buttons](#textured-buttons), i'm having more thoughts on 
 
 ## setted background position/size/ratio
 
-I canceled this feature in V0.0.2, but now thinking of it isn't it kewl if your screen suddenly jumped away and changed it's size, kinda cute infact
+I canceled this feature in V0.0.2, but now thinking of it isn't it kewl if your screen suddenly jumped away and changed it's size, kinda meta-ish feeling. Let me think... Kinda like "The Pedestrian" without background?
 
 ## changable menu background picture
 
@@ -184,3 +187,19 @@ like when a person say something empasizing or REALLY, REALLY, SLOW, i think mak
 ## possible better spirit logic
 
 better logic for spirit... somewhat same as the always metioned thing, I don't think saving same spirit for so many times is a good thing... Maybe with the spirit list i could save a pointer in the spirit that points to the object inside the spirit map/list/vector/whatever. But what would be the difference here(
+
+## better data loading logic
+
+currently im loading all pages in the beginning, but that could take too much memory. Should i instead load only the current page? but also a page does not take that much space, does it really worth it?
+
+## stored page setting
+
+kind of similar to what i mentioned in [stored spirits setting](#stored-spirits-setting), where the page is stored as a format and can be pulled out when wanted. Infact ButtonInterface is designed like that, so I'm thinking of applying the same feature onto this too. Not gonna be hard code-wise, the hardest part is UI design(
+
+wait, i don't even need buttonInterface if i implement this.
+
+am i stupid
+
+## more naming formatting
+
+eh, for some reason, my functions are all named in myseriously incoherant ways, like i just figured encryption functions named in "encrypt", "encrypted", "encryptToString", "exportInString", "save", "toString" and "to_string"... very unique, many diversion in my project, so politically correct(

@@ -13,8 +13,10 @@ class Spirit {
    public:
     std::string _spirit_name;
     float _size_ratio[2];
-    //ImVec2 Position;
     float _position_ratio[2]; // the ratio of (the coord for lefttop of the picture / the whole window)
+    bool _empty = true;
+
+    Spirit(){};
     // constructor while a new spirit is added
     Spirit(const std::string file_name) { // creating a new spirit
         // since changing nick-name should not change file name, this file_name is passed in as a copy
@@ -24,6 +26,7 @@ class Spirit {
         _size_ratio[1] = 1.0;      // default weight is the image's origin height
         _position_ratio[0] = 0.25; // default position in the 1/4 of the window
         _position_ratio[1] = 0.25; // same as above
+        _empty = false;
     }
     // constructor for read in Data
     Spirit(const std::string& name, const std::string& file_name, const float& sr_x, const float& sr_y, const float& pr_x, const float& pr_y) {
@@ -33,6 +36,7 @@ class Spirit {
         _size_ratio[1] = sr_y;
         _position_ratio[0] = pr_x;
         _position_ratio[1] = pr_y;
+        _empty = false;
     }
     // reading a string as a spirit
     //void change(PWSTR address_after_change);
@@ -57,7 +61,7 @@ class Spirit {
 
     // encryption follows the format
     // SpiritName#spiritFileName#sizeRatio[0]#sizeRatio[1]#positionRatio[0]#positionRatio[1]##
-    std::string toString() {
+    std::string encrypt() {
         std::string dataEncr;
 
         // pass in name

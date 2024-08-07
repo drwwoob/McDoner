@@ -5,12 +5,26 @@
 class Button{
 public:
     std::string _name;
-    std::string _unclick_img_path;
-    std::string _selecting_img_path;
-    std::string _onclick_img_path;
-    std::string _clicked_img_path;
-    ImVec2 _ratio;
-    ImVec2 _position;
+    /**
+     * imcluding 4 spirits(types of image):
+     *  0: unclick spirit
+     *  1: selected spirit
+     *  2: onclick sprit
+     *  3: clicked spirit
+     */
+    std::array<Spirit, 4> _button_spirits;
+    ImVec2 _click_ratio; // the ratio of the clickbox
+    ImVec2 _click_position; // the position of the clickbox
+    // button mode:
+    //  0: clickable
+    //  1: unclickable
+    int _mode;
+    // button status:
+    //  0: unclick
+    //  1: selected
+    //  2: onclick
+    //  3: clicked
+    int _status;
 
     using FunctionVariant = std::variant<
         std::function<void()>,
@@ -29,8 +43,17 @@ public:
         _name = "button" + std::to_string(id);
     }
 
+    /**
+     * @param path the path of img inside the project
+     * @details existence check in import and select phase
+     */
     void setUnclickImg(const std::string& path){
+        // if(std::filesystem::exists(path)){
+        // }
+    }
 
+    void setSelectedImg(const std::string& path){
+        
     }
 
     void setOnclickImg(const std::string& path){
@@ -97,5 +120,22 @@ template <typename... T>
     //         }, *func_ptr);
     //     }
     // }
+
+    /**
+     * @return in the format:
+     * name#mode#status#clickRatio[.x#clickRatio.y#clickPosition.x#clickPosition.y##spirit0##spirit1##spirit2##spirit3##func0##func1##
+     */
+    std::string encrypt(){
+        std::string save_string = "";
+        for(int i = 0; i < 4; i++){
+            if(_button_spirits.at(i)._empty == true){
+                save_string.append(7, '#');
+            }
+            else{
+                save_string += _button_spirits.at(i).encrypt();
+            }
+        }
+
+    }
 };
 

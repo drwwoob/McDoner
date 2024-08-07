@@ -179,12 +179,12 @@ void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_button
     }
 }
 
-std::string Page::exportInString() {
+std::string Page::encrpyt() {
     std::string encrypt = "[";
     // add spirits
     encrypt += '{';
     for(auto spirit : _spirits) {
-        encrypt.append(spirit.toString());
+        encrypt.append(spirit.encrypt());
     }
     encrypt += '}';
 

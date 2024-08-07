@@ -19,13 +19,13 @@ public:
     /**
      *  putting all the information in this page into a string
      * @return 
-     *  [
+     *  [   _button_interface_id,
      *      {spirit1##spirit2##spirit3##}
      *      {textbox1##textbox2##}
      *      {order1first#order1second##order2first#order2second##}
      *  ]
      */
-	std::string exportInString();
+	std::string encrpyt();
 
 	Spirit* getRealSpirits(const int id);
 	Textbox* getRealTextbox(const int id);
@@ -34,7 +34,7 @@ public:
     void drawPage(const std::vector<GLuint> &textures, const bool& show_buttons);
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
-    std::shared_ptr<ButtonInterface> _button_interface_id;
+    int _format_page_id;
 
 private:
     void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
@@ -46,6 +46,8 @@ private:
      *      < 0, "background" > = background
      *      < 1, "filename" > = spirit with the given file name
      *      < 2, "nickname" > = textbox with the give nickname
+     *      < 3, "filename" > = spirit from formatting page with given file name
+     *      < 4, "nickname" > = textbox from formatting page with the give nickname
      */
     std::vector<std::pair<int, std::string>> _draw_order;
 	// std::vector<std::string> textboxs settings;

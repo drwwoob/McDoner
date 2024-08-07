@@ -5,12 +5,14 @@
 - adding up demo version on how the game would be exported
 - adding texture for imgui window's buttons
 - 优化，我需要更多优化，更多！！！
+- better data loading logic
+- better logic for undo
 
 ## upcoming version 0.0.4
 
 - able to edit home page and setting page
-- adding button interface
-- better logic for undo
+- adding button
+- formatted pages
 
 ## 0.0.3
 
