@@ -19,7 +19,7 @@ public:
     void undo(){
         _forward_data.emplace(_backup_data.top());
         _backup_data.pop();
-        std::cout << (*_game_data_ptr)->pageSize();
+        // std::cout << (*_game_data_ptr)->pageSize();
         (*_game_data_ptr)->decryptFile(_backup_data.top());
     };
 

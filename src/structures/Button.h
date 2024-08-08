@@ -62,31 +62,48 @@ public:
         }while(data.at(start - 1) != '/');
 
         auto data_block = data.substr(0, start);
-        auto buttonFill = [this](const std::array<std::string, 7>& seperate_data){
-            _nickname = seperate_data[0];
-            _mode = std::stoi(seperate_data[1]);
-            _status = std::stoi(seperate_data[2]);
-            _click_ratio = ImVec2(std::stof(seperate_data[3]), std::stof(seperate_data[4]));
-            _click_position = ImVec2(std::stof(seperate_data[5]), std::stof(seperate_data[6]));
+        auto buttonFill = [this](const std::array<std::string, 7>& separate_data) {
+            _nickname = separate_data[0];
+            _mode = std::stoi(separate_data[1]);
+            _status = std::stoi(separate_data[2]);
+            _click_ratio = ImVec2(std::stof(separate_data[3]), std::stof(separate_data[4]));
+            _click_position = ImVec2(std::stof(separate_data[5]), std::stof(separate_data[6]));
         };
+
         // Tools::decrypt(buttonFill);
-        // Tools::decrypt(data_block, buttonFill);
+        Tools::decrypt<7>(data_block, buttonFill);
 
         size_t end = start;
+        auto spiritCreate = [this](std::array<std::string, 6>& separate_data, size_t index) {
+        if (index < _button_spirits.size()) {
+            _button_spirits[index] = Spirit(
+                separate_data[0],
+                separate_data[1],
+                std::stof(separate_data[2]),
+                std::stof(separate_data[3]),
+                std::stof(separate_data[4]),
+                std::stof(separate_data[5]));
+            }
+        };
 
-        // get the stored spirits
-        for(int i = 0; i < 4; i++){
-            // get the stored items
-            do{
-                end = data.find_first_of("##", end) + 2;
-            }while(data.at(end - 3) != '/');
+        // Iterate through each section of the data
+        for (int i = 0; i < 4; ++i) {
+            // Find the delimiter "##" and ensure it’s properly handled
+            do {
+                end = data.find("##", end);
+                if (end == std::string::npos) break; // Handle case where delimiter not found
+                end += 2; // Move past the delimiter
+            } while (data[end - 3] != '/'); // Make sure the delimiter is correct
 
-            // ============== need checking ==================
-            // have to choose wether to put i in or just _button_spirits[i]
-            // and wether i should put SpiritCreate function and Textbox inside decrypt
-            data_block = data.substr(start, end - start);
-            Tools::decrypt(data_block, 0, _button_spirits[i]);
-            start = end;
+            // Extract the data block for decryption
+            std::string data_block = data.substr(start, end - start);
+
+            // Use the lambda function to process the extracted data block
+            Tools::decrypt<6>(data_block, [this, &spiritCreate, i](std::array<std::string, 6>& separate_data) {
+                spiritCreate(separate_data, i);
+            });
+
+            start = end; // Update start for the next section
         }
         // get the functions stored
     }

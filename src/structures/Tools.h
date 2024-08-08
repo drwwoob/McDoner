@@ -63,9 +63,12 @@ class Tools {
 // 	 * 	1: Textbox
 //	 *	2: Button
 // 	 */
+// template <typename T>
+// 	static void decrypt(const std::string& data_block, int decrypt_type, T& insert_object);
+template <std::size_t Size>
+    static void decrypt(const std::string& data_block, const std::function<void(std::array<std::string, Size>&)>& func);
 
-template <typename T>
-    static void decrypt(const std::string& data_block, int decrypt_type, const T& insert_object);
+
 	static void spiritCreate();
 	static void TextboxCreate();
 	static void ButtonCreate();
@@ -76,3 +79,4 @@ template <typename T>
 #include "Tools.tpp"
 
 #endif // TOOLS_H
+

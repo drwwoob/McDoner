@@ -44,7 +44,7 @@ Page::Page(const std::string& page_data) {
             std::stof(seperate_data[4]),
             std::stof(seperate_data[5]));
     };
-    Tools::decrypt(data_block, 6, spiritCreate);
+    Tools::decrypt<6>(data_block, spiritCreate);
 
     // textbox
     //inGroup = true;
@@ -53,10 +53,10 @@ Page::Page(const std::string& page_data) {
         end = page_data.find("}", end + 1);
     } while(page_data.at(end - 1) == '/');
     data_block = page_data.substr(start, end - start - 1);
-    auto textCreate = [this](std::vector<std::string>& seperate_data) {
+    auto textCreate = [this](std::array<std::string, 10>& seperate_data) {
         _textboxs.emplace_back(seperate_data);
     };
-    Tools::decrypt(data_block, 9, textCreate);
+    Tools::decrypt<10>(data_block, textCreate);
 
     // buttons
 
@@ -64,10 +64,10 @@ Page::Page(const std::string& page_data) {
     start = end + 2;
     end = page_data.size();
     data_block = page_data.substr(start, end - start - 1);
-    auto orderCreate = [this](std::vector<std::string>& seperate_data) {
+    auto orderCreate = [this](std::array<std::string, 2>& seperate_data) {
         _draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
     };
-    Tools::decrypt(data_block, 2, orderCreate);
+    Tools::decrypt<2>(data_block, orderCreate);
 }
 
 Spirit* Page::getRealSpirits(int id) {
