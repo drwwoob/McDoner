@@ -2,14 +2,14 @@
 
 #include <string>
 #include <vector>
-#include <Spirit.h>
+#include "Spirit.hpp"
 
 #include <codecvt>
 #include <locale>
-#include <Button.h>
-#include<Textbox.h>
+#include "Button.hpp"
+#include "Textbox.hpp"
 #include <functional>
-#include "ButtonInterface.h"
+#include "ButtonInterface.hpp"
 
 class Page {
 public:

@@ -1,5 +1,5 @@
-#include "Tools.h"
-#include "imgui.h"
+#include "Tools.hpp"
+#include <imgui.h>
 #include <iostream>
 #include <string>
 #include <unordered_map>

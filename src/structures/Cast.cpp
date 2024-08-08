@@ -1,7 +1,7 @@
-#include <Cast.h>
-#include "imgui_stdlib.h"
+#include "Cast.hpp"
+#include <imgui_stdlib.h>
 #include <unordered_map>
-#include "Tools.h"
+#include "Tools.hpp"
 #include <tinyfiledialogs.h>
 #include <filesystem>
 //#include "data.h"

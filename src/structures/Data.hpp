@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
-#include "Page.h"
-#include <Tools.h>
+#include "Page.hpp"
+#include "Tools.hpp"
 //#include "shobjidl_core.h"
 
 class Data {

@@ -2,7 +2,7 @@
 #include <string>
 #include <functional>
 #include <imgui.h>
-#include <Spirit.h>
+#include "Spirit.hpp"
 
 class Button{
 public:
@@ -133,8 +133,13 @@ public:
 
     }
 
-    void draw(){
-        
+    Spirit currentSpirit(){
+        if(_mode == 0 && !_button_spirits[_status]._empty){
+            return _button_spirits[_status];
+        }
+        else{
+            return _button_spirits[0];
+        }
     }
 
 template <typename... T>

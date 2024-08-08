@@ -2,7 +2,7 @@
 // and it stores the information of a single text box.
 #pragma once
 #include <string>
-#include "Tools.h"
+#include "Tools.hpp"
 #include <imgui.h>
 
 class Textbox {
