@@ -30,7 +30,7 @@
 - [ ] [point and click plug-in](#point-and-click-plug-in)
 - [ ] [setted background position/size/ratio](#setted-background-positionsizeratio)
 - [ ] [setted multiple windows](#setted-multiple-windows)
-- [ ] [changable menu background picture](#changable-menu-background-picture)
+- [X] [changable menu background picture](#changable-menu-background-picture)
 - [ ] [stored value and trigger](#stored-value-and-trigger)
 - [ ] [change project name](#change-project-name)
 - [ ] [editable seperate text speed](#editable-seperate-text-speed)

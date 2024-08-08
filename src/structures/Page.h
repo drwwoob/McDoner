@@ -33,6 +33,7 @@ public:
 	void setFont(ImFont* font_given);
     std::vector<GLuint> loadPage(const std::string &project_path);
     void drawPage(const std::vector<GLuint> &textures, const bool& show_buttons);
+    void replace();
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
     std::vector<Button> _buttons;

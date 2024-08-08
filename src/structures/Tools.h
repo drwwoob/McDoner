@@ -45,15 +45,6 @@ class Tools {
 	// static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::array<std::string, Size>& keys);
     static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::function<void(std::unordered_map<std::string, std::string>&, nlohmann::json&)> func);
 
-// ================== need checking =================
-// well, this is a mess rn
-// there are few things i am wondering about right now
-// 1) should i include this as a vector as before or an array
-// 2) should i pass in a function or store local data for this
-//  2.1) if i pass in the function i don't have to pass in the changing variable
-//	2.2) if i store the local data i have to pass in the pointer to the changing variable
-// 3) if i am to pass in function and array, what do i do with int "i"
-
 // template <std::size_t Size>
 //     static void decrypt(const std::function<void(const std::array<std::string, Size> &)>& func);
     // static void decrypt(const std::string &data_block, const std::function<void(const std::array<std::string, Size> &)>& func);
@@ -63,17 +54,8 @@ class Tools {
 // 	 * 	1: Textbox
 //	 *	2: Button
 // 	 */
-// template <typename T>
-// 	static void decrypt(const std::string& data_block, int decrypt_type, T& insert_object);
 template <std::size_t Size>
     static void decrypt(const std::string& data_block, const std::function<void(std::array<std::string, Size>&)>& func);
-
-
-	static void spiritCreate();
-	static void TextboxCreate();
-	static void ButtonCreate();
-
-    // static void decrypt(const std::string& data_block, int size, const std::function<void(std::vector<std::string>&)>& func);
 };
 
 #include "Tools.tpp"

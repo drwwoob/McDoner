@@ -39,6 +39,7 @@ class Data {
     void decryptFile(const std::string& data_str);
     void ImportFormattedPages(const std::string& path);
     void changeProjectName();
+    void replace_all();
 
    private:
     ImFont* _font;
@@ -56,11 +57,4 @@ class Data {
         std::string
     >;
     std::map<std::string, ParameterVarient> _values; // name, initial value
-    //std::map<Page> pages;
-
-    // a hash table that stores all pages? or array?
-
-    //void readData(std::string name);
-    //from microsoft example code
-    // HRESULT basicFileOpen(bool findFile); // The tool to open common window
 };

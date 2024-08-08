@@ -156,36 +156,6 @@ template <typename... T>
         }
     }
 
-    // =============== alter way for above ==============
-    // using ParameterVarient = std::variant<
-    //     int&,
-    //     double&,
-    //     std::string&
-    // >;
-    // void activate(std::vector<ParameterVarient> args){
-    //     int i = 0;
-
-    //     for (auto func_ptr : _func_ptrs){
-    //         std::visit([&](auto&& arg) {
-    //             using T = std::decay_t<decltype(arg)>;
-                
-    //             if constexpr (std::is_same_v<T, std::function<void(void)>>) {
-    //             } 
-    //             else{
-    //                 (*func_ptr)(std::get<i>(arg_list));
-    //                 i++;
-    //             }
-    //             // else if constexpr (std::is_same_v<T, std::function<void(int&)>>) {
-    //             //     std::cout << "Type is std::function<void(int)>" << std::endl;
-    //             // } else if constexpr (std::is_same_v<T, std::function<void(double&)>>) {
-    //             //     std::cout << "Type is std::function<void(double)>" << std::endl;
-    //             // } else if constexpr (std::is_same_v<T, std::function<void(std::string&)>>) {
-    //             //     std::cout << "Type is std::function<void(int, double)>" << std::endl;
-    //             // }
-    //         }, *func_ptr);
-    //     }
-    // }
-
     /**
      * @return in the format:
      * name#mode#status#clickRatio.x#clickRatio.y#clickPosition.x#clickPosition.y##spirit0##spirit1##spirit2##spirit3##func0##func1##

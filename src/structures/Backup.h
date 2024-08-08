@@ -3,14 +3,6 @@
 #include <string>
 #include "Data.h"
 
-// template <typename T>
-
-// struct changedLog{
-//     int changed_type;
-//     int changed_page_at;
-//     string encrypted_changed;
-// };
-
 class Backup {
 public:
     Backup(std::shared_ptr<std::shared_ptr<Data>> game_data_ptr) : _game_data_ptr(game_data_ptr){};

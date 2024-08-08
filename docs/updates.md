@@ -5,14 +5,14 @@
 - adding up demo version on how the game would be exported
 - adding texture for imgui window's buttons
 - 优化，我需要更多优化，更多！！！
-- better data loading logic
 - better logic for undo
 
 ## upcoming version 0.0.4
 
-- able to edit home page and setting page
-- adding button
-- formatted pages
+- able to edit home page and setting page (technically you always can)
+- adding button (without edition and function)
+- adding formatted pages
+- better data loading logic
 
 ## 0.0.3
 
@@ -35,6 +35,6 @@
 
 - restoring all features, including organizing old source files, cleaning up structure and logic
 - rendering window and imgui window in SDL and OpenGL
-- adding building path including bash and bat file
+- adding building path including CMake, bash and bat file
 - adding rendering order feature, preparing the ground for making it editable
 - optimizing texture loading logic, solving *that* old bug (at least it didn't crash for running over 5 mins)
