@@ -32,7 +32,10 @@ Page::Page(const std::string& page_data) {
 
     auto data_block = page_data.substr(start, end - start);
 
-    auto spiritCreate = [this](std::vector<std::string>& seperate_data) {
+
+// std::function<void (std::array<std::string, Size> &)>
+// std::function<void (std::array<std::string, Size> &)>& func)
+    auto spiritCreate = [this](std::array<std::string, 6>& seperate_data) {
         _spirits.emplace_back(
             seperate_data[0],
             seperate_data[1],
@@ -41,7 +44,7 @@ Page::Page(const std::string& page_data) {
             std::stof(seperate_data[4]),
             std::stof(seperate_data[5]));
     };
-    decrypt(data_block, 6, spiritCreate);
+    Tools::decrypt(data_block, 6, spiritCreate);
 
     // textbox
     //inGroup = true;
@@ -53,7 +56,9 @@ Page::Page(const std::string& page_data) {
     auto textCreate = [this](std::vector<std::string>& seperate_data) {
         _textboxs.emplace_back(seperate_data);
     };
-    decrypt(data_block, 9, textCreate);
+    Tools::decrypt(data_block, 9, textCreate);
+
+    // buttons
 
     // order
     start = end + 2;
@@ -62,7 +67,7 @@ Page::Page(const std::string& page_data) {
     auto orderCreate = [this](std::vector<std::string>& seperate_data) {
         _draw_order.emplace_back(std::stoi(seperate_data[0]), seperate_data[1]);
     };
-    decrypt(data_block, 2, orderCreate);
+    Tools::decrypt(data_block, 2, orderCreate);
 }
 
 Spirit* Page::getRealSpirits(int id) {
@@ -80,6 +85,7 @@ void Page::setFont(ImFont* font_given) {
 }
 
 // ============= only load when needed ==============
+// button refresher should be at the place detecting the button's status
 std::vector<GLuint> Page::loadPage(const std::string& project_path) {
     std::vector<GLuint> textures;
 
@@ -88,31 +94,11 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
         auto file_path = project_path + spirit.fileName();
         loadImageTexture(file_path, textures);
     }
-    return textures;
-}
-
-void Page::decrypt(const std::string& data_block, int size, const std::function<void(std::vector<std::string>&)>& func) {
-    std::vector<std::string> seperate_data{""};
-    for(int i = 0; i < data_block.size(); i++) {
-        switch(data_block.at(i)) {
-        case('/'):
-            i++;
-            seperate_data.back() += data_block.at(i);
-            break;
-        case('#'):
-            seperate_data.push_back("");
-            break;
-        default:
-            seperate_data.back() += data_block.at(i);
-            break;
-        }
-        if(seperate_data.size() == size + 2) {
-            func(seperate_data);
-            seperate_data = {""};
-            // seperate_data.clear();
-            // seperate_data.push_back("");
-        }
+    for(auto button : _buttons){
+        auto file_path = project_path + button._button_spirits.at(button._status).fileName();
+        loadImageTexture(file_path, textures);
     }
+    return textures;
 }
 
 void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textures) {
@@ -146,10 +132,10 @@ void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_button
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
-                                                             topLeft,
-                                                             ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-                                                             ImVec2(0, 0),
-                                                             ImVec2(1, 1));
+                                                            topLeft,
+                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+                                                            ImVec2(0, 0),
+                                                            ImVec2(1, 1));
                     break;
                 }
                 i++;

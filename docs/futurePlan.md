@@ -38,6 +38,8 @@
 - [ ] [better data loading logic](#better-data-loading-logic)
 - [ ] [stored page setting](#stored-page-setting)
 - [ ] [more naming formatting](#more-naming-formatting)
+- [ ] [check for '/'](#check-for-)
+- [ ] [zoom-in and zoom-out](#zoom-in-and-zoom-out)
 
 ## ***UNDO***
 
@@ -202,4 +204,12 @@ am i stupid
 
 ## more naming formatting
 
-eh, for some reason, my functions are all named in myseriously incoherant ways, like i just figured encryption functions named in "encrypt", "encrypted", "encryptToString", "exportInString", "save", "toString" and "to_string"... very unique, many diversion in my project, so politically correct(
+eh, for some reason, my functions are all named in myseriously incoherant ways, like i just figured encryption functions named in "encrypt", "encrypted", "encryptToString", "encryptIntoFile", "exportInString", "save", "toString" and "to_string"... very unique, many diversion in my project, so politically correct(
+
+## check for '/'
+
+I did implement encryption and decryption, but can't remember which step i checked it, so i guess i need to walk through all the encryption and decryption functions to figure this out ;)
+
+## zoom-in and zoom-out
+
+honestly can't think of a reason anyone's doing it, but i guess, y not

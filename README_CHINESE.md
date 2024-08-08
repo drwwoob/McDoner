@@ -9,10 +9,11 @@ SDL
 C++20
 CMake 3.1
 nlohmann-json
+gcc >= v4.9
 
 - WINDOWS
-    MinGW
 - MAC
+    OSX 10.4+
 
 ## 联系我们
 

@@ -1,7 +1,9 @@
 #pragma once
 #include <Button.h>
 
-class ButtonInterface{
+// not sure how to inherit, but this class should inherit from Page...?
+// class ButtonInterface : Page {
+class ButtonInterface {
 private:
     std::vector<Button> _buttons;
     // a temporary save, during save will reorder _buttons accordingly

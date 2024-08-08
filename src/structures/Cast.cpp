@@ -373,6 +373,8 @@ void Cast::showAmongPages(bool* p_open) {
         ImGui::EndDisabled();
         disabled = false;
     }
+    
+    ImGui::SameLine();
 
     if(ImGui::Button("Cut Page", ImVec2(50, 50))) {
     }

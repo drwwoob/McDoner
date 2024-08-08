@@ -2,12 +2,12 @@
 
 #include <string>
 #include <vector>
-#include "Spirit.h"
+#include <Spirit.h>
 
 #include <codecvt>
 #include <locale>
-
-#include "Textbox.h"
+#include <Button.h>
+#include<Textbox.h>
 #include <functional>
 #include "ButtonInterface.h"
 
@@ -22,6 +22,7 @@ public:
      *  [   _button_interface_id,
      *      {spirit1##spirit2##spirit3##}
      *      {textbox1##textbox2##}
+     *      {button1##button2##}
      *      {order1first#order1second##order2first#order2second##}
      *  ]
      */
@@ -34,10 +35,10 @@ public:
     void drawPage(const std::vector<GLuint> &textures, const bool& show_buttons);
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
+    std::vector<Button> _buttons;
     int _format_page_id;
 
 private:
-    void decrypt(const std::string &data_block, int size, const std::function<void(std::vector<std::string>&)> &func);
     void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);
 	
     /**
@@ -46,8 +47,9 @@ private:
      *      < 0, "background" > = background
      *      < 1, "filename" > = spirit with the given file name
      *      < 2, "nickname" > = textbox with the give nickname
-     *      < 3, "filename" > = spirit from formatting page with given file name
-     *      < 4, "nickname" > = textbox from formatting page with the give nickname
+     *      < 3, "nickname" > = button with the given nickname
+    //  *      < 4, "filename" > = spirit from formatting page with given file name
+    //  *      < 5, "nickname" > = textbox from formatting page with the give nickname
      */
     std::vector<std::pair<int, std::string>> _draw_order;
 	// std::vector<std::string> textboxs settings;

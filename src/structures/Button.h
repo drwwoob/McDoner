@@ -1,10 +1,12 @@
+#pragma once
 #include <string>
 #include <functional>
 #include <imgui.h>
+#include <Spirit.h>
 
 class Button{
 public:
-    std::string _name;
+    std::string _nickname;
     /**
      * imcluding 4 spirits(types of image):
      *  0: unclick spirit
@@ -39,8 +41,54 @@ public:
         _func_ptrs.push_back(func_ptr);
     }
 
+    /**
+     * creating a blank Button
+     * i am thinking of making this id a random number while saving into library
+     * or a detection made when the id is generated
+     */
     Button(int id){
-        _name = "button" + std::to_string(id);
+        _nickname = "button" + std::to_string(id);
+    }
+
+    /**
+     * decrypt a string into a button
+     */
+    Button(const std::string& data){
+        size_t start = 0;
+
+        // get the stored items
+        do{
+            start = data.find_first_of("##");
+        }while(data.at(start - 1) != '/');
+
+        auto data_block = data.substr(0, start);
+        auto buttonFill = [this](const std::array<std::string, 7>& seperate_data){
+            _nickname = seperate_data[0];
+            _mode = std::stoi(seperate_data[1]);
+            _status = std::stoi(seperate_data[2]);
+            _click_ratio = ImVec2(std::stof(seperate_data[3]), std::stof(seperate_data[4]));
+            _click_position = ImVec2(std::stof(seperate_data[5]), std::stof(seperate_data[6]));
+        };
+        // Tools::decrypt(buttonFill);
+        // Tools::decrypt(data_block, buttonFill);
+
+        size_t end = start;
+
+        // get the stored spirits
+        for(int i = 0; i < 4; i++){
+            // get the stored items
+            do{
+                end = data.find_first_of("##", end) + 2;
+            }while(data.at(end - 3) != '/');
+
+            // ============== need checking ==================
+            // have to choose wether to put i in or just _button_spirits[i]
+            // and wether i should put SpiritCreate function and Textbox inside decrypt
+            data_block = data.substr(start, end - start);
+            Tools::decrypt(data_block, 0, _button_spirits[i]);
+            start = end;
+        }
+        // get the functions stored
     }
 
     /**
@@ -123,19 +171,43 @@ template <typename... T>
 
     /**
      * @return in the format:
-     * name#mode#status#clickRatio[.x#clickRatio.y#clickPosition.x#clickPosition.y##spirit0##spirit1##spirit2##spirit3##func0##func1##
+     * name#mode#status#clickRatio.x#clickRatio.y#clickPosition.x#clickPosition.y##spirit0##spirit1##spirit2##spirit3##func0##func1##
      */
     std::string encrypt(){
         std::string save_string = "";
+        // name#
+        save_string += Tools::wordEncrypt(_nickname);
+        save_string += '#';
+        // mode#
+        // ============= need to check ================
+        // will std::to_chars(int) give the int in char or the corresponding char in position int?
+        save_string += std::to_string(_mode);
+        save_string += '#';
+        // status#
+        save_string += std::to_string(_status);
+        save_string += '#';
+        // clickRatio#
+        save_string += std::to_string(_click_ratio.x);
+        save_string += '#';
+        save_string += std::to_string(_click_ratio.y);
+        save_string += '#';
+        // clickPosition##
+        save_string += std::to_string(_click_position.x);
+        save_string += '#';
+        save_string += std::to_string(_click_position.y);
+        save_string += "##";
+
         for(int i = 0; i < 4; i++){
             if(_button_spirits.at(i)._empty == true){
-                save_string.append(7, '#');
+                save_string.append(2, '#');
             }
             else{
                 save_string += _button_spirits.at(i).encrypt();
             }
         }
 
+        // the function name / id 
+
+        return save_string;
     }
 };
-

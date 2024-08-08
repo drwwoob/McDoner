@@ -84,7 +84,7 @@ void Data::decryptFile(const std::string& data_str) {
     }
 }
 
-void Data::ImportButtonInterface(const std::string& path){
+void Data::ImportFormattedPages(const std::string& path){
 }
 
 void Data::changeProjectName(){
@@ -100,8 +100,8 @@ void Data::save() {
     file.close();
 }
 
-void Data::addPage(int page_id) {
-    _pages.emplace(_pages.begin() + page_id);
+void Data::addPage(int page_id, Page page) {
+    _pages.emplace(_pages.begin() + page_id, page);
 }
 
 void Data::CopyPage(int page_id, Page page) {
@@ -116,26 +116,27 @@ void Data::deletePage(int page_id) {
 }
 
 void Data::loadSettings(){
-    loadButtonInterfaces();
+    loadFormattedPages();
 }
 
-void Data::loadButtonInterfaces(){
-    // load default interfaces
-    std::ifstream file("../src/settings/buttonInterface.txt", std::ios::in);
-    std::string settings = "";
-    std::string line;
-    while(std::getline(file, line)) {
-        settings += line;
-    }
+void Data::loadFormattedPages(){
+    // guess i have to update this
+    // // load default interfaces
+    // std::ifstream file("../src/settings/buttonInterface.txt", std::ios::in);
+    // std::string settings = "";
+    // std::string line;
+    // while(std::getline(file, line)) {
+    //     settings += line;
+    // }
 
-    // load specified interfaces
-    if(std::filesystem::exists(_project_path + "buttonInterface.txt")){
-        file.open(_project_path + "buttonInterface.txt", std::ios::in);
-        while(std::getline(file, line)) {
-            settings += line;
-        }
-    }
+    // // load specified interfaces
+    // if(std::filesystem::exists(_project_path + "buttonInterface.txt")){
+    //     file.open(_project_path + "buttonInterface.txt", std::ios::in);
+    //     while(std::getline(file, line)) {
+    //         settings += line;
+    //     }
+    // }
 
-    // decrypt settings string
+    // // decrypt settings string
     
 }

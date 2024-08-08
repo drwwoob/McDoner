@@ -32,23 +32,23 @@ class Data {
     void setFont(ImFont* font_given);
     void save();
     int pageSize() { return _pages.size(); };
-    void addPage(int page_id);
+    void addPage(int page_id, Page page = {});
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
     std::string encryptIntoFile(); // encrypt the current pages into text
     void decryptFile(const std::string& data_str);
-    void ImportButtonInterface(const std::string& path);
+    void ImportFormattedPages(const std::string& path);
     void changeProjectName();
 
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
-    std::vector<Page> _formated_pages;
+    std::vector<Page> _formated_pages; // a file includese a collection of setted pages
     std::string _file_name;
     std::string _project_path;
     std::vector<GLuint> _textures{};
     void loadSettings();
-    void loadButtonInterfaces();
+    void loadFormattedPages();
     using ParameterVarient = std::variant<
         int,
         double,
