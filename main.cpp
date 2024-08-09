@@ -98,7 +98,6 @@ int main(int, char**)
     bool show_cast_window = true;
     bool page_setting = true;
     bool casts_list = true;
-    bool show_buttons = true;
 
 
     // game data
@@ -145,7 +144,7 @@ int main(int, char**)
             cast.showWelcomePage(show_welcome_window, page_setting);
         }
         else{
-            (*game_data_ptr)->draw(show_buttons);
+            (*game_data_ptr)->draw();
             cast.showCastsInPage(&casts_list);
             cast.showAmongPages(&page_setting);
             cast.showMenuBar(clipboard_page);

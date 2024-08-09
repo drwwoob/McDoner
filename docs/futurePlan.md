@@ -22,11 +22,12 @@
 - [ ] [better shortcut keys logic](#textured-buttons)
 - [X] [shortcut keys for Mac](#shortcut-keys-for-mac)
 - [ ] [game package creation](#game-package-creation)
-- [ ] [stacking ImGui windows](#stacking-imgui-windows)
+- [X] [stacking ImGui windows](#stacking-imgui-windows)
 - [ ] [Individual ImGui window with color and transparency](#individual-imgui-window-with-color-and-transparency)
 - [ ] [dragging pages in library](#dragging-pages-in-library)
 - [ ] [refactor](#refactor)
 - [ ] [better undo logic](#better-undo-logic)
+- [ ] [two loading methods](#better-undo-logic)
 - [ ] [point and click plug-in](#point-and-click-plug-in)
 - [ ] [setted background position/size/ratio](#setted-background-positionsizeratio)
 - [ ] [setted multiple windows](#setted-multiple-windows)
@@ -40,6 +41,8 @@
 - [ ] [more naming formatting](#more-naming-formatting)
 - [ ] [check for '/'](#check-for-)
 - [ ] [zoom-in and zoom-out](#zoom-in-and-zoom-out)
+- [ ] [multiple pages on one page](#multiple-pages-on-one-page)
+- [ ] [two ways to implement library pages](#two-ways-to-implement-library-pages)
 
 ## ***UNDO***
 
@@ -93,7 +96,7 @@ currently the window can be dragged any size and could resize in whatever, but c
 
 man Codename Bakery's animation is too good, i need good animations in this game egine too. At least some simple motion and video player right? right??
 
-(btw Codename Bakery's hidden ending is so stupid, Imma call a duel on 羽中，等死吧你！)
+(btw Codename Bakery's hidden ending is so stupid, Imma call a duel on our lovely bro 羽中，等死吧你！)
 
 ## voicing
 
@@ -141,7 +144,7 @@ like there would be a slide bar on top or bottom of the ImGui window, so that yo
 
 ## dragging pages in library
 
-wow, very kewl, and very hard(. I do have the idea on how to make the data move, but how do i make the animation T_T
+wow, very kewl, and very hard(. I do have the idea on how to make the data move, but how do i make the animation 👽
 
 ## refactor
 
@@ -151,6 +154,10 @@ man, it's really a mess, i have to admit
 
 saving and reading the whole file is a bit uh, so i'm thinking of saving and reading replacing parts, implementing a logic for undo similar to the logic for texturing. what i'm thinking is like seperating `importing spirit`, `page content`, `game setting` and such with idex numbers, so that undo will contain something like a `pair<int, string>` so that the code know after reading where to go and change. Oh, ***《`pair<int, T>`》***, mind explode
 > man this is getting **urgent** as i am stuffing way too many things (some uneccessary) in a project's Data
+
+## two loading methods
+
+extention for [better undo logic](#better-undo-logic). Currently I am thinking of two ways to store the undo data, either to store the corresponding struct directly, using something like a `std::variant`, which would cause more cost on storage. The other way is to store everything with string, and load the string into struct when `undo` is called, which would cost more on runtime speed. What about i just make it a user-choosing thing, and have both function implemented.
 
 ## point and click plug-in
 
@@ -174,11 +181,11 @@ haha, totally forgot abt this, how could one not have this though
 
 ## setted multiple windows
 
-just a thought, but if the game could have multiple windows, setted in rigid positions on the screen, that would be so kewl. I can think of ways to do it, but enabling it with engine would be hard
+Some extened thoughts on [setted background position/size/ratio](#setted-background-positionsizeratio), just thinking, but if the game could have multiple windows, setted in rigid positions on the screen, that would be so kewl. I can think of ways to do it, but enabling it with engine would be hard
 
 ## change project name
 
-Or all my project names will be something like 新川崎(阪), but I would prefer トゲナシトゲアリ
+Or else all my project names will be named in something like 新川崎(仮), but I would prefer トゲナシトゲアリ
 
 ## editable seperate text speed
 
@@ -213,3 +220,15 @@ I did implement encryption and decryption, but can't remember which step i check
 ## zoom-in and zoom-out
 
 honestly can't think of a reason anyone's doing it, but i guess, y not
+
+## multiple pages on one page
+
+this is my alternative solution for buttonInterface and extention for [stored page setting](#stored-page-setting). I am thinking that I can just replace buttonInterface with page, and place it on top of another page for the same result. I was thinking earlier that one can choose to change the drawing order for every page so one formatted page could store both background and buttons, but mean while this would cause more works on `_draw_order`, probably with a extra value like `_changed_draw_order`, which is kinda annoying. I would make the formatted page all glued together for now (so one is unable to insert anything in between elements inside a formatted page).
+
+Another thing is that I haven't decide on the number of interfaces one page could have. Multiple would be great, but implementing this feature could be confusing to my brain.
+
+oh wait i figured it out (in about 2 minutes), nvm
+
+## two ways to implement library pages
+
+continuing on the topic, while implementing the feature maybe i can seperate it in two way, 1 is to include the page as a "format page", which like i just mentioned will be glued. The second way is to include it as a "template", which will not create a pointer but copy the content of that page into this page. And one can change from "format page" to "template page" anytime (not vise versa though).

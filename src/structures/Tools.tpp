@@ -4,6 +4,8 @@
 
 template <std::size_t Size>
 void Tools::decrypt(const std::string& data_block, const std::function<void(std::array<std::string, Size>&)>& func) {
+    // std::cout << data_block << std::endl;
+
     // Ensure the array size matches the provided size
     if (Size == 0) {
         throw std::runtime_error("Array size must be greater than 0.");

@@ -40,8 +40,8 @@ void Data::loadTexture() {
     _textures = _pages.at(_page_at).loadPage(_project_path);
 }
 
-void Data::draw(const bool show_buttons) {
-    _pages.at(_page_at).drawPage(_textures, show_buttons);
+void Data::draw() {
+    _pages.at(_page_at).drawPage(_textures);
 }
 
 std::unique_ptr<Page> Data::getPage(int page_id) {
@@ -67,20 +67,24 @@ void Data::decryptFile(const std::string& data_str) {
     int pos = 0;
     int start = 0;
     pos = data_str.find(",");
+    int count = 0;
     _page_at = std::stoi(data_str.substr(0, pos));
     while(pos < data_str.size()) {
-        if(data_str.at(pos++) == '[') { // whether pos is '[', go to the next letter
-            start = pos;
-            while(data_str.at(pos) != ']') {
-                if(data_str.at(pos) == '/') {
+        if(data_str.at(pos) == '/') {
                     pos++;
-                }
-                pos++;
-            }
-            _pages.emplace_back(data_str.substr(start, pos - start));
-            _pages.back().setFont(_font);
-            pos++;
         }
+        if(data_str.at(pos) == '[') { // whether pos is '[', go to the next letter
+            start = pos;
+            count++;       // making sure it's in the same scope
+        }
+        else if(data_str.at(pos) == ']'){
+            count--;
+            if(count == 0){
+                _pages.emplace_back(data_str.substr(start, pos - start));
+                _pages.back().setFont(_font);
+            }
+        }
+        pos++;
     }
 }
 

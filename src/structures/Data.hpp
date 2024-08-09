@@ -28,7 +28,7 @@ class Data {
 
 	int _page_at;
     void loadTexture();
-    void draw(const bool show_buttons);
+    void draw();
     void setFont(ImFont* font_given);
     void save();
     int pageSize() { return _pages.size(); };
@@ -44,7 +44,6 @@ class Data {
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
-    std::vector<Page> _formated_pages; // a file includese a collection of setted pages
     std::string _file_name;
     std::string _project_path;
     std::vector<GLuint> _textures{};
@@ -57,4 +56,10 @@ class Data {
         std::string
     >;
     std::map<std::string, ParameterVarient> _values; // name, initial value
+
+    // library storage
+    std::map<std::string, Page> _pages_library;  // <name, page>
+    std::vector<Button> _button_Library; // Button
+    std::vector<Spirit> _spirit_Library; // Spirit
+    std::vector<Textbox> _textbox_Library; // Textbox
 };

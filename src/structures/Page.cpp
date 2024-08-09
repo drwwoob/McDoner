@@ -6,7 +6,13 @@ Page::Page() {
 
 Page::Page(const std::string& page_data) {
     // page_data should look like
-    // {spirit1##spirit2##spirit3##}{textbox1##textbox2##}{order1first#order1second##order2first#order2second##}
+    //
+    // {spirit1##spirit2##spirit3##}
+    // {textbox1##textbox2##}
+    // {button1##button2##}
+    // {formattedPage1_name#formattedPage2_name}
+    // {order1first#order1second##order2first#order2second##}
+    //
 
     auto pos = page_data.find_first_of('{');
     //auto backBrac = page_data.find_first_of('}', frontBrac);
@@ -68,31 +74,38 @@ Page::Page(const std::string& page_data) {
         std::string single_button = "";
         int count = 0;
         for (std::size_t i = 0; i < data_block.size(); i++) {
-        switch (data_block[i]) {
-            case '/':
-                i++;
-                single_button += data_block[i];
-                break;
-            case '#':
-                single_button += data_block[i];
-                if (data_block[i + 1] < data_block.size() && data_block[i + 1] == '#') {
-                    count++;
+            switch (data_block[i]) {
+                case '/':
                     i++;
                     single_button += data_block[i];
-                }
-                break;
-            default:
-                single_button += data_block[i];
-                break;
-        }
-        if(count == 5){
-            count = 0;
-            _buttons.push_back(single_button);
-            single_button = "";
+                    break;
+                case '#':
+                    single_button += data_block[i];
+                    if (data_block[i + 1] < data_block.size() && data_block[i + 1] == '#') {
+                        count++;
+                        i++;
+                        single_button += data_block[i];
+                    }
+                    break;
+                default:
+                    single_button += data_block[i];
+                    break;
+            }
+            if(count == 5){
+                count = 0;
+                _buttons.push_back(single_button);
+                single_button = "";
+            }
         }
     }
+    // // pages
+    // start = end + 2;
+    // do {
+    //     end = page_data.find("}", start);
+    // } while(page_data.at(end - 1) == '/');
+    // data_block = page_data.substr(start, end - start);
 
-    }
+
     // order
     start = end + 2;
     end = page_data.size();
@@ -131,6 +144,10 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
         auto file_path = project_path + button.currentSpirit().fileName();
         loadImageTexture(file_path, textures);
     }
+    for(auto page_ptr : _format_pages_ptrs){
+        auto formatted_texture = (*page_ptr.second).loadPage(project_path);
+        textures.insert(textures.end(), formatted_texture.begin(), formatted_texture.end());
+    }
     return textures;
 }
 
@@ -146,7 +163,7 @@ void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textur
     textures.emplace_back(my_image_texture);
 }
 
-void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_buttons) {
+void Page::drawPage(const std::vector<GLuint>& textures) {
     int i = 0;
     for(auto draw_obj : _draw_order) {
         switch(draw_obj.first) {
@@ -204,14 +221,13 @@ void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_button
                 i++;
             }
             break;
+        case 4:
+            (*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures);
+            break;
         default:
             std::cout << "wrong name: " << draw_obj.second << std::endl;
             break;
         }
-    }
-    // reder the buttonInterface
-    if(show_buttons){
-
     }
 }
 

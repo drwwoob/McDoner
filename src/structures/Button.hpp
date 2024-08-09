@@ -17,9 +17,14 @@ public:
     std::array<Spirit, 4> _button_spirits;
     ImVec2 _click_ratio; // the ratio of the clickbox
     ImVec2 _click_position; // the position of the clickbox
-    // button mode:
-    //  0: clickable
-    //  1: unclickable
+    /** 
+     * button mode:
+     * 0: clickable
+     * 1: unclickable
+     * // 2: stay-clicked
+     * @details stay-clicked: this seems kinda 
+     * unreasonable as long as i check if there is a clicked spirit
+    */
     int _mode;
     // button status:
     //  0: unclick
@@ -43,6 +48,7 @@ public:
 
     /**
      * creating a blank Button
+     * ============== remember to check for similar naming while creating ==============
      * i am thinking of making this id a random number while saving into library
      * or a detection made when the id is generated
      */
@@ -134,11 +140,23 @@ public:
     }
 
     Spirit currentSpirit(){
-        if(_mode == 0 && !_button_spirits[_status]._empty){
-            return _button_spirits[_status];
-        }
-        else{
+        // if no image is at the status
+
+        switch (_mode)
+        {
+        case 0:
+            if(_button_spirits[_status]._empty){
+                return _button_spirits[0];
+            }
+            else{
+                return _button_spirits[_status];
+            }
+            break;
+        break;
+        case 1:
+        default:
             return _button_spirits[0];
+            break;
         }
     }
 

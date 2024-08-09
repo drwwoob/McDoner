@@ -27,17 +27,16 @@ public:
      *  ]
      */
 	std::string encrpyt();
-
 	Spirit* getRealSpirits(const int id);
 	Textbox* getRealTextbox(const int id);
 	void setFont(ImFont* font_given);
     std::vector<GLuint> loadPage(const std::string &project_path);
-    void drawPage(const std::vector<GLuint> &textures, const bool& show_buttons);
+    void drawPage(const std::vector<GLuint> &textures);
     void replace();
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
     std::vector<Button> _buttons;
-    int _format_page_id;
+    std::map<std::string, std::shared_ptr<Page>> _format_pages_ptrs; // name, formatted page's pointer
 
 private:
     void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);
@@ -45,10 +44,11 @@ private:
     /**
      * containing the order of the element rendering (on top of another)
      * naming rule: 
-     *      < 0, "background" > = background
+    //  *      < 0, "background" > = background
      *      < 1, "filename" > = spirit with the given file name
      *      < 2, "nickname" > = textbox with the give nickname
      *      < 3, "nickname" > = button with the given nickname
+     *      < 4, "name"> = formatted page with the given name
     //  *      < 4, "filename" > = spirit from formatting page with given file name
     //  *      < 5, "nickname" > = textbox from formatting page with the give nickname
      */
