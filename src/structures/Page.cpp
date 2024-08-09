@@ -50,16 +50,49 @@ Page::Page(const std::string& page_data) {
     //inGroup = true;
     start = end + 2;
     do {
-        end = page_data.find("}", end + 1);
+        end = page_data.find("}", start);
     } while(page_data.at(end - 1) == '/');
-    data_block = page_data.substr(start, end - start - 1);
+    data_block = page_data.substr(start, end - start);
     auto textCreate = [this](std::array<std::string, 10>& seperate_data) {
         _textboxs.emplace_back(seperate_data);
     };
     Tools::decrypt<10>(data_block, textCreate);
 
     // buttons
+    start = end + 2;
+    do {
+        end = page_data.find("}", start);
+    } while(page_data.at(end - 1) == '/');
+    data_block = page_data.substr(start, end - start);
+    if(end != start){
+        std::string single_button = "";
+        int count = 0;
+        for (std::size_t i = 0; i < data_block.size(); i++) {
+        switch (data_block[i]) {
+            case '/':
+                i++;
+                single_button += data_block[i];
+                break;
+            case '#':
+                single_button += data_block[i];
+                if (data_block[i + 1] < data_block.size() && data_block[i + 1] == '#') {
+                    count++;
+                    i++;
+                    single_button += data_block[i];
+                }
+                break;
+            default:
+                single_button += data_block[i];
+                break;
+        }
+        if(count == 5){
+            count = 0;
+            _buttons.push_back(single_button);
+            single_button = "";
+        }
+    }
 
+    }
     // order
     start = end + 2;
     end = page_data.size();
@@ -95,7 +128,7 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
         loadImageTexture(file_path, textures);
     }
     for(auto button : _buttons){
-        auto file_path = project_path + button._button_spirits.at(button._status).fileName();
+        auto file_path = project_path + button.currentSpirit().fileName();
         loadImageTexture(file_path, textures);
     }
     return textures;
@@ -116,7 +149,6 @@ void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textur
 void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_buttons) {
     int i = 0;
     for(auto draw_obj : _draw_order) {
-        // std::cout << draw_obj.first << ", " << draw_obj.second << std::endl;
         switch(draw_obj.first) {
         // case 0:
         //     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[0],
@@ -152,6 +184,24 @@ void Page::drawPage(const std::vector<GLuint>& textures, const bool& show_button
                         textbox._content.c_str());
                 }
                 break;
+            }
+            break;
+        case 3:
+            i = _spirits.size();
+            for(auto& button : _buttons) {
+                if(button._nickname == draw_obj.second) {
+                    auto spirit = button.currentSpirit();
+                    // std::cout << spirit.fileName() << std::endl;
+                    auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
+                                                            topLeft,
+                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+                                                            ImVec2(0, 0),
+                                                            ImVec2(1, 1));
+                    break;
+                }
+                i++;
             }
             break;
         default:

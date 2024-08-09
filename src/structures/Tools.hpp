@@ -45,17 +45,17 @@ class Tools {
 	// static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::array<std::string, Size>& keys);
     static std::unordered_map<std::string, std::string> loadJson(const std::string &filename, std::function<void(std::unordered_map<std::string, std::string>&, nlohmann::json&)> func);
 
-// template <std::size_t Size>
-//     static void decrypt(const std::function<void(const std::array<std::string, Size> &)>& func);
+    // template <std::size_t Size>
+    //     static void decrypt(const std::function<void(const std::array<std::string, Size> &)>& func);
     // static void decrypt(const std::string &data_block, const std::function<void(const std::array<std::string, Size> &)>& func);
-// 	/**
-// 	 * @param decrypt_type
-// 	 * 	0: Spirit
-// 	 * 	1: Textbox
-//	 *	2: Button
-// 	 */
-template <std::size_t Size>
-    static void decrypt(const std::string& data_block, const std::function<void(std::array<std::string, Size>&)>& func);
+    // 	/**
+    // 	 * @param decrypt_type
+    // 	 * 	0: Spirit
+    // 	 * 	1: Textbox
+    //	 *	2: Button
+    // 	 */
+    template <std::size_t Size>
+    static void decrypt(const std::string &data_block, const std::function<void(std::array<std::string, Size> &)> &func);
 };
 
 #include "Tools.tpp"

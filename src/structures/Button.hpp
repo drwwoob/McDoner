@@ -58,8 +58,9 @@ public:
 
         // get the stored items
         do{
-            start = data.find_first_of("##");
-        }while(data.at(start - 1) != '/');
+            start = data.find("##", start + 1);
+        }while(data.at(start - 1) == '/');
+        start += 2;
 
         auto data_block = data.substr(0, start);
         auto buttonFill = [this](const std::array<std::string, 7>& separate_data) {
@@ -87,17 +88,16 @@ public:
         };
 
         // Iterate through each section of the data
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; i++) {
             // Find the delimiter "##" and ensure it’s properly handled
             do {
                 end = data.find("##", end);
                 if (end == std::string::npos) break; // Handle case where delimiter not found
                 end += 2; // Move past the delimiter
-            } while (data[end - 3] != '/'); // Make sure the delimiter is correct
+            } while (data[end - 3] == '/'); // Make sure the delimiter is correct
 
             // Extract the data block for decryption
-            std::string data_block = data.substr(start, end - start);
-
+            data_block = data.substr(start, end - start);
             // Use the lambda function to process the extracted data block
             Tools::decrypt<6>(data_block, [this, &spiritCreate, i](std::array<std::string, 6>& separate_data) {
                 spiritCreate(separate_data, i);
