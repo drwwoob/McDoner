@@ -40,3 +40,7 @@
 # vscode
 .vscode/
 .clang-format
+
+# visual studio
+.vs/
+/out

@@ -2,6 +2,7 @@
 #include <string>
 #include <functional>
 #include <imgui.h>
+#include <variant>
 #include "Spirit.hpp"
 
 class Button{
