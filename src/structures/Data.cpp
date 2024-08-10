@@ -3,15 +3,26 @@
 #include <fstream>
 #include <iostream>
 
+const std::shared_ptr<Library> Data::_library_ptr = std::make_shared<Library>();
+
 Data::Data() {
 }
 
 Data::Data(const std::string& file_path) {
-    // initiate demoPath
+    // initiate path
     _file_name = file_path;
     _project_path = file_path.substr(
         0,
         file_path.find_last_of("/") + 1);
+
+    // reading system library
+
+    // reading project library
+    if(std::filesystem::exists(_project_path + "library.txt")){
+
+    }
+
+    // reading save
     std::ifstream file(file_path, std::ios::in);
     std::string file_data = "";
     std::string line;
@@ -25,7 +36,7 @@ Data::Data(const std::string& project_path, const char * project_name) {
     _project_path = project_path;
     std::filesystem::create_directory(project_path);
     _file_name = project_path + "/" + project_name + ".txt";
-    _pages = {Page()};
+    _pages = {Page(_library_ptr)};
     _page_at = 0;
 }
 
@@ -80,7 +91,7 @@ void Data::decryptFile(const std::string& data_str) {
         else if(data_str.at(pos) == ']'){
             count--;
             if(count == 0){
-                _pages.emplace_back(data_str.substr(start, pos - start));
+                _pages.emplace_back(data_str.substr(start, pos - start), _library_ptr);
                 _pages.back().setFont(_font);
             }
         }

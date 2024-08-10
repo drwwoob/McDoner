@@ -9,20 +9,33 @@
 #include "Button.hpp"
 #include "Textbox.hpp"
 #include <functional>
-#include "ButtonInterface.hpp"
+#include "Library.hpp"
 
 class Page {
 public:
-	Page();
-	Page(const std::string& page_data);
+    /**
+     * Page constuctor without linking to a library
+     */
+    Page();
+    /**
+     * Page constructor linking to a library
+     */
+	Page(const std::shared_ptr<Library>& library_ptr);
+    /**
+     * @param page_data the string of the data
+     * @param library_ptr the pointer to the library object
+     */
+	Page(const std::string& page_data, const std::shared_ptr<Library>& library_ptr);
 	//Page(int page_id, std::vector<std::string> spirits_vec, std::vector<std::string> textboxs_vec);
+    // Page& operator=(const Page& other);
     /**
      *  putting all the information in this page into a string
      * @return 
-     *  [   _button_interface_id,
+     *  [
      *      {spirit1##spirit2##spirit3##}
      *      {textbox1##textbox2##}
      *      {button1##button2##}
+     *      {formattedPage1_name#formattedPage2_name#}
      *      {order1first#order1second##order2first#order2second##}
      *  ]
      */
@@ -33,6 +46,7 @@ public:
     std::vector<GLuint> loadPage(const std::string &project_path);
     void drawPage(const std::vector<GLuint> &textures);
     void replace();
+    std::shared_ptr<Library> _library_ptr;
 	std::vector<Spirit> _spirits;
 	std::vector<Textbox> _textboxs;
     std::vector<Button> _buttons;

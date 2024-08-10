@@ -1,16 +1,25 @@
 #include "Page.hpp"
 #include <iostream>
 
-Page::Page() {
+Page::Page(){
+
 }
 
-Page::Page(const std::string& page_data) {
+Page::Page(const std::shared_ptr<Library>& library_ptr) 
+    :
+    _library_ptr(library_ptr){
+}
+
+Page::Page(const std::string& page_data, 
+        const std::shared_ptr<Library>& library_ptr) 
+        :
+        _library_ptr(library_ptr){
     // page_data should look like
-    //
+    //  
     // {spirit1##spirit2##spirit3##}
     // {textbox1##textbox2##}
     // {button1##button2##}
-    // {formattedPage1_name#formattedPage2_name}
+    // {formattedPage1_name#formattedPage2_name#}
     // {order1first#order1second##order2first#order2second##}
     //
 
@@ -38,8 +47,6 @@ Page::Page(const std::string& page_data) {
 
     auto data_block = page_data.substr(start, end - start);
 
-
-// std::function<void (std::array<std::string, Size> &)>
 // std::function<void (std::array<std::string, Size> &)>& func)
     auto spiritCreate = [this](std::array<std::string, 6>& seperate_data) {
         _spirits.emplace_back(
@@ -98,13 +105,16 @@ Page::Page(const std::string& page_data) {
             }
         }
     }
-    // // pages
-    // start = end + 2;
-    // do {
-    //     end = page_data.find("}", start);
-    // } while(page_data.at(end - 1) == '/');
-    // data_block = page_data.substr(start, end - start);
-
+    // pages
+    start = end + 2;
+    do {
+        end = page_data.find("}", start);
+    } while(page_data.at(end - 1) == '/');
+    data_block = page_data.substr(start, end - start);
+    size_t page_parse_position = 0;
+    do{
+        page_parse_position = data_block.find(",", page_parse_position++);
+    }while(page_parse_position < data_block.size());
 
     // order
     start = end + 2;
@@ -115,6 +125,14 @@ Page::Page(const std::string& page_data) {
     };
     Tools::decrypt<2>(data_block, orderCreate);
 }
+
+// Page& Page::operator=(const Page& other) {
+//     if (this != &other) {  // Avoid self-assignment
+//         _library_ptr = other._library_ptr;
+//         // Copy other members...
+//     }
+//     return *this;
+// }
 
 Spirit* Page::getRealSpirits(int id) {
     return &_spirits.at(id);

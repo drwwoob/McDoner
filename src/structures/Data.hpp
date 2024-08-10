@@ -32,7 +32,7 @@ class Data {
     void setFont(ImFont* font_given);
     void save();
     int pageSize() { return _pages.size(); };
-    void addPage(int page_id, Page page = {});
+    void addPage(int page_id, Page page = Page(_library_ptr));
     void CopyPage(int page_id, Page page);
     void deletePage(int page_id);
     std::string encryptIntoFile(); // encrypt the current pages into text
@@ -56,10 +56,5 @@ class Data {
         std::string
     >;
     std::map<std::string, ParameterVarient> _values; // name, initial value
-
-    // library storage
-    std::map<std::string, Page> _pages_library;  // <name, page>
-    std::vector<Button> _button_Library; // Button
-    std::vector<Spirit> _spirit_Library; // Spirit
-    std::vector<Textbox> _textbox_Library; // Textbox
+    static const std::shared_ptr<Library> _library_ptr;
 };
