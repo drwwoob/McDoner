@@ -15,7 +15,12 @@ Data::Data(const std::string& file_path) {
         0,
         file_path.find_last_of("/") + 1);
 
-    // reading system library
+    // ============= this is canceled for now, might need to create another Library for this ==============
+    // or else it would require an extra value to store which one belongs to what file
+    // // reading system library
+    // if(std::filesystem::exists("../src/settings/library.txt")){
+    //     *_library_ptr->
+    // }
 
     // reading project library
     if(std::filesystem::exists(_project_path + "library.txt")){
@@ -52,7 +57,7 @@ void Data::loadTexture() {
 }
 
 void Data::draw() {
-    _pages.at(_page_at).drawPage(_textures);
+    _pages.at(_page_at).drawPage(_textures, 0);
 }
 
 std::unique_ptr<Page> Data::getPage(int page_id) {

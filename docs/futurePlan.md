@@ -43,6 +43,7 @@
 - [ ] [zoom-in and zoom-out](#zoom-in-and-zoom-out)
 - [ ] [multiple pages on one page](#multiple-pages-on-one-page)
 - [ ] [two ways to implement library pages](#two-ways-to-implement-library-pages)
+- [] [import library](#import-library)
 
 ## ***UNDO***
 
@@ -232,3 +233,7 @@ oh wait i figured it out (in about 2 minutes), nvm
 ## two ways to implement library pages
 
 continuing on the topic, while implementing the feature maybe i can seperate it in two way, 1 is to include the page as a "format page", which like i just mentioned will be glued. The second way is to include it as a "template", which will not create a pointer but copy the content of that page into this page. And one can change from "format page" to "template page" anytime (not vise versa though).
+
+## import library
+
+with the current data structure, i would say the only way to access library saved from other projects is to import them. Like letting the user to choose the project containing the library they want to load. But this would be challenging, cuz i need to copy all the image to this folder too.

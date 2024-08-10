@@ -162,6 +162,17 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
         auto file_path = project_path + button.currentSpirit().fileName();
         loadImageTexture(file_path, textures);
     }
+
+    for(auto spirit_ptr : _spirit_ptrs){
+        auto file_path = project_path + spirit_ptr->fileName();
+        loadImageTexture(file_path, textures);
+    }
+
+    for(auto button_ptr : _button_ptrs){
+        auto file_path = project_path + button_ptr->currentSpirit().fileName();
+        loadImageTexture(file_path, textures);
+    }
+
     for(auto page_ptr : _format_pages_ptrs){
         auto formatted_texture = (*page_ptr.second).loadPage(project_path);
         textures.insert(textures.end(), formatted_texture.begin(), formatted_texture.end());
@@ -181,7 +192,7 @@ void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textur
     textures.emplace_back(my_image_texture);
 }
 
-void Page::drawPage(const std::vector<GLuint>& textures) {
+void Page::drawPage(const std::vector<GLuint>& textures, int size) {
     int i = 0;
     for(auto draw_obj : _draw_order) {
         switch(draw_obj.first) {
@@ -193,7 +204,7 @@ void Page::drawPage(const std::vector<GLuint>& textures) {
         //                                              ImVec2(1, 1));
         //     break;
         case 1:
-            i = 0; // Initialize i here to reset its value for each draw_obj
+            i = size; // Initialize i here to reset its value for each draw_obj
             for(auto& spirit : _spirits) {
                 if(spirit.fileName() == draw_obj.second) {
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -222,7 +233,7 @@ void Page::drawPage(const std::vector<GLuint>& textures) {
             }
             break;
         case 3:
-            i = _spirits.size();
+            i = size + _spirits.size();
             for(auto& button : _buttons) {
                 if(button._nickname == draw_obj.second) {
                     auto spirit = button.currentSpirit();
@@ -240,10 +251,45 @@ void Page::drawPage(const std::vector<GLuint>& textures) {
             }
             break;
         case 4:
-            (*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures);
+            (*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures, 
+                size + _spirits.size() + _buttons.size() + _spirit_ptrs.size() + _button_ptrs.size());
+            break;
+        case 5:
+            i = size + _spirits.size() + _buttons.size();
+            for(auto& spirit_ptr : _spirit_ptrs) {
+                if(spirit_ptr->fileName() == draw_obj.second) {
+                    auto imgSize = spirit_ptr->getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    auto topLeft = spirit_ptr->getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
+                                                            topLeft,
+                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+                                                            ImVec2(0, 0),
+                                                            ImVec2(1, 1));
+                    break;
+                }
+                i++;
+            }
+            break;
+        case 6:
+            i = size + _spirits.size() + _buttons.size() + _spirit_ptrs.size();
+            for(auto& button_ptr : _button_ptrs) {
+                if(button_ptr->_nickname == draw_obj.second) {
+                    auto spirit = button_ptr->currentSpirit();
+                    // std::cout << spirit.fileName() << std::endl;
+                    auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
+                                                            topLeft,
+                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+                                                            ImVec2(0, 0),
+                                                            ImVec2(1, 1));
+                    break;
+                }
+                i++;
+            }
             break;
         default:
-            std::cout << "wrong name: " << draw_obj.second << std::endl;
+            std::cout << "wrong draw_object: " << draw_obj.first << ", " << draw_obj.second << std::endl;
             break;
         }
     }

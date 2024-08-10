@@ -12,6 +12,7 @@
 - able to edit home page and setting page (technically you always can)
 - adding button (without edition and function)
 - adding formatted pages
+- including library (undone)
 - better data loading logic
 
 ## 0.0.3

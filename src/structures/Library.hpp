@@ -5,7 +5,22 @@ class Page;
 struct Library{
     // library storage
     std::map<std::string, Page> _pages_library;  // <name, page>
-    std::vector<Button> _button_Library; // Button
-    std::vector<Spirit> _spirit_Library; // Spirit
-    std::vector<Textbox> _textbox_Library; // Textbox
+    std::vector<Button> _button_library; // Button
+    std::vector<Spirit> _spirit_library; // Spirit
+    std::vector<Textbox> _textbox_library; // Textbox
+
+    void decryptData(const std::string& lib_data){
+        
+    }
+
+    /**
+     * in the format
+     * {spirits}
+     * {textboxs}
+     * {buttons}
+     * [page][page]
+     */
+    void encrypt(){
+
+    }
 };
