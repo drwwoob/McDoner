@@ -22,19 +22,31 @@ Data::Data(const std::string& file_path) {
     //     *_library_ptr->
     // }
 
-    // reading project library
-    if(std::filesystem::exists(_project_path + "library.txt")){
+    // set up file_data holder
+    std::ifstream file;
+    std::string file_data = "";
+    std::string line;
 
+    // reading project library
+    // don't think this would need to be checked once i fully implement Library save method
+    if(std::filesystem::exists(_project_path + "library.txt")){
+        file.open(_project_path + "library.txt", std::ios::in);
+        while(std::getline(file, line)){
+            file_data += line;
+        }
+        _library_ptr->decryptData(file_data);
+        file.close();
     }
 
     // reading save
-    std::ifstream file(file_path, std::ios::in);
-    std::string file_data = "";
-    std::string line;
+    file.open(file_path, std::ios::in);
+    file_data = "";
+    line = "";
     while(std::getline(file, line)) {
         file_data += line;
     }
     decryptFile(file_data);
+    file.close();
 }
 
 Data::Data(const std::string& project_path, const char * project_name) {
@@ -114,9 +126,13 @@ void Data::save() {
     std::ofstream file;
     //for testing
     auto path = _file_name;
-    auto data = encryptIntoFile();
     file.open(path);
     file << encryptIntoFile().c_str();
+    file.close();
+
+    path = _project_path + "library.txt";
+    file.open(path);
+    file << _library_ptr->encrypt().cstr();
     file.close();
 }
 

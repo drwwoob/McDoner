@@ -9,8 +9,7 @@ struct Library{
     std::vector<Spirit> _spirit_library; // Spirit
     std::vector<Textbox> _textbox_library; // Textbox
 
-    void decryptData(const std::string& lib_data){
-        
+    void decryptData(const std::string& lib_data){       
     }
 
     /**
@@ -21,6 +20,6 @@ struct Library{
      * [page][page]
      */
     void encrypt(){
-
+        
     }
 };

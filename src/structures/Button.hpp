@@ -5,6 +5,10 @@
 #include <variant>
 #include "Spirit.hpp"
 
+// This is used for std::variant to have std::function<void<Page&>>, 
+// I am thinking of this one and Data&, but can't really think of a reason why
+// class Page;
+
 class Button{
 public:
     std::string _nickname;
@@ -35,8 +39,10 @@ public:
     int _status;
 
     using FunctionVariant = std::variant<
+    // functions to change values
+    // I think there should be some setted funtion for this
         std::function<void()>,
-        std::function<void(int&)>,
+        std::function<void(int&)>,  // i think this function could do the "jump to another page" with something like void<int& _page_at>
         std::function<void(double&)>,
         std::function<void(bool&)>,
         std::function<void(std::string&)>
