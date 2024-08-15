@@ -266,13 +266,14 @@ void Cast::showCastsInPage(bool* p_open) {
         }
     }
     IMGUI_MARKER("Textbox");
-    if(ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
-        for(auto id = 0; id < page_info->_textboxs.size(); id++) {
-            if(ImGui::TreeNode(page_info->_textboxs[id]._name.c_str())) {
+    if (ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
+        for (auto id = 0; id < page_info->_textboxs.size(); id++) {
+            if (ImGui::TreeNode(page_info->_textboxs[id]._name.c_str())) {
                 auto editLabel = "edit##" + page_info->_textboxs[id]._name;
-                auto contentStr = page_info->_textboxs[id].getRealContent();
-                //ImGui::BulletText("%s", textbox.content.c_str());
-                ImGui::InputTextMultiline(editLabel.c_str(), contentStr);
+                std::string& contentStr = page_info->_textboxs[id].getRealContent();
+                
+                // Use InputTextMultiline to allow editing of the content
+                ImGui::InputTextMultiline(editLabel.c_str(), &contentStr, ImVec2(200, 100));  // You can adjust ImVec2 to control the size of the text area
 
                 auto xLabel = "x-cord##" + page_info->_textboxs.at(id)._name;
                 ImGui::SliderFloat(xLabel.c_str(), &page_info->getRealTextbox(id)->_position_ratio[0], 0.0f, 1.0f);
@@ -281,9 +282,10 @@ void Cast::showCastsInPage(bool* p_open) {
 
                 ImGui::TreePop();
             }
-            //ImGui::BulletText("(%s)", textboxs.c_str());
         }
     }
+
+
 
     IMGUI_MARKER("Background");
     if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {

@@ -61,9 +61,10 @@ class Textbox {
      * get &content of this textbox
      * @return &content
      */
-    std::string* getRealContent() {
-        return &_content;
-    }
+    std::string& getRealContent(){
+        return _content;
+    };  // This function should return a reference
+
 
     /**
      * set the font for this textbox

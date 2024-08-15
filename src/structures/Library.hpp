@@ -19,7 +19,7 @@ struct Library{
      * {buttons}
      * [page][page]
      */
-    void encrypt(){
-        
+    std::string encrypt(){
+        return "";
     }
 };

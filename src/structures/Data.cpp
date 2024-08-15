@@ -72,8 +72,8 @@ void Data::draw() {
     _pages.at(_page_at).drawPage(_textures, 0);
 }
 
-std::unique_ptr<Page> Data::getPage(int page_id) {
-    return std::make_unique<Page>(_pages.at(page_id));
+Page* Data::getPage(int page_id) {
+    return &_pages.at(page_id);
 }
 
 std::string Data::encryptIntoFile() {
@@ -132,7 +132,7 @@ void Data::save() {
 
     path = _project_path + "library.txt";
     file.open(path);
-    file << _library_ptr->encrypt().cstr();
+    file << _library_ptr->encrypt().c_str();
     file.close();
 }
 

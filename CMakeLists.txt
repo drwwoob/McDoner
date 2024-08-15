@@ -18,6 +18,8 @@ set(IMGUI_BACKEND_DIR ${IMGUI_DIR}/backends)
 set(OTHER_LIBS_DIR ${CMAKE_SOURCE_DIR}/libs)
 set(STRUCT_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/structures)
 
+set(CMAKE_BUILD_RPATH /Library/Frameworks)
+
 # Include directories
 include_directories(${IMGUI_DIR} ${IMGUI_BACKEND_DIR} ${OTHER_LIBS_DIR} ${STRUCT_LIBS_DIR})
 

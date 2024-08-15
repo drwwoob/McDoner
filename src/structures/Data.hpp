@@ -24,7 +24,7 @@ class Data {
      * @param project_name the name for the porject
      */
     Data(const std::string &project_path, const char * project_name);
-    std::unique_ptr<Page> getPage(int page_id); // get the information of a page (decrypt)
+    Page* getPage(int page_id); // get the information of a page (decrypt)
 
 	int _page_at;
     void loadTexture();
