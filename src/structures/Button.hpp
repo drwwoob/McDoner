@@ -61,6 +61,12 @@ public:
      */
     Button(int id){
         _nickname = "button" + std::to_string(id);
+        
+        // changing the name for buttons
+        _button_spirits.at(0)._spirit_name = "unclick";
+        _button_spirits.at(1)._spirit_name = "selected";
+        _button_spirits.at(2)._spirit_name = "onclick";
+        _button_spirits.at(3)._spirit_name = "clicked";
     }
 
     /**
@@ -119,6 +125,12 @@ public:
             start = end; // Update start for the next section
         }
         // get the functions stored
+
+        // changing the name for buttons
+        _button_spirits.at(0)._spirit_name = "unclick";
+        _button_spirits.at(1)._spirit_name = "selected";
+        _button_spirits.at(2)._spirit_name = "onclick";
+        _button_spirits.at(3)._spirit_name = "clicked";
     }
 
     /**

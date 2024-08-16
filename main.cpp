@@ -15,6 +15,12 @@
 
 #undef main // for windows
 
+#include "imgui.h"
+
+// Global variable to store the selected color
+ImVec4 selectedColor = ImVec4(0.4f, 0.5f, 0.9f, 1.0f);
+ImVec4 currentBackgroundColor = ImVec4(0.2f, 0.3f, 0.4f, 1.0f); // Default background color
+
 // Main code
 int main(int, char**)
 {
@@ -139,7 +145,6 @@ int main(int, char**)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-
         // show welcome window (can't close, auto close while file opened)
         if(show_welcome_window){
             // set main window
@@ -164,6 +169,8 @@ int main(int, char**)
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(window);
+
+        
     }
 #ifdef __EMSCRIPTEN__
     EMSCRIPTEN_MAINLOOP_END;

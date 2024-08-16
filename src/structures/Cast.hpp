@@ -61,6 +61,8 @@ private:
     /**
 	 *
 	 */
+	void imguiWindowManipulateBar(ImVec4* backgroundColor);
+
     void lastPage();
     void nextPage();
     void addPage();
@@ -71,8 +73,13 @@ private:
 	bool openProject();
 	void askForSave();
 
-    void spiritTreeNode(Spirit& spirit);
+    void spiritTreeNode(Spirit& spirit, bool name_changable = true);
 	void textboxTreeNode(Textbox& textbox);
+	void buttonTreeNode(Button& button);
+
+	void showLibrarySpirit();
+
+	void addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name = std::nullopt, std::optional<int> id = std::nullopt);
 
 	/**
 	 * @param map_id
