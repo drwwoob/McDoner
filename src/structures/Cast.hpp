@@ -70,11 +70,15 @@ private:
 	bool newProject();
 	bool openProject();
 	void askForSave();
+
+    void spiritTreeNode(Spirit& spirit);
+	void textboxTreeNode(Textbox& textbox);
+
 	/**
 	 * @param map_id
 	 * 	0: _shortkey_outlay
 	 *  1: _menu_language
 	 */
 	const char* getMapItem(int map_id, const std::string& key);
-	void loadLanguageMap(const std::string& lang_id);
+    void loadLanguageMap(const std::string &lang_id);
 };

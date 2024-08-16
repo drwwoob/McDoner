@@ -155,21 +155,21 @@ std::vector<GLuint> Page::loadPage(const std::string& project_path) {
 
     // std::string file_path;
     for(auto spirit : _spirits) {
-        auto file_path = project_path + spirit.fileName();
+        auto file_path = project_path + spirit._spirit_file_name;
         loadImageTexture(file_path, textures);
     }
     for(auto button : _buttons){
-        auto file_path = project_path + button.currentSpirit().fileName();
+        auto file_path = project_path + button.currentSpirit()._spirit_file_name;
         loadImageTexture(file_path, textures);
     }
 
     for(auto spirit_ptr : _spirit_ptrs){
-        auto file_path = project_path + spirit_ptr->fileName();
+        auto file_path = project_path + spirit_ptr->_spirit_file_name;
         loadImageTexture(file_path, textures);
     }
 
     for(auto button_ptr : _button_ptrs){
-        auto file_path = project_path + button_ptr->currentSpirit().fileName();
+        auto file_path = project_path + button_ptr->currentSpirit()._spirit_file_name;
         loadImageTexture(file_path, textures);
     }
 
@@ -206,7 +206,7 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
         case 1:
             i = size; // Initialize i here to reset its value for each draw_obj
             for(auto& spirit : _spirits) {
-                if(spirit.fileName() == draw_obj.second) {
+                if(spirit._spirit_file_name == draw_obj.second) {
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
@@ -237,7 +237,7 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
             for(auto& button : _buttons) {
                 if(button._nickname == draw_obj.second) {
                     auto spirit = button.currentSpirit();
-                    // std::cout << spirit.fileName() << std::endl;
+                    // std::cout << spirit._spirit_file_name << std::endl;
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
@@ -257,7 +257,7 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
         case 5:
             i = size + _spirits.size() + _buttons.size();
             for(auto& spirit_ptr : _spirit_ptrs) {
-                if(spirit_ptr->fileName() == draw_obj.second) {
+                if(spirit_ptr->_spirit_file_name == draw_obj.second) {
                     auto imgSize = spirit_ptr->getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit_ptr->getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
@@ -275,7 +275,7 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
             for(auto& button_ptr : _button_ptrs) {
                 if(button_ptr->_nickname == draw_obj.second) {
                     auto spirit = button_ptr->currentSpirit();
-                    // std::cout << spirit.fileName() << std::endl;
+                    // std::cout << spirit._spirit_file_name << std::endl;
                     auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
                     ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],

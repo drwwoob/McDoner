@@ -7,10 +7,8 @@
 #include <imgui.h>
 
 class Spirit {
-   private:
-    std::string _spirit_file_name; // storing the address of the file of this spirit
-
    public:
+    std::string _spirit_file_name; // storing the address of the file of this spirit
     std::string _spirit_name;
     float _size_ratio[2];
     float _position_ratio[2]; // the ratio of (the coord for lefttop of the picture / the whole window)
@@ -46,10 +44,6 @@ class Spirit {
         return _spirit_file_name;
     }
 
-    std::string* getRealNickName() {
-        return &_spirit_name;
-    }
-
     // int win_x, int win_y
     ImVec2 getSize(int x, int y) {
         return ImVec2(_size_ratio[0] * x, _size_ratio[1] * y);
@@ -83,8 +77,4 @@ class Spirit {
 
         return dataEncr;
     }
-
-    // some getter
-    std::string fileName() { return _spirit_file_name; }
-    std::string name() { return _spirit_name; }
 };

@@ -4,31 +4,33 @@
 #include "Tools.hpp"
 #include <tinyfiledialogs.h>
 #include <filesystem>
-//#include "data.h"
-typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
+// #include "data.h"
+typedef void (*ImGuiMarkerCallback)(const char *file, int line, const char *section, void *user_data);
 extern ImGuiMarkerCallback GImGuiMarkerCallback;
-extern void* GImGuiMarkerCallbackUserData;
+extern void *GImGuiMarkerCallbackUserData;
 ImGuiMarkerCallback GImGuiMarkerCallback = NULL;
-void* GImGuiMarkerCallbackUserData = NULL;
-#define IMGUI_MARKER(section)                                                                                             \
-    do {                                                                                                                  \
-        if(GImGuiMarkerCallback != NULL) GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); \
-    } while(0)
+void *GImGuiMarkerCallbackUserData = NULL;
+#define IMGUI_MARKER(section)                                                                \
+    do                                                                                       \
+    {                                                                                        \
+        if (GImGuiMarkerCallback != NULL)                                                    \
+            GImGuiMarkerCallback(__FILE__, __LINE__, section, GImGuiMarkerCallbackUserData); \
+    } while (0)
 
 Cast::Cast(std::shared_ptr<
-        std::shared_ptr<Data>> game_data_ptr, 
-        std::unique_ptr<Backup> backup_data,
-        std::unique_ptr<Page> clipboard_page_ptr
-        )
-        : 
-        _game_data_ptr(game_data_ptr), 
-        _backup_data(std::move(backup_data)),
-        _clipboard_page_ptr(std::move(clipboard_page_ptr))
-        {
+               std::shared_ptr<Data>>
+               game_data_ptr,
+           std::unique_ptr<Backup> backup_data,
+           std::unique_ptr<Page> clipboard_page_ptr)
+    : _game_data_ptr(game_data_ptr),
+      _backup_data(std::move(backup_data)),
+      _clipboard_page_ptr(std::move(clipboard_page_ptr))
+{
     // listing out the menu shortkey items
-    auto getShortKeys = [](std::unordered_map<std::string, std::string> &shortkey_map, nlohmann::json &keyBindings){
-        std::array<std::string, 7> keys {
-            "New", 
+    auto getShortKeys = [](std::unordered_map<std::string, std::string> &shortkey_map, nlohmann::json &keyBindings)
+    {
+        std::array<std::string, 7> keys{
+            "New",
             "Open",
             "Save",
             "Import",
@@ -40,70 +42,85 @@ Cast::Cast(std::shared_ptr<
             // "Last Page",
             // "Next Page",
         };
-        for(auto &key : keys){
-        #ifdef __APPLE__
+        for (auto &key : keys)
+        {
+#ifdef __APPLE__
             shortkey_map.emplace(key, keyBindings.at(key).at("Mac").get<std::string>());
-        #else
+#else
             shortkey_map.emplace(key, keyBindings.at(key).at("Windows").get<std::string>());
-        #endif
-        }  
+#endif
+        }
     };
 
-	_shortkey_outlay = Tools::loadJson("../src/settings/keyLoad.json", getShortKeys);
+    _shortkey_outlay = Tools::loadJson("../src/settings/keyLoad.json", getShortKeys);
 
     // listing out the language options
     std::array<std::string, 2> language_keys{
         "EN",
-        "CH"
-    };
+        "CH"};
 }
 Cast::~Cast() {}
 
-void Cast::showMenuBar(Page &clipboard_page) {
-    if(ImGui::BeginMainMenuBar()) {
-        if(ImGui::BeginMenu("File")) {
-            if(ImGui::MenuItem("New", getMapItem(0, "New"))) {
+void Cast::showMenuBar(Page &clipboard_page)
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("New", getMapItem(0, "New")))
+            {
                 newProject();
             }
             // Add items to the "File" menu
-            if(ImGui::MenuItem("Open", getMapItem(0, "Open"))) {
+            if (ImGui::MenuItem("Open", getMapItem(0, "Open")))
+            {
                 openProject();
             }
-            if(ImGui::MenuItem("Save", getMapItem(0, "Save"))) {
+            if (ImGui::MenuItem("Save", getMapItem(0, "Save")))
+            {
                 // Handle "Save" action
-				(*_game_data_ptr)->save();
+                (*_game_data_ptr)->save();
             }
-            if(ImGui::MenuItem("Import", getMapItem(0, "Import"))) {
+            if (ImGui::MenuItem("Import", getMapItem(0, "Import")))
+            {
             }
-            if(ImGui::MenuItem("Exit", getMapItem(0, "Exit"))) {
+            if (ImGui::MenuItem("Exit", getMapItem(0, "Exit")))
+            {
                 // Handle "Exit" action
             }
             ImGui::EndMenu();
         }
 
         ImGui::SameLine();
-        if(ImGui::BeginMenu("Edit")) {
+        if (ImGui::BeginMenu("Edit"))
+        {
             bool disabled = false;
-			if(!_backup_data->undoAvailible()) {
+            if (!_backup_data->undoAvailible())
+            {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-			if(ImGui::MenuItem("Undo", getMapItem(0, "Undo"))){
-				_backup_data->undo();
-			}
-            if(disabled) {
+            if (ImGui::MenuItem("Undo", getMapItem(0, "Undo")))
+            {
+                _backup_data->undo();
+            }
+            if (disabled)
+            {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-			if(!_backup_data->redoAvailible()) {
+            if (!_backup_data->redoAvailible())
+            {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-			if(ImGui::MenuItem("Redo", getMapItem(0, "Redo"))){
-				_backup_data->redo();
-			}
-            if(disabled) {
+            if (ImGui::MenuItem("Redo", getMapItem(0, "Redo")))
+            {
+                _backup_data->redo();
+            }
+            if (disabled)
+            {
                 ImGui::EndDisabled();
                 disabled = false;
             }
@@ -111,107 +128,137 @@ void Cast::showMenuBar(Page &clipboard_page) {
         }
 
         ImGui::SameLine();
-        if(ImGui::BeginMenu("Scene")) {
+        if (ImGui::BeginMenu("Scene"))
+        {
             bool disabled = false;
 
-            if((*_game_data_ptr)->_page_at == 0) {
+            if ((*_game_data_ptr)->_page_at == 0)
+            {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-            if(ImGui::MenuItem("last page", "Ctrl+K")) {
+            if (ImGui::MenuItem("last page", "Ctrl+K"))
+            {
                 lastPage();
             }
-            if(disabled) {
+            if (disabled)
+            {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-            if((*_game_data_ptr)->_page_at >= (*_game_data_ptr)->pageSize() - 1) {
+            if ((*_game_data_ptr)->_page_at >= (*_game_data_ptr)->pageSize() - 1)
+            {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-            if(ImGui::MenuItem("next page", "Ctrl+L")) {
+            if (ImGui::MenuItem("next page", "Ctrl+L"))
+            {
                 nextPage();
             }
-            if(disabled) {
+            if (disabled)
+            {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-            if((*_game_data_ptr)->pageSize() == 1) {
+            if ((*_game_data_ptr)->pageSize() == 1)
+            {
                 disabled = true;
                 ImGui::BeginDisabled();
             }
-            if(ImGui::MenuItem("delete current page")) {
+            if (ImGui::MenuItem("delete current page"))
+            {
                 deletePage();
             }
-            if(disabled) {
+            if (disabled)
+            {
                 ImGui::EndDisabled();
                 disabled = false;
             }
 
-            if(ImGui::MenuItem("add blank page")) {
+            if (ImGui::MenuItem("add blank page"))
+            {
                 addPage();
             }
-            if(ImGui::MenuItem("duplicate page")) {
+            if (ImGui::MenuItem("duplicate page"))
+            {
                 duplicatePage();
             }
-            if(ImGui::MenuItem("copy page")) {
-				copyPage();
+            if (ImGui::MenuItem("copy page"))
+            {
+                copyPage();
             }
-            if(ImGui::MenuItem("cut page")) {
+            if (ImGui::MenuItem("cut page"))
+            {
             }
-            if(ImGui::MenuItem("past page")) {
+            if (ImGui::MenuItem("past page"))
+            {
             }
-            if(ImGui::MenuItem("window")) {
+            if (ImGui::MenuItem("window"))
+            {
             }
-            if(ImGui::MenuItem("bookmark mark")) {
+            if (ImGui::MenuItem("bookmark mark"))
+            {
             }
-            if(ImGui::MenuItem("bookmark list")) {
+            if (ImGui::MenuItem("bookmark list"))
+            {
             }
             ImGui::EndMenu();
         }
         ImGui::SameLine();
-        if(ImGui::BeginMenu("Cast")) {
-            if(ImGui::MenuItem("List")) {
+        if (ImGui::BeginMenu("Cast"))
+        {
+            if (ImGui::MenuItem("List"))
+            {
             }
-            if(ImGui::BeginMenu("Spirit")) {
-                if(ImGui::MenuItem("Import")) {
+            if (ImGui::BeginMenu("Spirit"))
+            {
+                if (ImGui::MenuItem("Import"))
+                {
                 }
-                if(ImGui::MenuItem("Add from list")) {
+                if (ImGui::MenuItem("Add from list"))
+                {
                 }
-                if(ImGui::MenuItem("Delete")) {
+                if (ImGui::MenuItem("Delete"))
+                {
                 }
                 ImGui::EndMenu();
             }
-            if(ImGui::BeginMenu("Textbox")) {
-                if(ImGui::MenuItem("New")) {
+            if (ImGui::BeginMenu("Textbox"))
+            {
+                if (ImGui::MenuItem("New"))
+                {
                 }
-                if(ImGui::MenuItem("Add from list")) {
+                if (ImGui::MenuItem("Add from list"))
+                {
                 }
-                if(ImGui::MenuItem("Delete")) {
+                if (ImGui::MenuItem("Delete"))
+                {
                 }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();
         }
         ImGui::SameLine();
-        if(ImGui::BeginMenu("View")){
-            if(ImGui::MenuItem("Starting Page")){
-
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Starting Page"))
+            {
             }
-            if(ImGui::MenuItem("Page Gallary")){
-
+            if (ImGui::MenuItem("Page Gallary"))
+            {
             }
             ImGui::EndMenu();
         }
         ImGui::SameLine();
-        if(ImGui::BeginMenu("Run")){
-            if(ImGui::MenuItem("Run New Game")){
-
+        if (ImGui::BeginMenu("Run"))
+        {
+            if (ImGui::MenuItem("Run New Game"))
+            {
             }
-            if(ImGui::MenuItem("Run From Here")){
-
+            if (ImGui::MenuItem("Run From Here"))
+            {
             }
             ImGui::EndMenu();
         }
@@ -219,97 +266,80 @@ void Cast::showMenuBar(Page &clipboard_page) {
     }
 }
 
-void Cast::showCastsInPage(bool* p_open) {
+void Cast::showCastsInPage(bool *p_open)
+{
     ImGuiWindowFlags window_flags = 0;
-	auto page_info = (*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
+    auto page_info = (*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
 
     ImGui::Begin("Cast", p_open, window_flags);
 
     // const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-    //ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 100, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
+    // ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 100, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(200, 20), ImGuiCond_FirstUseEver);
     ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 
     ImGui::Text("This is the list of cast on the current page");
     IMGUI_MARKER("Spirit");
-    //ImGui::SetNextWindowCollapsed(false);
-    if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
-        for(int id = 0; id < page_info->_spirits.size(); id++) {
-            ImGui::SetNextWindowCollapsed(false);
-            IMGUI_MARKER(page_info->_spirits.at(id).name().c_str());
-            if(ImGui::TreeNode(page_info->_spirits.at(id).name().c_str())) {
-                //ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
-                /*static char buff[32] = "";
-				ImGui::InputText("testxt", buff, 32);*/
-
-                //ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
-
-                auto nameStr = page_info->getRealSpirits(id)->getRealNickName();
-                auto renameLabel = "rename##" + page_info->_spirits.at(id).getFileName();
-                ImGui::InputText(renameLabel.c_str(), nameStr);
-                ///*ImGui::InputText("rename", &name_str,
-                //ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
-                //
-
-                // changing size and position
-                auto widthLabel = "width##" + page_info->_spirits.at(id).getFileName();
-                ImGui::SliderFloat(widthLabel.c_str(), &page_info->getRealSpirits(id)->_size_ratio[0], 0.0f, 1.0f);
-                auto heightLabel = "height##" + page_info->_spirits.at(id).getFileName();
-                ImGui::SliderFloat(heightLabel.c_str(), &page_info->getRealSpirits(id)->_size_ratio[1], 0.0f, 1.0f);
-                auto xLabel = "x-cord##" + page_info->_spirits.at(id).getFileName();
-                ImGui::SliderFloat(xLabel.c_str(), &page_info->getRealSpirits(id)->_position_ratio[0], 0.0f, 1.0f);
-                auto yLabel = "y-cord##" + page_info->_spirits.at(id).getFileName();
-                ImGui::SliderFloat(yLabel.c_str(), &page_info->getRealSpirits(id)->_position_ratio[1], 0.0f, 1.0f);
-
-                ImGui::TreePop();
-            }
+    // ImGui::SetNextWindowCollapsed(false);
+    if (ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for (auto &spirit : page_info->_spirits)
+        {
+            spiritTreeNode(spirit);
         }
     }
     IMGUI_MARKER("Textbox");
-    if (ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
-        for (auto id = 0; id < page_info->_textboxs.size(); id++) {
-            if (ImGui::TreeNode(page_info->_textboxs[id]._name.c_str())) {
-                auto editLabel = "edit##" + page_info->_textboxs[id]._name;
-                std::string& contentStr = page_info->_textboxs[id].getRealContent();
-                
-                // Use InputTextMultiline to allow editing of the content
-                ImGui::InputTextMultiline(editLabel.c_str(), &contentStr, ImVec2(200, 100));  // You can adjust ImVec2 to control the size of the text area
+    if (ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for (auto &textbox : page_info->_textboxs)
+        {
+            textboxTreeNode(textbox);
+        }
+    }
 
-                auto xLabel = "x-cord##" + page_info->_textboxs.at(id)._name;
-                ImGui::SliderFloat(xLabel.c_str(), &page_info->getRealTextbox(id)->_position_ratio[0], 0.0f, 1.0f);
-                auto yLabel = "y-cord##" + page_info->_textboxs.at(id)._name;
-                ImGui::SliderFloat(yLabel.c_str(), &page_info->getRealTextbox(id)->_position_ratio[1], 0.0f, 1.0f);
-
-                ImGui::TreePop();
+    IMGUI_MARKER("Button");
+    if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for (auto &button : page_info->_buttons)
+        {
+            if (ImGui::TreeNode(button._nickname.c_str()))
+            {
+                auto nameStr = &(button._nickname);
+                auto renameLabel = "rename##" + button._nickname;
+                ImGui::InputText(renameLabel.c_str(), nameStr);
             }
         }
     }
 
-
-
-    IMGUI_MARKER("Background");
-    if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
-		// choose the color for background here
-    }
+    // IMGUI_MARKER("Background");
+    // if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
+    // 	// choose the color for background here
+    // }
     ImGui::End();
 }
 
-void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
+void Cast::showWelcomePage(bool &show_welcome_window, bool &page_setting)
+{
     ImGui::SetNextWindowSize(ImVec2(240, 300));
     ImGui::Begin("Welcome Page", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-    if(ImGui::Button("New", ImVec2(-FLT_MIN, 80))) {
-        if(newProject()){
+    if (ImGui::Button("New", ImVec2(-FLT_MIN, 80)))
+    {
+        if (newProject())
+        {
             show_welcome_window = false;
             page_setting = true;
         }
     }
-    if(ImGui::Button("Open", ImVec2(-FLT_MIN, 80))) {
-        if(openProject()){
+    if (ImGui::Button("Open", ImVec2(-FLT_MIN, 80)))
+    {
+        if (openProject())
+        {
             show_welcome_window = false;
             page_setting = true;
         }
     }
-    if(ImGui::Button("Demo", ImVec2(-FLT_MIN, 80))) {
+    if (ImGui::Button("Demo", ImVec2(-FLT_MIN, 80)))
+    {
         *_game_data_ptr = std::make_shared<Data>("../saves/demo/demo.txt");
         show_welcome_window = false;
         page_setting = true;
@@ -321,75 +351,90 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
     ImGui::End();
 }
 
-void Cast::showAmongPages(bool* p_open) {
+void Cast::showAmongPages(bool *p_open)
+{
     ImGui::Begin("Page Setting");
 
     bool disabled = false;
 
-    if((*_game_data_ptr)->_page_at == 0) {
+    if ((*_game_data_ptr)->_page_at == 0)
+    {
         disabled = true;
         ImGui::BeginDisabled();
     }
-    if(ImGui::Button("Last Page", ImVec2(100, 100))) {
+    if (ImGui::Button("Last Page", ImVec2(100, 100)))
+    {
         lastPage();
     }
-    if(disabled) {
+    if (disabled)
+    {
         ImGui::EndDisabled();
         disabled = false;
     }
 
     ImGui::SameLine();
 
-    if((*_game_data_ptr)->_page_at >= (*_game_data_ptr)->pageSize() - 1) {
+    if ((*_game_data_ptr)->_page_at >= (*_game_data_ptr)->pageSize() - 1)
+    {
         disabled = true;
         ImGui::BeginDisabled();
     }
-    if(ImGui::Button("Next Page", ImVec2(100, 100))) {
+    if (ImGui::Button("Next Page", ImVec2(100, 100)))
+    {
         nextPage();
     }
-    if(disabled) {
+    if (disabled)
+    {
         ImGui::EndDisabled();
         disabled = false;
     }
 
-    if(ImGui::Button("add Page", ImVec2(50, 50))) {
+    if (ImGui::Button("add Page", ImVec2(50, 50)))
+    {
         addPage();
     }
 
     ImGui::SameLine();
 
-    if(ImGui::Button("duplicate Page", ImVec2(50, 50))) {
+    if (ImGui::Button("duplicate Page", ImVec2(50, 50)))
+    {
         duplicatePage();
     }
 
     ImGui::SameLine();
 
-    if((*_game_data_ptr)->pageSize() == 1) {
+    if ((*_game_data_ptr)->pageSize() == 1)
+    {
         disabled = true;
         ImGui::BeginDisabled();
     }
-    if(ImGui::Button("delete Page", ImVec2(50, 50))) {
+    if (ImGui::Button("delete Page", ImVec2(50, 50)))
+    {
         deletePage();
     }
-    if(disabled) {
+    if (disabled)
+    {
         ImGui::EndDisabled();
         disabled = false;
     }
-    
+
     ImGui::SameLine();
 
-    if(ImGui::Button("Cut Page", ImVec2(50, 50))) {
+    if (ImGui::Button("Cut Page", ImVec2(50, 50)))
+    {
     }
 
     ImGui::SameLine();
 
-    if(ImGui::Button("Copy Page", ImVec2(50, 50))) {
+    if (ImGui::Button("Copy Page", ImVec2(50, 50)))
+    {
         copyPage();
     }
 
     ImGui::SameLine();
 
-    if(ImGui::Button("Paste Page", ImVec2(50, 50))) {
+    if (ImGui::Button("Paste Page", ImVec2(50, 50)))
+    {
     }
 
     ImGui::SameLine();
@@ -397,65 +442,75 @@ void Cast::showAmongPages(bool* p_open) {
     ImGui::End();
 }
 
-void Cast::lastPage() {
+void Cast::lastPage()
+{
     _backup_data->addMove();
     (*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at - 1;
     (*_game_data_ptr)->loadTexture();
 }
-void Cast::nextPage() {
+void Cast::nextPage()
+{
     _backup_data->addMove();
     (*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at + 1;
     (*_game_data_ptr)->loadTexture();
 }
-void Cast::addPage() {
+void Cast::addPage()
+{
     _backup_data->addMove();
     (*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at + 1;
     (*_game_data_ptr)->addPage((*_game_data_ptr)->_page_at);
     (*_game_data_ptr)->loadTexture();
 }
-void Cast::duplicatePage() {
+void Cast::duplicatePage()
+{
     _backup_data->addMove();
     (*_game_data_ptr)->CopyPage((*_game_data_ptr)->_page_at + 1, *((*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at)));
     (*_game_data_ptr)->_page_at++;
     (*_game_data_ptr)->loadTexture();
 }
-void Cast::deletePage() {
+void Cast::deletePage()
+{
     _backup_data->addMove();
     (*_game_data_ptr)->deletePage((*_game_data_ptr)->_page_at);
-    if((*_game_data_ptr)->_page_at != 0) {
+    if ((*_game_data_ptr)->_page_at != 0)
+    {
         (*_game_data_ptr)->_page_at--;
         (*_game_data_ptr)->loadTexture();
     }
 }
-void Cast::copyPage() {
+void Cast::copyPage()
+{
     _backup_data->addMove();
     *_clipboard_page_ptr = *(*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
 };
 
-bool Cast::newProject(){
-	auto lTheSelectFolderName = tinyfd_selectFolderDialog(
-		"create new project in", "../saves/");
+bool Cast::newProject()
+{
+    auto lTheSelectFolderName = tinyfd_selectFolderDialog(
+        "create new project in", "../saves/");
 
-	if (!lTheSelectFolderName)
-	{
+    if (!lTheSelectFolderName)
+    {
         return false;
-	}
+    }
     auto lTheProjectName = tinyfd_inputBox(
-		"project naming", "please give a name to your project", "project");
+        "project naming", "please give a name to your project", "project");
 
-    if(!lTheProjectName){
+    if (!lTheProjectName)
+    {
         return false;
     }
 
     std::string path = lTheSelectFolderName;
     path += lTheProjectName;
-    if(std::filesystem::exists(path) && std::filesystem::is_directory(path)){
+    if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
+    {
         tinyfd_messageBox(
-			"Error",
-			"project already exist",
-			"ok",
-			"error",
-			1);
+            "Error",
+            "project already exist",
+            "ok",
+            "error",
+            1);
         return false;
     }
     askForSave();
@@ -467,27 +522,27 @@ bool Cast::newProject(){
 bool Cast::openProject()
 {
     auto lTheSelectFolderName = tinyfd_selectFolderDialog(
-		"select project", "../saves/");
+        "select project", "../saves/");
 
-	if (!lTheSelectFolderName)
-	{
+    if (!lTheSelectFolderName)
+    {
         return false;
-	}
+    }
 
     std::string path = lTheSelectFolderName;
     std::string project_name = path.substr(
-        path.substr(0, path.size() - 1).find_last_of("/") + 1
-    );
+        path.substr(0, path.size() - 1).find_last_of("/") + 1);
     project_name = project_name.substr(0, project_name.size() - 1);
     path += project_name;
     path += ".txt";
-    if(!std::filesystem::exists(path) || !std::filesystem::is_regular_file(path)){
+    if (!std::filesystem::exists(path) || !std::filesystem::is_regular_file(path))
+    {
         tinyfd_messageBox(
-			"Error",
-			"project does not exist",
-			"ok",
-			"error",
-			1);
+            "Error",
+            "project does not exist",
+            "ok",
+            "error",
+            1);
         return false;
     }
 
@@ -499,18 +554,22 @@ bool Cast::openProject()
     return true;
 }
 
-void Cast::askForSave(){
-    if(*_game_data_ptr && (*_game_data_ptr)->pageSize() != 0){
+void Cast::askForSave()
+{
+    if (*_game_data_ptr && (*_game_data_ptr)->pageSize() != 0)
+    {
         auto save_stat = tinyfd_messageBox(
-			"Save", "do you wish to save your current project?",
-			"yesno", "question", 1);
-		if(save_stat){
+            "Save", "do you wish to save your current project?",
+            "yesno", "question", 1);
+        if (save_stat)
+        {
             (*_game_data_ptr)->save();
         }
     }
 }
 
-const char* Cast::getMapItem(int map_Id, const std::string &key){
+const char *Cast::getMapItem(int map_Id, const std::string &key)
+{
     switch (map_Id)
     {
     case 0:
@@ -522,4 +581,53 @@ const char* Cast::getMapItem(int map_Id, const std::string &key){
     default:
         return "";
     }
+}
+
+void Cast::spiritTreeNode(Spirit &spirit)
+{
+    ImGui::SetNextWindowCollapsed(false);
+    IMGUI_MARKER(spirit._spirit_name.c_str());
+    if (ImGui::TreeNode(spirit._spirit_name.c_str()))
+    {
+        // ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
+        /*static char buff[32] = "";
+        ImGui::InputText("testxt", buff, 32);*/
+
+        // ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
+
+        auto nameStr = &spirit._spirit_name;
+        auto renameLabel = "rename##" + spirit._spirit_name;
+        ImGui::InputText(renameLabel.c_str(), nameStr);
+        ///*ImGui::InputText("rename", &name_str,
+        // ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
+        //
+
+        // changing size and position
+        auto widthLabel = "width##" + *nameStr;
+        ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
+        auto heightLabel = "height##" + *nameStr;
+        ImGui::SliderFloat(heightLabel.c_str(), &spirit._size_ratio[1], -1.0f, 1.0f);
+        auto xLabel = "x-cord##" + *nameStr;
+        ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
+        auto yLabel = "y-cord##" + *nameStr;
+        ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
+
+        ImGui::TreePop();
+    }
+}
+
+void Cast::textboxTreeNode(Textbox &textbox)
+{
+    if (ImGui::TreeNode(textbox._name.c_str()))
+            {
+                auto editLabel = "edit##" + textbox._name;
+                auto contentStr = &textbox._content;
+                ImGui::InputTextMultiline(editLabel.c_str(), contentStr, ImVec2(200, 100));
+                auto xLabel = "x-cord##" + textbox._name;
+                ImGui::SliderFloat(xLabel.c_str(), &textbox._position_ratio[0], 0.0f, 1.0f);
+                auto yLabel = "y-cord##" + textbox._name;
+                ImGui::SliderFloat(yLabel.c_str(), &textbox._position_ratio[1], 0.0f, 1.0f);
+
+                ImGui::TreePop();
+            }
 }
