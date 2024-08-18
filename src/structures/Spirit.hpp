@@ -5,6 +5,8 @@
 #include <string>
 #include "Tools.hpp"
 #include <imgui.h>
+#include <fstream>
+
 
 class Spirit {
    public:
@@ -76,5 +78,49 @@ class Spirit {
         dataEncr += "##";
 
         return dataEncr;
+    }
+
+    void serialize(std::ofstream& outFile) const {
+        // Serialize _spirit_file_name
+        size_t fileNameSize = _spirit_file_name.size();
+        outFile.write(reinterpret_cast<const char*>(&fileNameSize), sizeof(fileNameSize));
+        outFile.write(_spirit_file_name.c_str(), fileNameSize);
+
+        // Serialize _spirit_name
+        size_t spiritNameSize = _spirit_name.size();
+        outFile.write(reinterpret_cast<const char*>(&spiritNameSize), sizeof(spiritNameSize));
+        outFile.write(_spirit_name.c_str(), spiritNameSize);
+
+        // Serialize _size_ratio
+        outFile.write(reinterpret_cast<const char*>(&_size_ratio), sizeof(_size_ratio));
+
+        // Serialize _position_ratio
+        outFile.write(reinterpret_cast<const char*>(&_position_ratio), sizeof(_position_ratio));
+
+        // Serialize _empty
+        outFile.write(reinterpret_cast<const char*>(&_empty), sizeof(_empty));
+    }
+
+    void deserialize(std::ifstream& inFile) {
+        // Deserialize _spirit_file_name
+        size_t fileNameSize;
+        inFile.read(reinterpret_cast<char*>(&fileNameSize), sizeof(fileNameSize));
+        _spirit_file_name.resize(fileNameSize);
+        inFile.read(&_spirit_file_name[0], fileNameSize);
+
+        // Deserialize _spirit_name
+        size_t spiritNameSize;
+        inFile.read(reinterpret_cast<char*>(&spiritNameSize), sizeof(spiritNameSize));
+        _spirit_name.resize(spiritNameSize);
+        inFile.read(&_spirit_name[0], spiritNameSize);
+
+        // Deserialize _size_ratio
+        inFile.read(reinterpret_cast<char*>(&_size_ratio), sizeof(_size_ratio));
+
+        // Deserialize _position_ratio
+        inFile.read(reinterpret_cast<char*>(&_position_ratio), sizeof(_position_ratio));
+
+        // Deserialize _empty
+        inFile.read(reinterpret_cast<char*>(&_empty), sizeof(_empty));
     }
 };

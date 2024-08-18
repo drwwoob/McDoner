@@ -326,3 +326,130 @@ std::string Page::encrpyt() {
     encrypt += ']';
     return encrypt;
 }
+
+void Page::serialize(std::ofstream& outFile) const {
+        // Serialize _spirits
+        size_t spiritsSize = _spirits.size();
+        outFile.write(reinterpret_cast<const char*>(&spiritsSize), sizeof(spiritsSize));
+        for (const auto& spirit : _spirits) {
+            spirit.serialize(outFile);  // Assuming Spirit has a serialize method
+        }
+
+        // Serialize _spirit_ptrs
+        size_t spiritPtrsSize = _spirit_ptrs.size();
+        outFile.write(reinterpret_cast<const char*>(&spiritPtrsSize), sizeof(spiritPtrsSize));
+        for (const auto& spiritPtr : _spirit_ptrs) {
+            spiritPtr->serialize(outFile);  // Serialize the object pointed to
+        }
+
+        // Serialize _textboxs
+        size_t textboxsSize = _textboxs.size();
+        outFile.write(reinterpret_cast<const char*>(&textboxsSize), sizeof(textboxsSize));
+        for (const auto& textbox : _textboxs) {
+            textbox.serialize(outFile);  // Assuming Textbox has a serialize method
+        }
+
+        // Serialize _buttons
+        size_t buttonsSize = _buttons.size();
+        outFile.write(reinterpret_cast<const char*>(&buttonsSize), sizeof(buttonsSize));
+        for (const auto& button : _buttons) {
+            button.serialize(outFile);  // Assuming Button has a serialize method
+        }
+
+        // Serialize _button_ptrs
+        size_t buttonPtrsSize = _button_ptrs.size();
+        outFile.write(reinterpret_cast<const char*>(&buttonPtrsSize), sizeof(buttonPtrsSize));
+        for (const auto& buttonPtr : _button_ptrs) {
+            buttonPtr->serialize(outFile);  // Serialize the object pointed to
+        }
+
+        // Serialize _format_pages_ptrs
+        size_t formatPagesPtrsSize = _format_pages_ptrs.size();
+        outFile.write(reinterpret_cast<const char*>(&formatPagesPtrsSize), sizeof(formatPagesPtrsSize));
+        for (const auto& [key, pagePtr] : _format_pages_ptrs) {
+            size_t keySize = key.size();
+            outFile.write(reinterpret_cast<const char*>(&keySize), sizeof(keySize));
+            outFile.write(key.c_str(), keySize);
+
+            pagePtr->serialize(outFile);  // Serialize the page pointed to
+        }
+
+        // Serialize _draw_order
+        size_t drawOrderSize = _draw_order.size();
+        outFile.write(reinterpret_cast<const char*>(&drawOrderSize), sizeof(drawOrderSize));
+        for (const auto& pair : _draw_order) {
+            outFile.write(reinterpret_cast<const char*>(&pair.first), sizeof(pair.first));
+            size_t stringSize = pair.second.size();
+            outFile.write(reinterpret_cast<const char*>(&stringSize), sizeof(stringSize));
+            outFile.write(pair.second.c_str(), stringSize);
+        }
+    }
+    void Page::deserialize(std::ifstream& inFile) {
+    // Deserialize _spirits
+    size_t spiritsSize;
+    inFile.read(reinterpret_cast<char*>(&spiritsSize), sizeof(spiritsSize));
+    _spirits.resize(spiritsSize);
+    for (auto& spirit : _spirits) {
+        spirit.deserialize(inFile);  // Assuming Spirit has a deserialize method
+    }
+
+    // Deserialize _spirit_ptrs
+    size_t spiritPtrsSize;
+    inFile.read(reinterpret_cast<char*>(&spiritPtrsSize), sizeof(spiritPtrsSize));
+    _spirit_ptrs.resize(spiritPtrsSize);
+    for (auto& spiritPtr : _spirit_ptrs) {
+        spiritPtr = std::make_shared<Spirit>();
+        spiritPtr->deserialize(inFile);  // Deserialize the object pointed to
+    }
+
+    // Deserialize _textboxs
+    size_t textboxsSize;
+    inFile.read(reinterpret_cast<char*>(&textboxsSize), sizeof(textboxsSize));
+    _textboxs.resize(textboxsSize);
+    for (auto& textbox : _textboxs) {
+        textbox.deserialize(inFile);  // Assuming Textbox has a deserialize method
+    }
+
+    // Deserialize _buttons
+    size_t buttonsSize;
+    inFile.read(reinterpret_cast<char*>(&buttonsSize), sizeof(buttonsSize));
+    _buttons.resize(buttonsSize);
+    for (auto& button : _buttons) {
+        button.deserialize(inFile);  // Assuming Button has a deserialize method
+    }
+
+    // Deserialize _button_ptrs
+    size_t buttonPtrsSize;
+    inFile.read(reinterpret_cast<char*>(&buttonPtrsSize), sizeof(buttonPtrsSize));
+    _button_ptrs.resize(buttonPtrsSize);
+    for (auto& buttonPtr : _button_ptrs) {
+        buttonPtr = std::make_shared<Button>();
+        buttonPtr->deserialize(inFile);  // Deserialize the object pointed to
+    }
+
+    // Deserialize _format_pages_ptrs
+    size_t formatPagesPtrsSize;
+    inFile.read(reinterpret_cast<char*>(&formatPagesPtrsSize), sizeof(formatPagesPtrsSize));
+    for (size_t i = 0; i < formatPagesPtrsSize; ++i) {
+        size_t keySize;
+        inFile.read(reinterpret_cast<char*>(&keySize), sizeof(keySize));
+        std::string key(keySize, '\0');
+        inFile.read(&key[0], keySize);
+
+        auto pagePtr = std::make_shared<Page>(_library_ptr);
+        pagePtr->deserialize(inFile);
+        _format_pages_ptrs[key] = pagePtr;
+    }
+
+    // Deserialize _draw_order
+    size_t drawOrderSize;
+    inFile.read(reinterpret_cast<char*>(&drawOrderSize), sizeof(drawOrderSize));
+    _draw_order.resize(drawOrderSize);
+    for (auto& pair : _draw_order) {
+        inFile.read(reinterpret_cast<char*>(&pair.first), sizeof(pair.first));
+        size_t stringSize;
+        inFile.read(reinterpret_cast<char*>(&stringSize), sizeof(stringSize));
+        pair.second.resize(stringSize);
+        inFile.read(&pair.second[0], stringSize);
+    }
+}

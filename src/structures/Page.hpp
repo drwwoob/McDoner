@@ -54,6 +54,9 @@ public:
     std::vector<std::shared_ptr<Button>> _button_ptrs;
     std::map<std::string, std::shared_ptr<Page>> _format_pages_ptrs; // name, formatted page's pointer
 
+    void serialize(std::ofstream& outFile) const;
+    void deserialize(std::ifstream& inFile);
+    
 private:
     void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);
 	

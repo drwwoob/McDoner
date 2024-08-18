@@ -4,6 +4,8 @@
 #include <string>
 #include "Tools.hpp"
 #include <imgui.h>
+#include <fstream>
+#include <array>
 
 class Textbox {
    public:
@@ -23,7 +25,7 @@ class Textbox {
 	 * creating a blank textbox
      * @overload Constructor()
      */
-    Textbox();
+    Textbox(){};
 
     /**
 	 * creating a textbox with giving settings
@@ -55,6 +57,10 @@ class Textbox {
                         std::stof(data_str[8]));
 
         _font_size = std::stof(data_str[9]);
+    }
+
+    ~Textbox(){
+        delete _font;
     }
 
     /**
@@ -103,5 +109,60 @@ class Textbox {
         WordEncry += "##";
 
         return WordEncry;
+    }
+
+    void serialize(std::ofstream& outFile) const {
+        // Serialize _name
+        size_t nameSize = _name.size();
+        outFile.write(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+        outFile.write(_name.c_str(), nameSize);
+
+        // Serialize _content
+        size_t contentSize = _content.size();
+        outFile.write(reinterpret_cast<const char*>(&contentSize), sizeof(contentSize));
+        outFile.write(_content.c_str(), contentSize);
+
+        // Serialize _position_ratio
+        outFile.write(reinterpret_cast<const char*>(&_position_ratio), sizeof(_position_ratio));
+
+        // Serialize _font_path
+        size_t fontPathSize = _font_path.size();
+        outFile.write(reinterpret_cast<const char*>(&fontPathSize), sizeof(fontPathSize));
+        outFile.write(_font_path.c_str(), fontPathSize);
+
+        // Serialize _color
+        outFile.write(reinterpret_cast<const char*>(&_color), sizeof(_color));
+
+        // Serialize _font_size
+        outFile.write(reinterpret_cast<const char*>(&_font_size), sizeof(_font_size));
+    }
+
+    void deserialize(std::ifstream& inFile) {
+        // Deserialize _name
+        size_t nameSize;
+        inFile.read(reinterpret_cast<char*>(&nameSize), sizeof(nameSize));
+        _name.resize(nameSize);
+        inFile.read(&_name[0], nameSize);
+
+        // Deserialize _content
+        size_t contentSize;
+        inFile.read(reinterpret_cast<char*>(&contentSize), sizeof(contentSize));
+        _content.resize(contentSize);
+        inFile.read(&_content[0], contentSize);
+
+        // Deserialize _position_ratio
+        inFile.read(reinterpret_cast<char*>(&_position_ratio), sizeof(_position_ratio));
+
+        // Deserialize _font_path
+        size_t fontPathSize;
+        inFile.read(reinterpret_cast<char*>(&fontPathSize), sizeof(fontPathSize));
+        _font_path.resize(fontPathSize);
+        inFile.read(&_font_path[0], fontPathSize);
+
+        // Deserialize _color
+        inFile.read(reinterpret_cast<char*>(&_color), sizeof(_color));
+
+        // Deserialize _font_size
+        inFile.read(reinterpret_cast<char*>(&_font_size), sizeof(_font_size));
     }
 };
