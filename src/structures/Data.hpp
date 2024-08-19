@@ -34,7 +34,7 @@ class Data {
     void setFont(ImFont* font_given);
     void save() const;
     void loadBinary();
-    void importWithString();
+    void loadString();
     void exportToString();
     int pageSize() { return _pages.size(); };
     void addPage(int page_id, Page page = Page(_library_ptr));

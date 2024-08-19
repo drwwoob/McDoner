@@ -275,7 +275,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
 		// =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
 		// (*game_data_ptr)->page_at = 0;
 		(*_game_data_ptr)->loadTexture();
-		_backup_data->addMove();
+        std::cout << "loaded texture"<< std::endl;
 	}
 	ImGui::End();
 }

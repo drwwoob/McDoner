@@ -23,6 +23,7 @@ Data::Data(const std::string& file_path) {
 	// }
 
     loadBinary();
+    // loadString();
 }
 
 Data::Data(const std::string& project_path, const char* project_name) {
@@ -38,7 +39,7 @@ Data::~Data() {
 	delete _font;
 }
 
-void Data::importWithString(){
+void Data::loadString(){
 	// set up file_data holder
 	std::ifstream file;
 	std::string file_data = "";
@@ -140,15 +141,6 @@ void Data::save() const {
 	// Serialize _page_at
 	outFile.write(reinterpret_cast<const char*>(&_page_at), sizeof(_page_at));
 
-	// Serialize _project_name and _project_path
-	size_t fileNameSize = _project_name.size();
-	outFile.write(reinterpret_cast<const char*>(&fileNameSize), sizeof(fileNameSize));
-	outFile.write(_project_name.c_str(), fileNameSize);
-
-	size_t projectPathSize = _project_path.size();
-	outFile.write(reinterpret_cast<const char*>(&projectPathSize), sizeof(projectPathSize));
-	outFile.write(_project_path.c_str(), projectPathSize);
-
 	// Serialize _pages
 	size_t pagesSize = _pages.size();
 	outFile.write(reinterpret_cast<const char*>(&pagesSize), sizeof(pagesSize));
@@ -156,11 +148,6 @@ void Data::save() const {
 		// Assuming Page has a method to serialize to binary
 		page.serialize(outFile);
 	}
-
-	// Serialize _textures
-	size_t texturesSize = _textures.size();
-	outFile.write(reinterpret_cast<const char*>(&texturesSize), sizeof(texturesSize));
-	outFile.write(reinterpret_cast<const char*>(_textures.data()), texturesSize * sizeof(GLuint));
 
 	// Serialize _values
 	size_t valuesSize = _values.size();
@@ -245,24 +232,6 @@ void Data::loadFormattedPages() {
         // Deserialize _font (assuming _font is nullptr for now)
         _font = nullptr;  // As _font was not serialized, we set it to nullptr
 
-        // Deserialize _project_name
-        size_t file_name_size;
-        in.read(reinterpret_cast<char*>(&file_name_size), sizeof(file_name_size));
-        _project_name.resize(file_name_size);
-        in.read(&_project_name[0], file_name_size);
-
-        // Deserialize _project_path
-        size_t project_path_size;
-        in.read(reinterpret_cast<char*>(&project_path_size), sizeof(project_path_size));
-        _project_path.resize(project_path_size);
-        in.read(&_project_path[0], project_path_size);
-
-        // Deserialize _textures
-        size_t textures_size;
-        in.read(reinterpret_cast<char*>(&textures_size), sizeof(textures_size));
-        _textures.resize(textures_size);
-        in.read(reinterpret_cast<char*>(_textures.data()), textures_size * sizeof(GLuint));
-
         // Deserialize _pages
         size_t pages_size;
         in.read(reinterpret_cast<char*>(&pages_size), sizeof(pages_size));
@@ -320,6 +289,8 @@ void Data::loadFormattedPages() {
             }
 
             _values.emplace(std::move(key), std::move(value));
+
+            std::cout << "loaded data" << std::endl;
         }
 
         // _library_ptr is a static pointer and doesn't need to be deserialized here.
