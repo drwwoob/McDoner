@@ -275,7 +275,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
 		// =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
 		// (*game_data_ptr)->page_at = 0;
 		(*_game_data_ptr)->loadTexture();
-		_backup_data->addMove();
+        std::cout << "loaded texture"<< std::endl;
 	}
 	ImGui::End();
 }
@@ -435,7 +435,7 @@ bool Cast::openProject() {
 		path.substr(0, path.size() - 1).find_last_of("/") + 1);
 	project_name = project_name.substr(0, project_name.size() - 1);
 	path += project_name;
-	path += ".txt";
+	path += ".bin";
 	if(!std::filesystem::exists(path) || !std::filesystem::is_regular_file(path)) {
 		tinyfd_messageBox(
 			"Error",
@@ -529,6 +529,10 @@ void Cast::buttonTreeNode(Button& button) {
         auto nameStr = &(button._nickname);
         auto renameLabel = "rename##" + button._nickname;
         ImGui::InputText(renameLabel.c_str(), nameStr);
+        auto triggerLabel = "trigger##" + button._nickname;
+        if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)){
+
+        }
         if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)){
             for(auto &spirit : button._button_spirits){
                 if(spirit._empty){
@@ -563,33 +567,33 @@ void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& n
 }
 
 
-void RenderUI() {
-    // Start a new ImGui window
-    ImGui::Begin("Color Picker with Apply Button");
+// void RenderUI() {
+//     // Start a new ImGui window
+//     ImGui::Begin("Color Picker with Apply Button");
 
-    // Color picker widget
-    ImGui::ColorEdit3("Select Background Color", (float*)&selectedColor);
+//     // Color picker widget
+//     ImGui::ColorEdit3("Select Background Color", (float*)&selectedColor);
 
-    // Add a button to apply the selected color
-    if (ImGui::Button("Apply Color")) {
-        currentBackgroundColor = selectedColor;  // Set the background color to the selected color
-    }
+//     // Add a button to apply the selected color
+//     if (ImGui::Button("Apply Color")) {
+//         currentBackgroundColor = selectedColor;  // Set the background color to the selected color
+//     }
 
-    // Text to display the current state
-    ImGui::Text("Click 'Apply Color' to set this window's background color.");
+//     // Text to display the current state
+//     ImGui::Text("Click 'Apply Color' to set this window's background color.");
 
-    ImGui::End();
+//     ImGui::End();
 
-    // Set the window background color using the applied color
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, currentBackgroundColor);
+//     // Set the window background color using the applied color
+//     ImGui::PushStyleColor(ImGuiCol_WindowBg, currentBackgroundColor);
 
-    // Another window that uses the selected background color
-    ImGui::Begin("Window with Custom Background");
+//     // Another window that uses the selected background color
+//     ImGui::Begin("Window with Custom Background");
 
-    ImGui::Text("This window has a custom background color!");
+//     ImGui::Text("This window has a custom background color!");
 
-    ImGui::End();
+//     ImGui::End();
 
-    ImGui::PopStyleColor();
-}
+//     ImGui::PopStyleColor();
+// }
 

@@ -24,13 +24,18 @@ class Data {
      * @param project_name the name for the porject
      */
     Data(const std::string &project_path, const char * project_name);
+    ~Data();
+
     Page* getPage(int page_id); // get the information of a page (decrypt)
 
 	int _page_at;
     void loadTexture();
     void draw();
     void setFont(ImFont* font_given);
-    void save();
+    void save() const;
+    void loadBinary();
+    void loadString();
+    void exportToString();
     int pageSize() { return _pages.size(); };
     void addPage(int page_id, Page page = Page(_library_ptr));
     void CopyPage(int page_id, Page page);
@@ -44,7 +49,7 @@ class Data {
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
-    std::string _file_name;
+    std::string _project_name;
     std::string _project_path;
     std::vector<GLuint> _textures{};
     void loadSettings();
