@@ -1,3 +1,0 @@
-/Users/kellytao/Documents/McDoner/src/export/preWriter/build/CMakeFiles/demoProject.dir
-/Users/kellytao/Documents/McDoner/src/export/preWriter/build/CMakeFiles/edit_cache.dir
-/Users/kellytao/Documents/McDoner/src/export/preWriter/build/CMakeFiles/rebuild_cache.dir
