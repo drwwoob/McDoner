@@ -175,6 +175,7 @@ void Cast::showMenuBar(Page& clipboard_page) {
 			}
 			if(ImGui::BeginMenu("Spirit")) {
 				if(ImGui::MenuItem("Import")) {
+					importImage();
 				}
 				if(ImGui::MenuItem("Add from list")) {
 				}
@@ -228,9 +229,17 @@ void Cast::showCastsInPage(bool* p_open) {
 	IMGUI_MARKER("Spirit");
 	// ImGui::SetNextWindowCollapsed(false);
 	if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
+		// for there i think it'll be best to do a draw-order listing so that nothing changes after setting linked / unlinked
+
+		ImGui::SeparatorText("Unlinked:");
 		for(auto& spirit : page_info->_spirits) {
-			spiritTreeNode(spirit);
+			spiritTreeNode(spirit, false);
 		}
+
+		// 	ImGui::SeparatorText("Linked:");
+		// 	for(auto& spirit : page_info->_spirit_ptrs) {
+		// 		spiritTreeNode(*spirit, true);
+		// 	}
 	}
 	IMGUI_MARKER("Textbox");
 	if(ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -275,7 +284,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
 		// =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
 		// (*game_data_ptr)->page_at = 0;
 		(*_game_data_ptr)->loadTexture();
-        std::cout << "loaded texture"<< std::endl;
+		std::cout << "loaded texture" << std::endl;
 	}
 	ImGui::End();
 }
@@ -477,9 +486,12 @@ const char* Cast::getMapItem(int map_Id, const std::string& key) {
 	}
 }
 
-void Cast::spiritTreeNode(Spirit& spirit, bool name_changable) {
+void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable) {
 	ImGui::SetNextWindowCollapsed(false);
 	IMGUI_MARKER(spirit._spirit_name.c_str());
+
+	// ================== how do i put *** UNDO *** in this...?
+
 	if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
 		// ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
 		/*static char buff[32] = "";
@@ -488,10 +500,13 @@ void Cast::spiritTreeNode(Spirit& spirit, bool name_changable) {
 		// ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
 
 		auto nameStr = &spirit._spirit_name;
-        if(name_changable){
-            auto renameLabel = "rename##" + spirit._spirit_name;
-            ImGui::InputText(renameLabel.c_str(), nameStr);
-        }
+		if(name_changable.has_value() && name_changable == true) {
+			auto renameLabel = "rename##" + spirit._spirit_name;
+			ImGui::InputText(renameLabel.c_str(), nameStr);
+		}
+		else {
+			// ImGui::Text("%s", spirit._spirit_name.c_str());
+		}
 		///*ImGui::InputText("rename", &name_str,
 		// ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
 		//
@@ -525,47 +540,44 @@ void Cast::textboxTreeNode(Textbox& textbox) {
 }
 
 void Cast::buttonTreeNode(Button& button) {
-    if(ImGui::TreeNode(button._nickname.c_str())) {
-        auto nameStr = &(button._nickname);
-        auto renameLabel = "rename##" + button._nickname;
-        ImGui::InputText(renameLabel.c_str(), nameStr);
-        auto triggerLabel = "trigger##" + button._nickname;
-        if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)){
-
-        }
-        if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)){
-            for(auto &spirit : button._button_spirits){
-                if(spirit._empty){
-                    addSpiritTreeNode(spirit, spirit._spirit_name);
-                }
-                else{
-                    spiritTreeNode(spirit, false);
-                }
-            }
-        }
-        ImGui::TreePop();
-    }
+	if(ImGui::TreeNode(button._nickname.c_str())) {
+		auto nameStr = &(button._nickname);
+		auto renameLabel = "rename##" + button._nickname;
+		ImGui::InputText(renameLabel.c_str(), nameStr);
+		auto triggerLabel = "trigger##" + button._nickname;
+		if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)) {
+			addTrigger();
+		}
+		if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
+			for(auto& spirit : button._button_spirits) {
+				if(spirit._empty) {
+					addSpiritTreeNode(spirit, spirit._spirit_name);
+				}
+				else {
+					// addSpiritTreeNode(spirit);
+					spiritTreeNode(spirit, false, false);
+				}
+			}
+		}
+		ImGui::TreePop();
+	}
 }
 
 // let me think about this, i don't think i need a function
-void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name, std::optional<int> id) {
-    if(name.has_value()){
-    spirit._spirit_name = *name;     
-    }
-    else if(id.has_value()){
-        spirit._spirit_name = "spirit" + std::to_string(*id);
-    }
-    else{
-        spirit._spirit_name = "spirit_default";
-    }
-// // this will be abandoned now, but this should be the logic for import
-//     ImGui::Begin("New Spirit");
-//     ImGui::Button("Confirm", ImVec2(200, 50)){
-        
-//     }
-//     ImGui::End();
-}
+void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name) {
+	if(name.has_value()) {
+		spirit._spirit_name = *name;
+	}
+	else {
+		spirit._spirit_name = "spirit_default";
+	}
+	// // this will be abandoned now, but this should be the logic for import
+	//     ImGui::Begin("New Spirit");
+	//     ImGui::Button("Confirm", ImVec2(200, 50)){
 
+	//     }
+	//     ImGui::End();
+}
 
 // void RenderUI() {
 //     // Start a new ImGui window
@@ -597,3 +609,26 @@ void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& n
 //     ImGui::PopStyleColor();
 // }
 
+void Cast::importImage() {
+	char const* lFilterPatterns[2] = {"*.png", "*.jpg"};
+	auto path = tinyfd_openFileDialog(NULL, (*_game_data_ptr)->_project_path.c_str(), 2, lFilterPatterns, "image files", 1);
+	// std::cout << path << std::endl;
+
+	// im thinking of recording down all the name as default names and store the images with
+}
+
+void Cast::showLibraryImage() {
+}
+
+void Cast::addTrigger() {
+	if(ImGui::Button("Add Trigger", ImVec2(200, 50))) {
+		// I think a pop-up window is the option
+		ImGui::Begin("New Trigger");
+		// select value
+		//
+		ImGui::End();
+	}
+}
+
+void Cast::createValue() {
+}

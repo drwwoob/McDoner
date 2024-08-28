@@ -42,15 +42,18 @@ class Data {
     void deletePage(int page_id);
     std::string encryptIntoFile(); // encrypt the current pages into text
     void decryptFile(const std::string& data_str);
-    void ImportFormattedPages(const std::string& path);
+
+    void importFormattedPages(const std::string& path);
+    
     void changeProjectName();
-    void replace_all();
+    std::string _project_name;
+    std::string _project_path;
+
+
 
    private:
     ImFont* _font;
     std::vector<Page> _pages; // a file includes a collection of pages
-    std::string _project_name;
-    std::string _project_path;
     std::vector<GLuint> _textures{};
     void loadSettings();
     void loadFormattedPages();
@@ -58,7 +61,8 @@ class Data {
         int,
         double,
         bool,
-        std::string
+        std::string,
+        Page*
     >;
     std::map<std::string, ParameterVarient> _values; // name, initial value
     static const std::shared_ptr<Library> _library_ptr;

@@ -126,7 +126,7 @@ void Data::decryptFile(const std::string& data_str) {
 	}
 }
 
-void Data::ImportFormattedPages(const std::string& path) {
+void Data::importFormattedPages(const std::string& path) {
 }
 
 void Data::changeProjectName() {
@@ -290,7 +290,7 @@ void Data::loadFormattedPages() {
 
             _values.emplace(std::move(key), std::move(value));
 
-            std::cout << "loaded data" << std::endl;
+            // std::cout << "loaded data" << std::endl;
         }
 
         // _library_ptr is a static pointer and doesn't need to be deserialized here.

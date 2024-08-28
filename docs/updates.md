@@ -14,6 +14,8 @@
 - adding formatted pages
 - including library (undone)
 - better data loading logic
+- adding starting up window for demo
+- initiating linking / unlinking functions for spirit (transfering between pointer to library and local item)
 
 ## 0.0.3
 

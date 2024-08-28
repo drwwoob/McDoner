@@ -75,14 +75,26 @@ private:
 	bool openProject();
 	void askForSave();
 
-    void spiritTreeNode(Spirit& spirit, bool name_changable = true);
+    void spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable = false);
 	void textboxTreeNode(Textbox& textbox);
 	void buttonTreeNode(Button& button);
 
+	// button features
+	/**
+	 * letting the user to create a value, and store this value into data
+	 * @details the value can be in type int, double, bool or std::string
+	 */
+	void createValue();
+	void addTrigger();
+
 	// =========== todo =======================
+	void importImage();
+	// open a window showing the imported images...?
+	void showLibraryImage();
 	void showLibrarySpirit();
 
-	void addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name = std::nullopt, std::optional<int> id = std::nullopt);
+
+	void addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name = std::nullopt);
 
 	/**
 	 * @param map_id

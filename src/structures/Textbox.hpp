@@ -20,6 +20,8 @@ class Textbox {
     std::string _font_path; // the path to the data of this font
     ImColor _color;        // the color of the text in this textbox
     float _font_size;       // the size of the text
+    float _play_speed;       // the speed of each letter appearing
+    bool _auto_play;          // if it auto continues
 
     /**
 	 * creating a blank textbox

@@ -41,14 +41,17 @@ class Button {
 	//  3: clicked
 	int _status;
 
+	// <template> ?
 	using FunctionVariant = std::variant<
 		// functions to change values
 		// I think there should be some setted funtion for this
 		std::function<void()>,
-		std::function<void(int&)>, // i think this function could do the "jump to another page" with something like void<int& _page_at>
+		// std::function<void(int&)>, // i think this function could do the "jump to another page" with something like void<int& _page_at>
 		std::function<void(double&)>,
 		std::function<void(bool&)>,
-		std::function<void(std::string&)>>;
+		std::function<void(std::string&)>
+		// std::function<void(Page*)>
+		>;
 	std::vector<std::shared_ptr<FunctionVariant>> _func_ptrs;
 
 	void addFunction(std::shared_ptr<FunctionVariant> func_ptr) {

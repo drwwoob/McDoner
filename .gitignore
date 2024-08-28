@@ -33,6 +33,7 @@
 
 # Cmake FIles
 /build
+/src/export/preWriter/build
 
 # Mac development files
 .DS_store
