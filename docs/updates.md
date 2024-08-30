@@ -7,7 +7,13 @@
 - 优化，我需要更多优化，更多！！！
 - better logic for undo
 
-## upcoming version 0.0.4
+## uncoming version 0.0.5
+
+- the feature bar for all ImGui Window (color-changing, transparency)
+- able to unlink spirit
+- able to create link for items
+
+## version 0.0.4
 
 - able to edit home page and setting page (technically you always can)
 - adding button (without edition and function)

@@ -46,6 +46,10 @@ public:
     std::vector<GLuint> loadPage(const std::string &project_path);
     void drawPage(const std::vector<GLuint> &textures, int size);
     void replace();
+
+    void serialize(std::ofstream& outFile) const;
+    void deserialize(std::ifstream& inFile);
+
     std::shared_ptr<Library> _library_ptr;
 	std::vector<Spirit> _spirits;
     std::vector<std::shared_ptr<Spirit>> _spirit_ptrs;
@@ -53,9 +57,6 @@ public:
     std::vector<Button> _buttons;
     std::vector<std::shared_ptr<Button>> _button_ptrs;
     std::map<std::string, std::shared_ptr<Page>> _format_pages_ptrs; // name, formatted page's pointer
-
-    void serialize(std::ofstream& outFile) const;
-    void deserialize(std::ifstream& inFile);
     
 private:
     void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);

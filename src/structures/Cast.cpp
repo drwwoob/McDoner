@@ -486,19 +486,18 @@ const char* Cast::getMapItem(int map_Id, const std::string& key) {
 	}
 }
 
-void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable) {
+void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable, const std::optional<std::string>& name) {
 	ImGui::SetNextWindowCollapsed(false);
+	if(spirit._spirit_name != "") {
+	}
+	else {
+		spirit._spirit_name = *name;
+	}
 	IMGUI_MARKER(spirit._spirit_name.c_str());
 
 	// ================== how do i put *** UNDO *** in this...?
 
 	if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
-		// ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
-		/*static char buff[32] = "";
-        ImGui::InputText("testxt", buff, 32);*/
-
-		// ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
-
 		auto nameStr = &spirit._spirit_name;
 		if(name_changable.has_value() && name_changable == true) {
 			auto renameLabel = "rename##" + spirit._spirit_name;
@@ -507,24 +506,35 @@ void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool>
 		else {
 			// ImGui::Text("%s", spirit._spirit_name.c_str());
 		}
-		///*ImGui::InputText("rename", &name_str,
-		// ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
-		//
+		if(spirit._empty) {
+			if(ImGui::Button("Add spirit", ImVec2(200, 50))) {
+			}
+		}
+		else {
+			// ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
+			/*static char buff[32] = "";
+        ImGui::InputText("testxt", buff, 32);*/
 
-		// changing size and position
-		auto widthLabel = "width##" + *nameStr;
-		ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
-		auto heightLabel = "height##" + *nameStr;
-		ImGui::SliderFloat(heightLabel.c_str(), &spirit._size_ratio[1], -1.0f, 1.0f);
-		auto xLabel = "x-cord##" + *nameStr;
-		ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
-		auto yLabel = "y-cord##" + *nameStr;
-		ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
+			// ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
 
-		ImGui::TreePop();
+			///*ImGui::InputText("rename", &name_str,
+			// ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
+			//
+
+			// changing size and position
+			auto widthLabel = "width##" + *nameStr;
+			ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
+			auto heightLabel = "height##" + *nameStr;
+			ImGui::SliderFloat(heightLabel.c_str(), &spirit._size_ratio[1], -1.0f, 1.0f);
+			auto xLabel = "x-cord##" + *nameStr;
+			ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
+			auto yLabel = "y-cord##" + *nameStr;
+			ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
+
+		}
+			ImGui::TreePop();
 	}
 }
-
 void Cast::textboxTreeNode(Textbox& textbox) {
 	if(ImGui::TreeNode(textbox._name.c_str())) {
 		auto editLabel = "edit##" + textbox._name;
@@ -534,8 +544,7 @@ void Cast::textboxTreeNode(Textbox& textbox) {
 		ImGui::SliderFloat(xLabel.c_str(), &textbox._position_ratio[0], 0.0f, 1.0f);
 		auto yLabel = "y-cord##" + textbox._name;
 		ImGui::SliderFloat(yLabel.c_str(), &textbox._position_ratio[1], 0.0f, 1.0f);
-
-		ImGui::TreePop();
+	ImGui::TreePop();
 	}
 }
 
@@ -550,13 +559,13 @@ void Cast::buttonTreeNode(Button& button) {
 		}
 		if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
 			for(auto& spirit : button._button_spirits) {
-				if(spirit._empty) {
-					addSpiritTreeNode(spirit, spirit._spirit_name);
-				}
-				else {
-					// addSpiritTreeNode(spirit);
-					spiritTreeNode(spirit, false, false);
-				}
+				// if(spirit._empty) {
+				// 	addSpiritTreeNode(spirit, spirit._spirit_name);
+				// }
+				// else {
+				// addSpiritTreeNode(spirit);
+				spiritTreeNode(spirit, false, false);
+				// }
 			}
 		}
 		ImGui::TreePop();
@@ -570,6 +579,8 @@ void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& n
 	}
 	else {
 		spirit._spirit_name = "spirit_default";
+	}
+	if(ImGui::Button("Add spirit", ImVec2(200, 50))) {
 	}
 	// // this will be abandoned now, but this should be the logic for import
 	//     ImGui::Begin("New Spirit");

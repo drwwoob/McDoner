@@ -75,7 +75,7 @@ private:
 	bool openProject();
 	void askForSave();
 
-    void spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable = false);
+    void spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable = false, const std::optional<std::string>& name = "spirit_default");
 	void textboxTreeNode(Textbox& textbox);
 	void buttonTreeNode(Button& button);
 

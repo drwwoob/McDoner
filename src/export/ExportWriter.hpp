@@ -8,6 +8,6 @@ public:
      */
     static bool windowWriter(const Data& data, std::string& message);
 
-private;
+private:
     int _indent = 0;
 };
