@@ -27,6 +27,7 @@ class Data {
     ~Data();
 
     Page* getPage(int page_id); // get the information of a page (decrypt)
+    Page* getCurrentPage(); // get the page currently on
 
 	int _page_at;
     void loadTexture();
@@ -65,5 +66,6 @@ class Data {
         Page*
     >;
     std::map<std::string, ParameterVarient> _values; // name, initial value
+    // std::shared_ptr<std::vector<Pages>> _library_ptr; // not sure if i should 
     static const std::shared_ptr<Library> _library_ptr;
 };

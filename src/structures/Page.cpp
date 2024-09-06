@@ -1,5 +1,6 @@
 #include "Page.hpp"
 #include <iostream>
+#include <tinyfiledialogs.h>
 
 Page::Page(){
 
@@ -204,6 +205,7 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
         //                                              ImVec2(1, 1));
         //     break;
         case 1:
+        // ========= hoenstly i don't understand my logic of ```i``` right now ;( ==============
             i = size; // Initialize i here to reset its value for each draw_obj
             for(auto& spirit : _spirits) {
                 if(spirit._spirit_file_name == draw_obj.second) {
@@ -228,8 +230,8 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
                             textbox._position_ratio.y * ImGui::GetIO().DisplaySize.y),
                         textbox._color,
                         textbox._content.c_str());
+                    break;
                 }
-                break;
             }
             break;
         case 3:
@@ -254,42 +256,48 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
             (*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures, 
                 size + _spirits.size() + _buttons.size() + _spirit_ptrs.size() + _button_ptrs.size());
             break;
-        case 5:
-            i = size + _spirits.size() + _buttons.size();
-            for(auto& spirit_ptr : _spirit_ptrs) {
-                if(spirit_ptr->_spirit_file_name == draw_obj.second) {
-                    auto imgSize = spirit_ptr->getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
-                    auto topLeft = spirit_ptr->getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
-                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
-                                                            topLeft,
-                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-                                                            ImVec2(0, 0),
-                                                            ImVec2(1, 1));
-                    break;
-                }
-                i++;
-            }
-            break;
-        case 6:
-            i = size + _spirits.size() + _buttons.size() + _spirit_ptrs.size();
-            for(auto& button_ptr : _button_ptrs) {
-                if(button_ptr->_nickname == draw_obj.second) {
-                    auto spirit = button_ptr->currentSpirit();
-                    // std::cout << spirit._spirit_file_name << std::endl;
-                    auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
-                    auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
-                    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
-                                                            topLeft,
-                                                            ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
-                                                            ImVec2(0, 0),
-                                                            ImVec2(1, 1));
-                    break;
-                }
-                i++;
-            }
-            break;
+        // case 5:
+        //     i = size + _spirits.size() + _buttons.size();
+        //     for(auto& spirit_ptr : _spirit_ptrs) {
+        //         if(spirit_ptr->_spirit_file_name == draw_obj.second) {
+        //             auto imgSize = spirit_ptr->getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+        //             auto topLeft = spirit_ptr->getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+        //             ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
+        //                                                     topLeft,
+        //                                                     ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+        //                                                     ImVec2(0, 0),
+        //                                                     ImVec2(1, 1));
+        //             break;
+        //         }
+        //         i++;
+        //     }
+        //     break;
+        // case 6:
+        //     i = size + _spirits.size() + _buttons.size() + _spirit_ptrs.size();
+        //     for(auto& button_ptr : _button_ptrs) {
+        //         if(button_ptr->_nickname == draw_obj.second) {
+        //             auto spirit = button_ptr->currentSpirit();
+        //             // std::cout << spirit._spirit_file_name << std::endl;
+        //             auto imgSize = spirit.getSize(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+        //             auto topLeft = spirit.getPosition(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+        //             ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)(uintptr_t)textures[i],
+        //                                                     topLeft,
+        //                                                     ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
+        //                                                     ImVec2(0, 0),
+        //                                                     ImVec2(1, 1));
+        //             break;
+        //         }
+        //         i++;
+        //     }
+        //     break;
         default:
-            std::cout << "wrong draw_object: " << draw_obj.first << ", " << draw_obj.second << std::endl;
+            // std::cout << "wrong draw_object: " << draw_obj.first << ", " << draw_obj.second << std::endl;
+            tinyfd_messageBox(
+			"Error",
+			"Wrong draw_object",
+			"ok",
+			"error",
+			1);
             break;
         }
     }
@@ -390,7 +398,7 @@ void Page::serialize(std::ofstream& outFile) const {
     inFile.read(reinterpret_cast<char*>(&spiritsSize), sizeof(spiritsSize));
     _spirits.resize(spiritsSize);
     for (auto& spirit : _spirits) {
-        spirit.deserialize(inFile);  // Assuming Spirit has a deserialize method
+        spirit.deserialize(inFile); 
     }
 
     // Deserialize _spirit_ptrs
@@ -399,7 +407,7 @@ void Page::serialize(std::ofstream& outFile) const {
     _spirit_ptrs.resize(spiritPtrsSize);
     for (auto& spiritPtr : _spirit_ptrs) {
         spiritPtr = std::make_shared<Spirit>();
-        spiritPtr->deserialize(inFile);  // Deserialize the object pointed to
+        spiritPtr->deserialize(inFile); 
     }
 
     // Deserialize _textboxs
@@ -407,7 +415,7 @@ void Page::serialize(std::ofstream& outFile) const {
     inFile.read(reinterpret_cast<char*>(&textboxsSize), sizeof(textboxsSize));
     _textboxs.resize(textboxsSize);
     for (auto& textbox : _textboxs) {
-        textbox.deserialize(inFile);  // Assuming Textbox has a deserialize method
+        textbox.deserialize(inFile);
     }
 
     // Deserialize _buttons
@@ -415,7 +423,7 @@ void Page::serialize(std::ofstream& outFile) const {
     inFile.read(reinterpret_cast<char*>(&buttonsSize), sizeof(buttonsSize));
     _buttons.resize(buttonsSize);
     for (auto& button : _buttons) {
-        button.deserialize(inFile);  // Assuming Button has a deserialize method
+        button.deserialize(inFile);
     }
 
     // Deserialize _button_ptrs
@@ -424,7 +432,7 @@ void Page::serialize(std::ofstream& outFile) const {
     _button_ptrs.resize(buttonPtrsSize);
     for (auto& buttonPtr : _button_ptrs) {
         buttonPtr = std::make_shared<Button>();
-        buttonPtr->deserialize(inFile);  // Deserialize the object pointed to
+        buttonPtr->deserialize(inFile);
     }
 
     // Deserialize _format_pages_ptrs

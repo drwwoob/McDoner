@@ -5,6 +5,7 @@
 #include <tinyfiledialogs.h>
 #include <filesystem>
 // #include "data.h"
+
 typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
 extern ImGuiMarkerCallback GImGuiMarkerCallback;
 extern void* GImGuiMarkerCallbackUserData;
@@ -225,40 +226,75 @@ void Cast::showCastsInPage(bool* p_open) {
 	ImGui::SetNextWindowSize(ImVec2(200, 20), ImGuiCond_FirstUseEver);
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 
-	ImGui::Text("This is the list of cast on the current page");
-	IMGUI_MARKER("Spirit");
-	// ImGui::SetNextWindowCollapsed(false);
-	if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
-		// for there i think it'll be best to do a draw-order listing so that nothing changes after setting linked / unlinked
-
-		ImGui::SeparatorText("Unlinked:");
-		for(auto& spirit : page_info->_spirits) {
-			spiritTreeNode(spirit, false);
+	for(auto draw_item :  std::ranges::reverse_view((*_game_data_ptr)->getCurrentPage()->_draw_order)) {
+		switch(draw_item.first) {
+		case 1:
+			for(auto& spirit : (*_game_data_ptr)->getCurrentPage()->_spirits){
+				if(spirit._spirit_file_name == draw_item.second){
+					if(ImGui::CollapsingHeader(spirit._spirit_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+					spiritNodeContent(spirit, false, true, true);
+					}
+					break;
+				}
+			}
+			break;
+		case 2:
+			for(auto& textbox :  (*_game_data_ptr)->getCurrentPage()->_textboxs){
+				if(textbox._name == draw_item.second) {
+					textboxTreeNode(textbox);
+					break;
+				}
+			}
+			break;
+		case 3:
+			for(auto& button : (*_game_data_ptr)->getCurrentPage()->_buttons){
+				if(button._nickname == draw_item.second){
+					buttonTreeNode(button);
+					break;
+				}
+			}
+			break;
+		default:
+			break;
 		}
-
-		// 	ImGui::SeparatorText("Linked:");
-		// 	for(auto& spirit : page_info->_spirit_ptrs) {
-		// 		spiritTreeNode(*spirit, true);
-		// 	}
-	}
-	IMGUI_MARKER("Textbox");
-	if(ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
-		for(auto& textbox : page_info->_textboxs) {
-			textboxTreeNode(textbox);
-		}
 	}
 
-	IMGUI_MARKER("Button");
-	if(ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen)) {
-		for(auto& button : page_info->_buttons) {
-			buttonTreeNode(button);
-		}
-	}
+	// // ================ the drawing with the drawing order based on types ==================
+	// ImGui::Text("This is the list of cast on the current page");
+	// IMGUI_MARKER("Spirit");
+	// // ImGui::SetNextWindowCollapsed(false);
+	// if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
+	// 	// for there i think it'll be best to do a draw-order listing so that nothing changes after setting linked / unlinked
 
-	// IMGUI_MARKER("Background");
-	// if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
-	// 	// choose the color for background here
+	// 	// ImGui::SeparatorText("Unlinked:");
+	// 	for(auto& spirit : page_info->_spirits) {
+	// 		spiritNodeContent(spirit, false, true);
+	// 	}
+
+	// 	// 	ImGui::SeparatorText("Linked:");
+	// 	// 	for(auto& spirit : page_info->_spirit_ptrs) {
+	// 	// 		spiritNodeContent(*spirit, true);
+	// 	// 	}
 	// }
+	// IMGUI_MARKER("Textbox");
+	// if(ImGui::CollapsingHeader("Textbox", ImGuiTreeNodeFlags_DefaultOpen)) {
+	// 	for(auto& textbox : page_info->_textboxs) {
+	// 		textboxTreeNode(textbox);
+	// 	}
+	// }
+
+	// IMGUI_MARKER("Button");
+	// if(ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen)) {
+	// 	for(auto& button : page_info->_buttons) {
+	// 		buttonTreeNode(button);
+	// 	}
+	// }
+
+	// // IMGUI_MARKER("Background");
+	// // if(ImGui::CollapsingHeader("Background", ImGuiTreeNodeFlags_DefaultOpen)) {
+	// // 	// choose the color for background here
+	// // }
+
 	ImGui::End();
 }
 
@@ -284,7 +320,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
 		// =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
 		// (*game_data_ptr)->page_at = 0;
 		(*_game_data_ptr)->loadTexture();
-		std::cout << "loaded texture" << std::endl;
+		// std::cout << "loaded texture" << std::endl;
 	}
 	ImGui::End();
 }
@@ -486,7 +522,7 @@ const char* Cast::getMapItem(int map_Id, const std::string& key) {
 	}
 }
 
-void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable, const std::optional<std::string>& name) {
+void Cast::spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, const std::optional<bool> name_changable, const std::optional<std::string>& name) {
 	ImGui::SetNextWindowCollapsed(false);
 	if(spirit._spirit_name != "") {
 	}
@@ -497,7 +533,7 @@ void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool>
 
 	// ================== how do i put *** UNDO *** in this...?
 
-	if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
+	// if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
 		auto nameStr = &spirit._spirit_name;
 		if(name_changable.has_value() && name_changable == true) {
 			auto renameLabel = "rename##" + spirit._spirit_name;
@@ -511,16 +547,6 @@ void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool>
 			}
 		}
 		else {
-			// ImGui::BulletText("(%s)", page_info->spirits.at(id).name().c_str());
-			/*static char buff[32] = "";
-        ImGui::InputText("testxt", buff, 32);*/
-
-			// ImGui::SeparatorText( page_info->getRealSpirits(id)->name().c_str());
-
-			///*ImGui::InputText("rename", &name_str,
-			// ImGuiInputTextFlags_CallbackResize, MyResizeCallback, (void*) &name_str);*/
-			//
-
 			// changing size and position
 			auto widthLabel = "width##" + *nameStr;
 			ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
@@ -530,13 +556,15 @@ void Cast::spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool>
 			ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
 			auto yLabel = "y-cord##" + *nameStr;
 			ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
-
+if(linkable && !linked){
+			if(ImGui::Button("Set As Library Spirit")) {
+			}}
 		}
-			ImGui::TreePop();
-	}
+	// 	ImGui::TreePop();
+	// }
 }
 void Cast::textboxTreeNode(Textbox& textbox) {
-	if(ImGui::TreeNode(textbox._name.c_str())) {
+	if(ImGui::CollapsingHeader(textbox._name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 		auto editLabel = "edit##" + textbox._name;
 		auto contentStr = &textbox._content;
 		ImGui::InputTextMultiline(editLabel.c_str(), contentStr, ImVec2(200, 100));
@@ -544,12 +572,12 @@ void Cast::textboxTreeNode(Textbox& textbox) {
 		ImGui::SliderFloat(xLabel.c_str(), &textbox._position_ratio[0], 0.0f, 1.0f);
 		auto yLabel = "y-cord##" + textbox._name;
 		ImGui::SliderFloat(yLabel.c_str(), &textbox._position_ratio[1], 0.0f, 1.0f);
-	ImGui::TreePop();
+		// ImGui::TreePop();
 	}
 }
 
 void Cast::buttonTreeNode(Button& button) {
-	if(ImGui::TreeNode(button._nickname.c_str())) {
+	if(ImGui::CollapsingHeader(button._nickname.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 		auto nameStr = &(button._nickname);
 		auto renameLabel = "rename##" + button._nickname;
 		ImGui::InputText(renameLabel.c_str(), nameStr);
@@ -564,11 +592,14 @@ void Cast::buttonTreeNode(Button& button) {
 				// }
 				// else {
 				// addSpiritTreeNode(spirit);
-				spiritTreeNode(spirit, false, false);
+	if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
+				spiritNodeContent(spirit, false, false, false);
+		ImGui::TreePop();
+	}
 				// }
 			}
 		}
-		ImGui::TreePop();
+		// ImGui::TreePop();
 	}
 }
 
@@ -631,8 +662,20 @@ void Cast::importImage() {
 void Cast::showLibraryImage() {
 }
 
+// ------------ to do for the bottom two, get a pop-up window -------------
+void Cast::showLibrarySpirit(bool* p_open) {
+	ImGui::Begin("Spirit Library", p_open);
+	if(ImGui::Button("Add Spirit", ImVec2(-FLT_MIN, 50))) {
+		// ImGui::Begin();
+
+		// ImGui::End();
+	}
+	// if(ImGui::Button("Link to a Current Spirit"))
+	ImGui::End();
+}
+
 void Cast::addTrigger() {
-	if(ImGui::Button("Add Trigger", ImVec2(200, 50))) {
+	if(ImGui::Button("Add Trigger", ImVec2(-FLT_MIN, 50))) {
 		// I think a pop-up window is the option
 		ImGui::Begin("New Trigger");
 		// select value

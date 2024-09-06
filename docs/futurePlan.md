@@ -7,7 +7,7 @@
 - [ ] [web avalible](#web-avalible)
 - [ ] [bundle creation for mac](#bundle-creation-for-mac)
 - [ ] [multiple project in same time](#multiple-project-in-same-time) (working on its data managing)
-- [ ] [spirit libary](#spirit-libary)
+- [ ] [spirit libary](#spirit-libary), also with [import library](#import-library)
 - [ ] [stored spirits setting](#stored-spirits-setting)
 - [ ] [stored textbox setting](#stored-textbox-setting)
 - [ ] [import / replacing / deleting images](#import--replacing--deleting-images)
@@ -18,7 +18,7 @@
 - [ ] [drag](#drag)
 - [ ] [edit windows?](#edit-windows)
 - [ ] *or*, [dragging imgui window outside host window](#or-dragging-imgui-window-outside-host-window)
-- [ ] [textured buttons](#textured-buttons)
+- [X] [textured buttons](#textured-buttons)
 - [ ] [better shortcut keys logic](#textured-buttons)
 - [X] [shortcut keys for Mac](#shortcut-keys-for-mac)
 - [ ] [game package creation](#game-package-creation)
@@ -27,7 +27,7 @@
 - [ ] [dragging pages in library](#dragging-pages-in-library)
 - [ ] [refactor](#refactor)
 - [ ] [better undo logic](#better-undo-logic)
-- [ ] [two loading methods](#better-undo-logic)
+- [X] [two loading methods](#better-undo-logic)
 - [ ] [point and click plug-in](#point-and-click-plug-in)
 - [ ] [setted background position/size/ratio](#setted-background-positionsizeratio)
 - [ ] [setted multiple windows](#setted-multiple-windows)
@@ -39,11 +39,10 @@
 - [ ] [better data loading logic](#better-data-loading-logic)
 - [ ] [stored page setting](#stored-page-setting)
 - [ ] [more naming formatting](#more-naming-formatting)
-- [ ] [check for '/'](#check-for-)
+- [X] [check for '/'](#check-for-)
 - [ ] [zoom-in and zoom-out](#zoom-in-and-zoom-out)
 - [ ] [multiple pages on one page](#multiple-pages-on-one-page)
 - [ ] [two ways to implement library pages](#two-ways-to-implement-library-pages)
-- [] [import library](#import-library)
 
 ## ***UNDO***
 
@@ -217,6 +216,8 @@ eh, for some reason, my functions are all named in myseriously incoherant ways, 
 ## check for '/'
 
 I did implement encryption and decryption, but can't remember which step i checked it, so i guess i need to walk through all the encryption and decryption functions to figure this out ;)
+
+> this can be skipped with the bitloading method, maybe I'll left it here now
 
 ## zoom-in and zoom-out
 

@@ -75,7 +75,11 @@ private:
 	bool openProject();
 	void askForSave();
 
-    void spiritTreeNode(Spirit& spirit, bool linked, const std::optional<bool> name_changable = false, const std::optional<std::string>& name = "spirit_default");
+	/**
+	 * showing spirit in treenode
+	 * 
+	 */
+    void spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, const std::optional<bool> name_changable = false, const std::optional<std::string>& name = "spirit_default");
 	void textboxTreeNode(Textbox& textbox);
 	void buttonTreeNode(Button& button);
 
@@ -91,7 +95,11 @@ private:
 	void importImage();
 	// open a window showing the imported images...?
 	void showLibraryImage();
-	void showLibrarySpirit();
+
+	/**
+	 * an imgui window showing all library spirits
+	 */
+	void showLibrarySpirit(bool* p_open);
 
 
 	void addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& name = std::nullopt);

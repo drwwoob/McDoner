@@ -65,7 +65,12 @@ class Button {
      * or a detection made when the id is generated
      */
 
-    Button() : _nickname("button"), _mode(0), _status(0), _click_ratio(), _click_position() {}
+    Button() : _nickname("button"), _mode(0), _status(0), _click_ratio(), _click_position() {
+		_button_spirits.at(0)._spirit_name = "unclick";
+		_button_spirits.at(1)._spirit_name = "selected";
+		_button_spirits.at(2)._spirit_name = "onclick";
+		_button_spirits.at(3)._spirit_name = "clicked";
+	}
 	Button(int id) {
 		_nickname = "button" + std::to_string(id);
 

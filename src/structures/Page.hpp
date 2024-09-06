@@ -1,3 +1,6 @@
+#ifndef PAGE_HPP
+#define PAGE_HPP
+
 #pragma once
 
 #include <string>
@@ -10,6 +13,7 @@
 #include "Textbox.hpp"
 #include <functional>
 #include "Library.hpp"
+#include <utility> // for std::pair
 
 class Page {
 public:
@@ -50,6 +54,9 @@ public:
     void serialize(std::ofstream& outFile) const;
     void deserialize(std::ifstream& inFile);
 
+    template <typename T>
+    T findElement(std::pair<int, std::string> name_obj);
+
     std::shared_ptr<Library> _library_ptr;
 	std::vector<Spirit> _spirits;
     std::vector<std::shared_ptr<Spirit>> _spirit_ptrs;
@@ -57,6 +64,7 @@ public:
     std::vector<Button> _buttons;
     std::vector<std::shared_ptr<Button>> _button_ptrs;
     std::map<std::string, std::shared_ptr<Page>> _format_pages_ptrs; // name, formatted page's pointer
+    std::vector<std::pair<int, std::string>> _draw_order;
     
 private:
     void loadImageTexture(const std::string &name, std::vector<GLuint> &textures);
@@ -75,7 +83,6 @@ private:
     //  *      < 4, "filename" > = spirit from formatting page with given file name
     //  *      < 5, "nickname" > = textbox from formatting page with the give nickname
      */
-    std::vector<std::pair<int, std::string>> _draw_order;
 	// std::vector<std::string> textboxs settings;
 	//std::string path;
 	//static std::string wordEncrypt(std::string word);
@@ -89,3 +96,7 @@ private:
 	 *	] -> /]
 	*/
 };
+
+#include "Page.tpp" // Include the template implementation file
+
+#endif // PAGE_HPP

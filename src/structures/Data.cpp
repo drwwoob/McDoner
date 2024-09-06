@@ -52,7 +52,7 @@ void Data::loadString(){
 		while(std::getline(file, line)) {
 			file_data += line;
 		}
-		_library_ptr->decryptData(file_data);
+		_library_ptr->decryptDataBinary(file_data);
 		file.close();
 	}
 
@@ -84,6 +84,10 @@ void Data::draw() {
 
 Page* Data::getPage(int page_id) {
 	return &_pages.at(page_id);
+}
+
+Page* Data::getCurrentPage(){
+	return &_pages.at(_page_at);
 }
 
 std::string Data::encryptIntoFile() {
