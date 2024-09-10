@@ -226,20 +226,20 @@ void Cast::showCastsInPage(bool* p_open) {
 	ImGui::SetNextWindowSize(ImVec2(200, 20), ImGuiCond_FirstUseEver);
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 
-	for(auto draw_item :  std::ranges::reverse_view((*_game_data_ptr)->getCurrentPage()->_draw_order)) {
+	for(auto &draw_item : std::ranges::reverse_view((*_game_data_ptr)->getCurrentPage()->_draw_order)) {
 		switch(draw_item.first) {
 		case 1:
-			for(auto& spirit : (*_game_data_ptr)->getCurrentPage()->_spirits){
-				if(spirit._spirit_file_name == draw_item.second){
+			for(auto& spirit : (*_game_data_ptr)->getCurrentPage()->_spirits) {
+				if(spirit._spirit_file_name == draw_item.second) {
 					if(ImGui::CollapsingHeader(spirit._spirit_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-					spiritNodeContent(spirit, false, true, true);
+						spiritNodeContent(spirit, false, true, true);
 					}
 					break;
 				}
 			}
 			break;
 		case 2:
-			for(auto& textbox :  (*_game_data_ptr)->getCurrentPage()->_textboxs){
+			for(auto& textbox : (*_game_data_ptr)->getCurrentPage()->_textboxs) {
 				if(textbox._name == draw_item.second) {
 					textboxTreeNode(textbox);
 					break;
@@ -247,9 +247,10 @@ void Cast::showCastsInPage(bool* p_open) {
 			}
 			break;
 		case 3:
-			for(auto& button : (*_game_data_ptr)->getCurrentPage()->_buttons){
-				if(button._nickname == draw_item.second){
+			for(auto& button : (*_game_data_ptr)->getCurrentPage()->_buttons) {
+				if(button._nickname == draw_item.second) {
 					buttonTreeNode(button);
+					draw_item.second = button._nickname;
 					break;
 				}
 			}
@@ -534,32 +535,37 @@ void Cast::spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, c
 	// ================== how do i put *** UNDO *** in this...?
 
 	// if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
-		auto nameStr = &spirit._spirit_name;
-		if(name_changable.has_value() && name_changable == true) {
-			auto renameLabel = "rename##" + spirit._spirit_name;
-			ImGui::InputText(renameLabel.c_str(), nameStr);
+	auto nameStr = &spirit._spirit_name;
+	if(name_changable.has_value() && name_changable == true) {
+		auto renameLabel = "rename##" + spirit._spirit_name;
+		auto nameStrChanging = *nameStr;
+		ImGui::InputText(renameLabel.c_str(), &nameStrChanging);
+		if(nameStrChanging != ""){
+			*nameStr = nameStrChanging;
 		}
-		else {
-			// ImGui::Text("%s", spirit._spirit_name.c_str());
+	}
+	else {
+		// ImGui::Text("%s", spirit._spirit_name.c_str());
+	}
+	if(spirit._empty) {
+		if(ImGui::Button("Add spirit", ImVec2(200, 50))) {
 		}
-		if(spirit._empty) {
-			if(ImGui::Button("Add spirit", ImVec2(200, 50))) {
+	}
+	else {
+		// changing size and position
+		auto widthLabel = "width##" + *nameStr;
+		ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
+		auto heightLabel = "height##" + *nameStr;
+		ImGui::SliderFloat(heightLabel.c_str(), &spirit._size_ratio[1], -1.0f, 1.0f);
+		auto xLabel = "x-cord##" + *nameStr;
+		ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
+		auto yLabel = "y-cord##" + *nameStr;
+		ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
+		if(linkable && !linked) {
+			if(ImGui::Button("Set As Library Spirit")) {
 			}
 		}
-		else {
-			// changing size and position
-			auto widthLabel = "width##" + *nameStr;
-			ImGui::SliderFloat(widthLabel.c_str(), &spirit._size_ratio[0], -1.0f, 1.0f);
-			auto heightLabel = "height##" + *nameStr;
-			ImGui::SliderFloat(heightLabel.c_str(), &spirit._size_ratio[1], -1.0f, 1.0f);
-			auto xLabel = "x-cord##" + *nameStr;
-			ImGui::SliderFloat(xLabel.c_str(), &spirit._position_ratio[0], 0.0f, 1.0f);
-			auto yLabel = "y-cord##" + *nameStr;
-			ImGui::SliderFloat(yLabel.c_str(), &spirit._position_ratio[1], 0.0f, 1.0f);
-if(linkable && !linked){
-			if(ImGui::Button("Set As Library Spirit")) {
-			}}
-		}
+	}
 	// 	ImGui::TreePop();
 	// }
 }
@@ -592,10 +598,10 @@ void Cast::buttonTreeNode(Button& button) {
 				// }
 				// else {
 				// addSpiritTreeNode(spirit);
-	if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
-				spiritNodeContent(spirit, false, false, false);
-		ImGui::TreePop();
-	}
+				if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
+					spiritNodeContent(spirit, false, false, false);
+					ImGui::TreePop();
+				}
 				// }
 			}
 		}

@@ -43,6 +43,7 @@
 - [ ] [zoom-in and zoom-out](#zoom-in-and-zoom-out)
 - [ ] [multiple pages on one page](#multiple-pages-on-one-page)
 - [ ] [two ways to implement library pages](#two-ways-to-implement-library-pages)
+- [ ] [save version control](#save-version-control)
 
 ## ***UNDO***
 
@@ -238,3 +239,7 @@ continuing on the topic, while implementing the feature maybe i can seperate it 
 ## import library
 
 with the current data structure, i would say the only way to access library saved from other projects is to import them. Like letting the user to choose the project containing the library they want to load. But this would be challenging, cuz i need to copy all the image to this folder too.
+
+## save version control
+
+since the binary save data changes, there should be this version control thing that makes sure which version of save it is reding. well, this could be done after release.
