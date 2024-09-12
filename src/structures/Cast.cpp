@@ -4,6 +4,7 @@
 #include "Tools.hpp"
 #include <tinyfiledialogs.h>
 #include <filesystem>
+#include <variant>
 // #include "data.h"
 
 typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -21,10 +22,12 @@ Cast::Cast(std::shared_ptr<
 			   std::shared_ptr<Data>>
 			   game_data_ptr,
 		   std::unique_ptr<Backup> backup_data,
-		   std::unique_ptr<Page> clipboard_page_ptr)
+		   std::unique_ptr<Page> clipboard_page_ptr,
+		   std::unique_ptr<std::map<std::string, bool>> window_triggers)
 	: _game_data_ptr(game_data_ptr),
 	  _backup_data(std::move(backup_data)),
-	  _clipboard_page_ptr(std::move(clipboard_page_ptr)) {
+	  _clipboard_page_ptr(std::move(clipboard_page_ptr)),
+	  _window_triggers(std::move(window_triggers)) {
 	// listing out the menu shortkey items
 	auto getShortKeys = [](std::unordered_map<std::string, std::string>& shortkey_map, nlohmann::json& keyBindings) {
 		std::array<std::string, 7> keys{
@@ -215,25 +218,29 @@ void Cast::showMenuBar(Page& clipboard_page) {
 	}
 }
 
-void Cast::showCastsInPage(bool* p_open) {
+void Cast::showCastsInPage() {
 	ImGuiWindowFlags window_flags = 0;
 	auto page_info = (*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at);
 
-	ImGui::Begin("Cast", p_open, window_flags);
+	ImGui::Begin("Cast", &_window_triggers->at("show_cast_window"), window_flags);
 
 	// const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 	// ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 100, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(200, 20), ImGuiCond_FirstUseEver);
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 
-	for(auto &draw_item : std::ranges::reverse_view((*_game_data_ptr)->getCurrentPage()->_draw_order)) {
+	for(auto& draw_item : std::ranges::reverse_view((*_game_data_ptr)->getCurrentPage()->_draw_order)) {
 		switch(draw_item.first) {
 		case 1:
 			for(auto& spirit : (*_game_data_ptr)->getCurrentPage()->_spirits) {
 				if(spirit._spirit_file_name == draw_item.second) {
-					if(ImGui::CollapsingHeader(spirit._spirit_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-						spiritNodeContent(spirit, false, true, true);
+					if(ImGui::Button(spirit._spirit_name.c_str(), ImVec2(200, 20))) {
+						// showDetailElement(std::optional<Spirit*>(&spirit));
+						_element_detail_list.emplace(&spirit);
 					}
+					// if(ImGui::CollapsingHeader(spirit._spirit_name.c_str()/**, ImGuiTreeNodeFlags_DefaultOpen**/)) {
+					// 	spiritNodeContent(spirit, false, true, true);
+					// }
 					break;
 				}
 			}
@@ -241,7 +248,10 @@ void Cast::showCastsInPage(bool* p_open) {
 		case 2:
 			for(auto& textbox : (*_game_data_ptr)->getCurrentPage()->_textboxs) {
 				if(textbox._name == draw_item.second) {
-					textboxTreeNode(textbox);
+					if(ImGui::Button(textbox._name.c_str(), ImVec2(200, 20))) {
+						_element_detail_list.emplace(&textbox);
+					}
+					// 	textboxTreeNode(textbox);
 					break;
 				}
 			}
@@ -249,7 +259,10 @@ void Cast::showCastsInPage(bool* p_open) {
 		case 3:
 			for(auto& button : (*_game_data_ptr)->getCurrentPage()->_buttons) {
 				if(button._nickname == draw_item.second) {
-					buttonTreeNode(button);
+					// 	buttonTreeNode(button);
+					if(ImGui::Button(button._nickname.c_str(), ImVec2(200, 20))) {
+						_element_detail_list.emplace(&button);
+					}
 					draw_item.second = button._nickname;
 					break;
 				}
@@ -299,25 +312,25 @@ void Cast::showCastsInPage(bool* p_open) {
 	ImGui::End();
 }
 
-void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
+void Cast::showWelcomePage(bool& show_welcome_window) {
 	ImGui::SetNextWindowSize(ImVec2(240, 300));
 	ImGui::Begin("Welcome Page", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	if(ImGui::Button("New", ImVec2(-FLT_MIN, 80))) {
 		if(newProject()) {
 			show_welcome_window = false;
-			page_setting = true;
+			_window_triggers->at("page_setting") = true;
 		}
 	}
 	if(ImGui::Button("Open", ImVec2(-FLT_MIN, 80))) {
 		if(openProject()) {
 			show_welcome_window = false;
-			page_setting = true;
+			_window_triggers->at("page_setting") = true;
 		}
 	}
 	if(ImGui::Button("Demo", ImVec2(-FLT_MIN, 80))) {
 		*_game_data_ptr = std::make_shared<Data>("../saves/demo/demo.txt");
 		show_welcome_window = false;
-		page_setting = true;
+		_window_triggers->at("page_setting") = true;
 		// =========== todo: here is for saved (*game_data_ptr)->page_at thingy ===============
 		// (*game_data_ptr)->page_at = 0;
 		(*_game_data_ptr)->loadTexture();
@@ -326,7 +339,7 @@ void Cast::showWelcomePage(bool& show_welcome_window, bool& page_setting) {
 	ImGui::End();
 }
 
-void Cast::showAmongPages(bool* p_open) {
+void Cast::showAmongPages() {
 	ImGui::Begin("Page Setting");
 
 	bool disabled = false;
@@ -402,27 +415,56 @@ void Cast::showAmongPages(bool* p_open) {
 	ImGui::End();
 }
 
+// ============ why don't i do variant on this ==============
+void Cast::showElementWindow() {
+	std::set<ElementVariant> closing_list;
+	// std::set<std::pair<int, std::string>> changing_list;
+
+	for(const auto& element : _element_detail_list) {
+		// auto name = element.second + " Detail";
+		bool p_open = true;
+
+		// Pass p_open by reference to modify its value
+		std::visit([this, &p_open](auto&& arg) {
+			showDetailElement(arg, &p_open); // Pass p_open as a pointer to be modified
+		},element);
+
+		if(!p_open) {
+			closing_list.emplace(element); // Add element to closing_list if p_open is false
+		}
+	}
+
+	// Remove closed elements from _element_detail_list
+	for(const auto& closed_element : closing_list) {
+		_element_detail_list.erase(closed_element);
+	}
+}
+
 void Cast::lastPage() {
 	_backup_data->addMove();
 	(*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at - 1;
 	(*_game_data_ptr)->loadTexture();
+	_element_detail_list.clear();
 }
 void Cast::nextPage() {
 	_backup_data->addMove();
 	(*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at + 1;
 	(*_game_data_ptr)->loadTexture();
+	_element_detail_list.clear();
 }
 void Cast::addPage() {
 	_backup_data->addMove();
 	(*_game_data_ptr)->_page_at = (*_game_data_ptr)->_page_at + 1;
 	(*_game_data_ptr)->addPage((*_game_data_ptr)->_page_at);
 	(*_game_data_ptr)->loadTexture();
+	_element_detail_list.clear();
 }
 void Cast::duplicatePage() {
 	_backup_data->addMove();
 	(*_game_data_ptr)->CopyPage((*_game_data_ptr)->_page_at + 1, *((*_game_data_ptr)->getPage((*_game_data_ptr)->_page_at)));
 	(*_game_data_ptr)->_page_at++;
 	(*_game_data_ptr)->loadTexture();
+	_element_detail_list.clear();
 }
 void Cast::deletePage() {
 	_backup_data->addMove();
@@ -523,8 +565,9 @@ const char* Cast::getMapItem(int map_Id, const std::string& key) {
 	}
 }
 
+// void Cast::spiritNodeContent(Spirit& spirit, bool &linked, const bool linkable, const std::optional<bool> name_changable, const std::optional<std::string>& name) {
 void Cast::spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, const std::optional<bool> name_changable, const std::optional<std::string>& name) {
-	ImGui::SetNextWindowCollapsed(false);
+	// ImGui::SetNextWindowCollapsed(false);
 	if(spirit._spirit_name != "") {
 	}
 	else {
@@ -540,7 +583,7 @@ void Cast::spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, c
 		auto renameLabel = "rename##" + spirit._spirit_name;
 		auto nameStrChanging = *nameStr;
 		ImGui::InputText(renameLabel.c_str(), &nameStrChanging);
-		if(nameStrChanging != ""){
+		if(nameStrChanging != "") {
 			*nameStr = nameStrChanging;
 		}
 	}
@@ -570,43 +613,44 @@ void Cast::spiritNodeContent(Spirit& spirit, bool linked, const bool linkable, c
 	// }
 }
 void Cast::textboxTreeNode(Textbox& textbox) {
-	if(ImGui::CollapsingHeader(textbox._name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-		auto editLabel = "edit##" + textbox._name;
-		auto contentStr = &textbox._content;
-		ImGui::InputTextMultiline(editLabel.c_str(), contentStr, ImVec2(200, 100));
-		auto xLabel = "x-cord##" + textbox._name;
-		ImGui::SliderFloat(xLabel.c_str(), &textbox._position_ratio[0], 0.0f, 1.0f);
-		auto yLabel = "y-cord##" + textbox._name;
-		ImGui::SliderFloat(yLabel.c_str(), &textbox._position_ratio[1], 0.0f, 1.0f);
-		// ImGui::TreePop();
-	}
+	// if(ImGui::CollapsingHeader(textbox._name.c_str() /**, ImGuiTreeNodeFlags_DefaultOpen**/)) {
+	auto editLabel = "edit##" + textbox._name;
+	auto contentStr = &textbox._content;
+	ImGui::InputTextMultiline(editLabel.c_str(), contentStr, ImVec2(200, 100));
+	auto xLabel = "x-cord##" + textbox._name;
+	ImGui::SliderFloat(xLabel.c_str(), &textbox._position_ratio[0], 0.0f, 1.0f);
+	auto yLabel = "y-cord##" + textbox._name;
+	ImGui::SliderFloat(yLabel.c_str(), &textbox._position_ratio[1], 0.0f, 1.0f);
+	// ImGui::TreePop();
+	// }
 }
 
 void Cast::buttonTreeNode(Button& button) {
-	if(ImGui::CollapsingHeader(button._nickname.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-		auto nameStr = &(button._nickname);
-		auto renameLabel = "rename##" + button._nickname;
-		ImGui::InputText(renameLabel.c_str(), nameStr);
-		auto triggerLabel = "trigger##" + button._nickname;
-		if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)) {
-			addTrigger();
-		}
-		if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
-			for(auto& spirit : button._button_spirits) {
-				// if(spirit._empty) {
-				// 	addSpiritTreeNode(spirit, spirit._spirit_name);
-				// }
-				// else {
-				// addSpiritTreeNode(spirit);
-				if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
-					spiritNodeContent(spirit, false, false, false);
-					ImGui::TreePop();
-				}
-				// }
-			}
-		}
-		// ImGui::TreePop();
+	// if(ImGui::CollapsingHeader(button._nickname.c_str() /**, ImGuiTreeNodeFlags_DefaultOpen**/)) {
+	auto nameStr = &(button._nickname);
+	auto renameLabel = "rename##" + button._nickname;
+	ImGui::InputText(renameLabel.c_str(), nameStr);
+	auto triggerLabel = "trigger##" + button._nickname;
+	if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)) {
+		addTrigger();
 	}
+	if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
+		for(auto& spirit : button._button_spirits) {
+			// if(spirit._empty) {
+			// 	addSpiritTreeNode(spirit, spirit._spirit_name);
+			// }
+			// else {
+			// addSpiritTreeNode(spirit);
+			if(ImGui::TreeNode(spirit._spirit_name.c_str())) {
+				spiritNodeContent(spirit, false, false, false);
+				ImGui::TreePop();
+			}
+			// }
+		}
+	}
+	// ImGui::TreePop();
+	// }
+	// ImGui::End();
 }
 
 // let me think about this, i don't think i need a function
@@ -669,8 +713,8 @@ void Cast::showLibraryImage() {
 }
 
 // ------------ to do for the bottom two, get a pop-up window -------------
-void Cast::showLibrarySpirit(bool* p_open) {
-	ImGui::Begin("Spirit Library", p_open);
+void Cast::showLibrarySpirit() {
+	ImGui::Begin("Spirit Library", &_window_triggers->at("show_library"));
 	if(ImGui::Button("Add Spirit", ImVec2(-FLT_MIN, 50))) {
 		// ImGui::Begin();
 
@@ -692,3 +736,18 @@ void Cast::addTrigger() {
 
 void Cast::createValue() {
 }
+
+// // using ElementVariant = std::variant<Spirit, Textbox, Button, Page>;
+// void Cast::showDetailElement(ElementVariant element){
+// 	ImGui::Begin("Element Detail", &_element_window_open, 0);
+// 	if (std::holds_alternative<Spirit&>(element)){
+// 		spiritNodeContent(element, false, true, true);
+// 	}
+// 	else if(std::holds_alternative<Textbox&>(element)){
+// 		textboxTreeNode(element);
+// 	}
+// 	else if(std::holds_alternative<Button&>(element)){
+// 		buttonTreeNode(element);
+// 	}
+// 	ImGui::End();
+// }
