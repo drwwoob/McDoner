@@ -57,6 +57,12 @@ public:
     template <typename T>
     T findElement(std::pair<int, std::string> name_obj);
 
+    template <typename T>
+    void serializeVector(std::vector<T> vector_to_save, std::ofstream& outFile) const;
+
+    template <typename T>
+    void deserializeVector(std::vector<T> vector_to_read, std::ifstream& inFile);
+
     std::shared_ptr<Library> _library_ptr;
 	std::vector<Spirit> _spirits;
     std::vector<std::shared_ptr<Spirit>> _spirit_ptrs;
