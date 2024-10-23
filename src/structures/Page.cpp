@@ -190,8 +190,9 @@ void Page::loadImageTexture(const std::string& name, std::vector<GLuint>& textur
 	textures.emplace_back(my_image_texture);
 }
 
-void Page::drawPage(const std::vector<GLuint>& textures, int size) {
+void Page::drawPage(const std::vector<GLuint>& textures, int size, const bool edit_mode) {
 	int i = 0;
+	std::vector<std::tuple<ImVec2, ImVec2, ImU32>> button_area;
 	for(auto draw_obj : _draw_order) {
 		switch(draw_obj.first) {
 		// case 0:
@@ -244,13 +245,21 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
 															 ImVec2(topLeft.x + imgSize.x, topLeft.y + imgSize.y),
 															 ImVec2(0, 0),
 															 ImVec2(1, 1));
+					if(button._show_area){
+						button_area.emplace_back(
+							ImVec2(button._click_position.x * ImGui::GetIO().DisplaySize.x,
+									button._click_position.y * ImGui::GetIO().DisplaySize.y),
+							ImVec2((button._click_ratio.x + button._click_position.x) * ImGui::GetIO().DisplaySize.x,
+									(button._click_ratio.y + button._click_position.y) * ImGui::GetIO().DisplaySize.y),
+							button._click_area_color);
+					}
 					break;
 				}
 				i++;
 			}
 			break;
 		case 4:
-			(*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures, size + _spirits.size() + _buttons.size() + _spirit_ptrs.size() + _button_ptrs.size());
+			(*_format_pages_ptrs.at(draw_obj.second)).drawPage(textures, size + _spirits.size() + _buttons.size() + _spirit_ptrs.size() + _button_ptrs.size(), edit_mode);
 			break;
 		// case 5:
 		//     i = size + _spirits.size() + _buttons.size();
@@ -296,6 +305,16 @@ void Page::drawPage(const std::vector<GLuint>& textures, int size) {
 				1);
 			break;
 		}
+	}
+	if(edit_mode){
+		drawButtonArea(button_area);
+	}
+}
+
+void Page::drawButtonArea(const std::vector<std::tuple<ImVec2, ImVec2, ImU32>> button_area){
+	for (auto area : button_area){
+		std::cout << "";
+		ImGui::GetBackgroundDrawList()->AddRectFilled(std::get<0>(area), std::get<1>(area), std::get<2>(area));
 	}
 }
 

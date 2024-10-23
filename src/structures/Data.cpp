@@ -22,8 +22,8 @@ Data::Data(const std::string& file_path) {
 	//     *_library_ptr->
 	// }
 
-    loadBinary();
-    // loadString();
+    // loadBinary();
+    loadString();
 }
 
 Data::Data(const std::string& project_path, const char* project_name) {
@@ -78,8 +78,8 @@ void Data::loadTexture() {
 	_textures = _pages.at(_page_at).loadPage(_project_path);
 }
 
-void Data::draw() {
-	_pages.at(_page_at).drawPage(_textures, 0);
+void Data::draw(const bool edit_mode) {
+	_pages.at(_page_at).drawPage(_textures, 0, edit_mode);
 }
 
 Page* Data::getPage(int page_id) {

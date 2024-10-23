@@ -40,6 +40,8 @@ class Button {
 	//  2: onclick
 	//  3: clicked
 	int _status;
+	bool _show_area = false;
+	ImU32 _click_area_color = 0x4C8B3333;
 
 	// <template> ?
 	using FunctionVariant = std::variant<
@@ -65,13 +67,13 @@ class Button {
      * or a detection made when the id is generated
      */
 
-    Button() : _nickname("button"), _mode(0), _status(0), _click_ratio(), _click_position() {
+	Button(): _nickname("button"), _mode(0), _status(0), _click_ratio(), _click_position() {
 		_button_spirits.at(0)._spirit_name = "unclick";
 		_button_spirits.at(1)._spirit_name = "selected";
 		_button_spirits.at(2)._spirit_name = "onclick";
 		_button_spirits.at(3)._spirit_name = "clicked";
 	}
-	Button(int id) {
+	Button(int id): _status(0) {
 		_nickname = "button" + std::to_string(id);
 
 		// changing the name for buttons
@@ -166,6 +168,25 @@ class Button {
 	void save(std::string& save_string) {
 	}
 
+	bool mouseOver(int mouse_ratio_x, int mouse_ratio_y, bool clicking) {
+		bool over = mouse_ratio_x > _click_position.x && mouse_ratio_x < (_click_position.x + _click_ratio.x) && mouse_ratio_y > _click_position.y && mouse_ratio_y < (_click_position.y + _click_ratio.y);
+
+		if(over) {
+			if(_mode == 0) {
+				// if(_status == 0){
+				if(over) {
+					_status = 1;
+				}
+				// }
+			}
+			else if(_mode == 1) {
+				// do nothing for now
+			}
+		}
+
+		return over;
+	}
+
 	Spirit currentSpirit() {
 		// if no image is at the status
 
@@ -177,7 +198,6 @@ class Button {
 			else {
 				return _button_spirits[_status];
 			}
-			break;
 			break;
 		case 1:
 		default:
@@ -270,7 +290,7 @@ class Button {
 		// This part requires a custom approach if you need to store them.
 	}
 
-	void deserialize(std::ifstream& in){
+	void deserialize(std::ifstream& in) {
 		// Deserialize nickname
 		size_t name_size;
 		in.read(reinterpret_cast<char*>(&name_size), sizeof(size_t));

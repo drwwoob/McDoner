@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include <Painter.hpp>
+// #include <Painter.hpp>
 
 // Screen dimensions
 const int SCREEN_WIDTH = 800;
@@ -8,7 +8,7 @@ const int SCREEN_HEIGHT = 600;
 
 int main(int argc, char* args[]) {
     // read Pages in, each as an idividual page
-    st::vector<Page> pages;
+    // std::vector<Page> pages;
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -52,6 +52,15 @@ int main(int argc, char* args[]) {
             // User requests quit
             if (e.type == SDL_QUIT) {
                 quit = true;
+            }
+            else{
+                int mouseX, mouseY;
+                SDL_GetMouseState(&mouseX, &mouseY);
+
+                // Check if mouse is inside button area
+                if (isMouseInside(mouseX, mouseY, buttonRect)) {
+                    std::cout << "Button clicked!" << std::endl;
+                }
             }
         }
 

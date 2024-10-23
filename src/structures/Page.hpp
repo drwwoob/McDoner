@@ -48,7 +48,8 @@ public:
 	Textbox* getRealTextbox(const int id);
 	void setFont(ImFont* font_given);
     std::vector<GLuint> loadPage(const std::string &project_path);
-    void drawPage(const std::vector<GLuint> &textures, int size);
+    void drawPage(const std::vector<GLuint> &textures, int size, const bool edit_mode);
+    void drawButtonArea(const std::vector<std::tuple<ImVec2, ImVec2, ImU32>> button_area);
     void replace();
 
     void serialize(std::ofstream& outFile) const;
