@@ -23,7 +23,11 @@ void Cast::showDetailElement(T element, bool* p_open) {
 		ImGui::End();
 		// draw_item.second = button._nickname;
 	}
-	// else if constexpr (std::is_same_v<T, Page>) {
-	//     std::cout << "Processing Page" << std::endl;
-	// }
+	else if constexpr(std::is_same_v<T, Page*>) {
+        // std::cout << element->_nickname.c_str() << std::endl;
+		// ImGui::Begin(element->_nickname.c_str(), p_open, ImGuiTreeNodeFlags_DefaultOpen);
+		// buttonTreeNode(*element);
+		// ImGui::End();
+		// draw_item.second = button._nickname;
+	}
 }

@@ -77,6 +77,10 @@ void Cast::showMenuBar(Page& clipboard_page) {
 			}
 			if(ImGui::MenuItem("Import", getMapItem(0, "Import"))) {
 			}
+			if(ImGui::MenuItem("Export", getMapItem(0, "Export"))){
+				// this is going to have a few options, 
+				// including export as game, script or formatted txt
+			}
 			if(ImGui::MenuItem("Exit", getMapItem(0, "Exit"))) {
 				// Handle "Exit" action
 			}
@@ -633,6 +637,9 @@ void Cast::buttonTreeNode(Button& button) {
 	auto triggerLabel = "trigger##" + button._nickname;
 	if(ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen)) {
 		addTrigger();
+	}
+	if(ImGui::Button("show area", ImVec2(100, 30))){
+		button._show_area = !button._show_area;
 	}
 	if(ImGui::CollapsingHeader("Spirit", ImGuiTreeNodeFlags_DefaultOpen)) {
 		for(auto& spirit : button._button_spirits) {

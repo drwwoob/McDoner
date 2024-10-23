@@ -105,7 +105,7 @@ int main(int, char**) {
 		{"page_setting", true},
 		{"casts_list", true},
 		// {"show_element_detail", false},
-        {"show_library", false}};
+		{"show_library", false}};
 
 	// bool show_cast_window = true;
 	// bool page_setting = true;
@@ -140,10 +140,12 @@ int main(int, char**) {
 		SDL_Event event;
 		while(SDL_PollEvent(&event)) {
 			ImGui_ImplSDL2_ProcessEvent(&event);
-			if(event.type == SDL_QUIT)
+			if(event.type == SDL_QUIT) {
 				done = true;
-			if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+			}
+			if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window)) {
 				done = true;
+			}
 		}
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -157,11 +159,11 @@ int main(int, char**) {
 			cast.showWelcomePage(show_welcome_window);
 		}
 		else {
-			(*game_data_ptr)->draw();
-			cast.showCastsInPage();
+			(*game_data_ptr)->draw(true);
 			cast.showAmongPages();
 			cast.showMenuBar(clipboard_page);
-            cast.showElementWindow();
+			cast.showElementWindow();
+			cast.showCastsInPage();
 		}
 
 		// show imgui windows

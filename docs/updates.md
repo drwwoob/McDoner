@@ -7,13 +7,15 @@
 - 优化，我需要更多优化，更多！！！
 - better logic for undo
 
-## uncoming version 0.0.5
+- the feature bar for all ImGui Window (color-changing, transparency)
+- able to unlink page
+- able to create linked items with current items
+
+## coming version 0.0.5
 
 - changing the order of the element showing in the page (originally based on types, now with draw_order)
-- the feature bar for all ImGui Window (color-changing, transparency)
 - changing the data structure for pages that the draw object for spirits and textboxs will be merge into page items
-- able to create link for items
-- able to unlink spirit
+
 
 ## version 0.0.4
 

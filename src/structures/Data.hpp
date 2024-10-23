@@ -31,7 +31,8 @@ class Data {
 
 	int _page_at;
     void loadTexture();
-    void draw();
+    void draw(const bool edit_mode);
+    void showEdit();
     void setFont(ImFont* font_given);
     void save() const;
     void loadBinary();
