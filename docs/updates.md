@@ -15,12 +15,18 @@
 
 - changing the order of the element showing in the page (originally based on types, now with draw_order)
 <<<<<<< HEAD
+<<<<<<< HEAD
 - changing the data structure for pages that the draw object for spirits and textboxs will be merge into page items
 
 =======
 - able to see the area to trigger buttons
 - changing the data structure for pages that the draw object for spirits and textboxs will be merge into page items
 
+=======
+- able to see the area to trigger buttons
+- changing the data structure for pages that the draw object for spirits and textboxs will be merge into page items
+
+>>>>>>> 5d3d80a (update documents)
 - the feature bar for all ImGui Window (color-changing, transparency)
 - able to create link for items
 - able to unlink spirit
