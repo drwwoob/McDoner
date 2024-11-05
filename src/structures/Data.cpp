@@ -22,8 +22,8 @@ Data::Data(const std::string& file_path) {
 	//     *_library_ptr->
 	// }
 
-    // loadBinary();
-    loadString();
+    loadBinary();
+    // loadString();
 }
 
 Data::Data(const std::string& project_path, const char* project_name) {

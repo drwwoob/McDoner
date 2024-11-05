@@ -5,6 +5,8 @@
 #include <tinyfiledialogs.h>
 #include <filesystem>
 #include <variant>
+// #include <opencv2/opencv.hpp>
+// #include <string>
 // #include "data.h"
 
 typedef void (*ImGuiMarkerCallback)(const char* file, int line, const char* section, void* user_data);
@@ -75,12 +77,12 @@ void Cast::showMenuBar(Page& clipboard_page) {
 				// Handle "Save" action
 				(*_game_data_ptr)->save();
 			}
-			if(ImGui::MenuItem("Import", getMapItem(0, "Import"))) {
-			}
-			if(ImGui::MenuItem("Export", getMapItem(0, "Export"))){
-				// this is going to have a few options, 
-				// including export as game, script or formatted txt
-			}
+			// if(ImGui::MenuItem("Import", getMapItem(0, "Import"))) {
+			// }
+			// if(ImGui::MenuItem("Export", getMapItem(0, "Export"))){
+			// 	// this is going to have a few options, 
+			// 	// including export as game, script or formatted txt
+			// }
 			if(ImGui::MenuItem("Exit", getMapItem(0, "Exit"))) {
 				// Handle "Exit" action
 			}
@@ -669,6 +671,8 @@ void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& n
 		spirit._spirit_name = "spirit_default";
 	}
 	if(ImGui::Button("Add spirit", ImVec2(200, 50))) {
+		// spirit._spirit_file_name = importImage();
+		// std::cout <<spirit._spirit_file_name;
 	}
 	// // this will be abandoned now, but this should be the logic for import
 	//     ImGui::Begin("New Spirit");
@@ -708,10 +712,19 @@ void Cast::addSpiritTreeNode(Spirit& spirit, const std::optional<std::string>& n
 //     ImGui::PopStyleColor();
 // }
 
-void Cast::importImage() {
+std::string Cast::importImage() {
 	char const* lFilterPatterns[2] = {"*.png", "*.jpg"};
 	auto path = tinyfd_openFileDialog(NULL, (*_game_data_ptr)->_project_path.c_str(), 2, lFilterPatterns, "image files", 1);
-	// std::cout << path << std::endl;
+	std::string importedPath = "asd";
+	return importedPath;
+
+	// cv::Mat image = cv::imread(path);
+	// std::cout << (*_game_data_ptr)->_project_path << "/" <<  << std::endl;
+	// if (!cv::imwrite((*_game_data_ptr)->_project_path, image)) {
+    //     std::cerr << "Could not save the image to path: " << savePath << std::endl;
+    //     return;
+    // }
+	// // std::cout << path << std::endl;
 
 	// im thinking of recording down all the name as default names and store the images with
 }

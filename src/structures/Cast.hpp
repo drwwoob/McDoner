@@ -115,7 +115,7 @@ using ElementVariant = std::variant<
 	void addTrigger();
 
 	// =========== todo =======================
-	void importImage();
+	std::string importImage();
 	// open a window showing the imported images...?
 	void showLibraryImage();
 
