@@ -9,4 +9,3 @@ bool ExportWriter::windowWriter(const Data& data, std::string& message){
     // file 
     // << 
 }
-
